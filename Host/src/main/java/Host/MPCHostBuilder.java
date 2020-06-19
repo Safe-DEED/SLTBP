@@ -32,12 +32,7 @@ public class MPCHostBuilder extends MPCBuilder<MPCHost> {
 
     public MPCHostBuilder withResourcePool(PreprocessingStrategy strategy, int modBitLength, ATPManager.Function priceEvaluation, CmdLineParser.obliviousTransferProtocol obliviousTransferProtocol) throws ParseException {
         super.withResourcePool(strategy, modBitLength, obliviousTransferProtocol);
-        myManager = ATPManager.getInstance(myID);
         myManager.setPriceCalculation(priceEvaluation);
-        myManager.noOfPlayers = numberOfParties;
-        myManager.maxBitLength = maxBitLength;
-        myManager.orderNetwork = myNetworkManager.createExtraNetwork();
-        myManager.createAmountMap(amount);
         return this;
     }
 
@@ -70,6 +65,7 @@ public class MPCHostBuilder extends MPCBuilder<MPCHost> {
         ifxhost.logging          = logging;
         ifxhost.myNetworkManager = myNetworkManager;
         ifxhost.myManager        = myManager;
+        ifxhost.units            = units;
         return ifxhost;
     }
 }

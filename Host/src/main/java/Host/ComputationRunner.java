@@ -74,11 +74,11 @@ public class ComputationRunner implements Runnable{
             //Iterate over employee array
             List<ATPManager.ATPUnit> atpUnits = new ArrayList<>();
             for(Object unit : unitList){
-                ATPManager.ATPUnit cunit = parseATPUnit((JSONObject) unit, MPCHostDemo.myManager);
+                ATPManager.ATPUnit cunit = ATPManager.parseATPUnit((JSONObject) unit, MPCHostDemo.myManager);
                 atpUnits.add(cunit);
                 log.info(cunit.toString());
             }
-            MPCHostDemo.hostUnits = atpUnits;
+            MPCHostDemo.units = atpUnits;
 
         } catch (IOException | org.json.simple.parser.ParseException | ParseException e) {
             //e.printStackTrace(); // testing stack trace
@@ -90,9 +90,9 @@ public class ComputationRunner implements Runnable{
 
 
 
-       Boolean deal = MPCHostDemo.mySce.runApplication(MPCHostDemo, MPCHostDemo.myPool, MPCHostDemo.myNetwork, Duration.ofMinutes(50));
+       Integer deal = MPCHostDemo.mySce.runApplication(MPCHostDemo, MPCHostDemo.myPool, MPCHostDemo.myNetwork, Duration.ofMinutes(50));
 
-        if(deal){
+        if(deal > 0){
             log.info(threadName + " :the following parts have to be delivered: " + MPCHostDemo.myManager.unitList);
         } else {
             log.info(threadName + ": The deal can't be made");
@@ -116,25 +116,4 @@ public class ComputationRunner implements Runnable{
         }
     }
 
-    /**
-     * The ATP Units of the Host(Infineon) are parsed from a JSON file
-     * @param unit the current JSON Object, which should contain a unit
-     * @param manager The ATPManager instance, used to create a new ATP Unit
-     * @return the newly created ATPUnit object with the parsed contents
-     */
-    public static ATPManager.ATPUnit parseATPUnit(JSONObject unit, ATPManager manager)
-    {
-        //Get employee object within list
-        JSONObject atpUnit = (JSONObject) unit.get("unit");
-
-        //Get employee first name
-        int price = Integer.parseInt((String) atpUnit.get("price"));
-
-        //Get employee last name
-        int amount = Integer.parseInt((String) atpUnit.get("amount"));
-
-        //Get employee website name
-        int date = Integer.parseInt((String) atpUnit.get("date"));
-        return manager.new ATPUnit(1, date, BigInteger.valueOf(amount), BigInteger.valueOf(price));
-    }
 }

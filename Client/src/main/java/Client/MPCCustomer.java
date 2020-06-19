@@ -26,7 +26,7 @@ import static utils.NetworkManager.getPartyMap;
  * IFXMPC - serving as the client side implementation of the application interface.
  * The build computation function adds the MPC functionality to the protocol builder
  */
-public class MPCCustomer implements Application<Boolean, ProtocolBuilderNumeric>{
+public class MPCCustomer implements Application<Integer, ProtocolBuilderNumeric>{
 
     static Logger log = LoggerFactory.getLogger(MPCCustomer.class);
     int maxBitLength;
@@ -36,6 +36,7 @@ public class MPCCustomer implements Application<Boolean, ProtocolBuilderNumeric>
     int numParties;
     int myID;
     int amount;
+    List<ATPManager.ATPUnit> units;
     ATPManager myManager = null;
     boolean logging;
     SpdzResourcePool myPool;
@@ -72,19 +73,17 @@ public class MPCCustomer implements Application<Boolean, ProtocolBuilderNumeric>
      * @param protocolBuilderNumeric the protocol builder used to share and receive the secret shares
      */
     private void initSecretSharedValues(ProtocolBuilderNumeric protocolBuilderNumeric){
-        log.info("init secret sharing values.");
         for (Map.Entry<Integer, Party> entry : myNetworkManager.getParties().entrySet()) {
             int id = entry.getKey();
-            if(id == 1){
-                for(int j = 0; j < myManager.amountMap.get(1); j++){
-                    myManager.createUnit(id, null, null, null, protocolBuilderNumeric);  // for now the only the host has multiple units
-                }
-                continue;
-            }
             if (myID == id){
-                myManager.createUnit(id, myDate, BigInteger.valueOf(myVolume), BigInteger.valueOf(myP), protocolBuilderNumeric);
+                for (int j = 0; j < amount; j++){
+                    //myManager.createUnit(id, myDate, BigInteger.valueOf(myVolume), BigInteger.valueOf(myP), protocolBuilderNumeric);
+                    myManager.createUnit(units.get(j), protocolBuilderNumeric);
+                }
             } else {  // TODO: integrate date as a pricing factor
-                myManager.createUnit(id, null, null, null, protocolBuilderNumeric);
+                for(int j = 0; j < myManager.amountMap.get(id); j++){
+                    myManager.createUnit(id, null, null, null, protocolBuilderNumeric);
+                }
             }
         }
         Collections.sort(myManager.unitList);
@@ -98,17 +97,19 @@ public class MPCCustomer implements Application<Boolean, ProtocolBuilderNumeric>
      * @param producer The numeric protocol builder, where the function calles are appended
      * @return returns the function, evaluating whether the deal was possible
      */
-    public DRes<Boolean> buildComputation(ProtocolBuilderNumeric producer) {
+    public DRes<Integer> buildComputation(ProtocolBuilderNumeric producer) {
         return producer.seq(seq -> {
             initSecretSharedValues(seq);
             log("sharing the values over the network");
             return () -> null; // make void
         }).seq((seq, nil) -> {
             log("beginning arithmetic operations");
-            myManager.sumWithDate(seq);
+            //myManager.sumWithDate(seq);
+            myManager.sumIndividualDate(seq);
             return () -> null;
         }).seq((seq, nil) -> {
-            myManager.CreateDebugLists(seq, 1);
+            //myManager.CreateDebugLists(seq, 1);
+            myManager.openPriceAndVolSum(seq);
             //myManager.EvalConditions(seq);
             log("beginning comparison operations");
             return () -> null;
@@ -116,7 +117,10 @@ public class MPCCustomer implements Application<Boolean, ProtocolBuilderNumeric>
             //myManager.printDebug();
             //myManager.openList(seq);
             log("finished online computation.");
-            return () -> myManager.isDealPossible();
+            return () -> myManager.isDealPossible(null);
+        }).seq((seq, in) -> {
+            log("The result was " + in);
+            return () -> in;
         });
     }
 
@@ -154,15 +158,14 @@ public class MPCCustomer implements Application<Boolean, ProtocolBuilderNumeric>
         Network network = MPCCustomerDemo.getMyNetwork();
         Duration timeout = Duration.ofMinutes(50);
 
-        log.info("IFXMPCDEMO: " + MPCCustomerDemo);
 
 
-        Boolean deal = secureComputationEngine.runApplication(
+        Integer deal = secureComputationEngine.runApplication(
                 MPCCustomerDemo, spdzResourcePool, network, timeout);
 
         MPCCustomerDemo.log("The result is: " + deal);
-        if(deal){
-            log.info("The prerequisites were met, the deal can be made");
+        if(deal > 0){
+            log.info("The prerequisites were met, deal " + deal + " can be made");
         } else{
             log.info("The prerequisites were not met, no deal is possible");
         }

@@ -1,16 +1,17 @@
 package utils;
 
 import dk.alexandra.fresco.framework.DRes;
+import dk.alexandra.fresco.framework.builder.numeric.Numeric;
 import dk.alexandra.fresco.framework.builder.numeric.ProtocolBuilderNumeric;
 import dk.alexandra.fresco.framework.network.Network;
 import dk.alexandra.fresco.framework.value.SInt;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * The ATPManager holds all the logic used to work with ATPUnits, which are the core objects for this use case.
@@ -26,7 +27,7 @@ public class ATPManager {
     public Map<Integer, Integer> amountMap;
     public int noOfPlayers;
     public int maxBitLength;
-    public Network orderNetwork;
+    public Network orderNetwork, dealNetwork;
     public List<DRes<SInt>> ATPMinCost; // only neeeded when comparison is public
     public List<DRes<SInt>> ATPCost;
     public List<DRes<SInt>> ATPLeftOver;
@@ -36,8 +37,12 @@ public class ATPManager {
     public List<DRes<BigInteger>> DEBUGLeftOver;
     public List<DRes<BigInteger>> DEBUGVolumes;
     public DRes<BigInteger> cond1, cond2;
+    public List<DRes<SInt>> clientVolumeSum, clientPriceVSum;
+    public List<DRes<BigInteger>> VolSum, PriSum;
+    public List<BigInteger> hostVol, hostPrice;
     public static ATPManager instance;
     public Function priceCalculation;
+    public Integer selectedDeal;
 
 
     /**
@@ -54,6 +59,10 @@ public class ATPManager {
         this.unitList    = new ArrayList<>();
         this.units       = new HashMap<>();
         this.amountMap   = new HashMap<>();
+        this.clientPriceVSum = new ArrayList<>();
+        this.clientVolumeSum = new ArrayList<>();
+        this.hostVol = new ArrayList<>();
+        this.hostPrice = new ArrayList<>();
         this.myID        = id;
     }
 
@@ -74,18 +83,20 @@ public class ATPManager {
     /**
      * A very basic network function, which expects an integer from a certain party in the network async.
      * @param id the party from which to expect an input
+     * @param network The network to receive from
      * @return the received integer.
      */
-    private int receiveInt(int id){
-        return ByteBuffer.wrap(orderNetwork.receive(id)).getInt();
+    private int receiveInt(int id, Network network){
+        return ByteBuffer.wrap(network.receive(id)).getInt();
     }
 
     /**
      * Sending an integer to every party in the network.
      * @param Int The integer which is to send to everyone
+     * @param network The network to broadcast to
      */
-    private void broadcastInt(int Int){
-        orderNetwork.sendToAll(ByteBuffer.allocate(Integer.BYTES).putInt(Int).array());
+    private void broadcastInt(int Int, Network network){
+        network.sendToAll(ByteBuffer.allocate(Integer.BYTES).putInt(Int).array());
     }
 
     /**
@@ -93,13 +104,11 @@ public class ATPManager {
      * @param amount of ATPUnits which the owner of this manager wants to have
      */
     public void createAmountMap(Integer amount){
-        //log.info("initiating amount sharing without multiple threads");
         for(int i = 1; i < orderNetwork.getNoOfParties() + 1; i++){
             if(i == myID){
-                broadcastInt(amount);
+                broadcastInt(amount, orderNetwork);
             } else {
-                amountMap.put(i, receiveInt(i));
-                //log.info("id: " + i + " has: " + amountMap.get(i));
+                amountMap.put(i, receiveInt(i, orderNetwork));
             }
         }
     }
@@ -201,18 +210,76 @@ public class ATPManager {
         }
     }
 
+    /**
+     * Sum up the client amounts and prices for a single date.
+     * @param pBN The protocol builder used to evaluate the addition
+     */
+    public void sumIndividualDate(ProtocolBuilderNumeric pBN){
+        Numeric numeric = pBN.numeric();
+        DRes<SInt> clientVolumeSum = null;
+        DRes<SInt> clientPriceVSum = null;
 
-    public void OpenEvaluation(ProtocolBuilderNumeric protocolBuilderNumeric) {
+        int date = -1;
+        for(ATPUnit unit : unitList){
+            if(unit.date < date){
+                throw new RuntimeException("Date iteration failed at " + unit.date + " by unit of id: " + unit.id);
+            } if(unit.date > date){
+                date = unit.date;
+                if(clientPriceVSum != null){
+                    this.clientVolumeSum.add(clientVolumeSum);
+                    this.clientPriceVSum.add(clientPriceVSum);
+                    clientVolumeSum = null;
+                    clientPriceVSum = null;
+                }
+            } if(unit.id == 1){
+                hostVol.add(unit.amount);
+                hostPrice.add(unit.price);
+                continue;
+            }
+            clientVolumeSum = (clientVolumeSum == null) ? unit.closedAmount : numeric.add(clientVolumeSum, unit.closedAmount);
+            clientPriceVSum = (clientPriceVSum == null) ? unit.closedPrice :  numeric.add(clientPriceVSum, unit.closedPrice);
+        }
+
+        if(clientPriceVSum != null){
+            this.clientPriceVSum.add(clientPriceVSum);
+            this.clientVolumeSum.add(clientVolumeSum);
+        }
+
+    }
+
+
+    public void openPriceAndVolSum(ProtocolBuilderNumeric protocolBuilderNumeric){
+        Numeric numeric = protocolBuilderNumeric.numeric();
+        VolSum = new ArrayList<>();
+        PriSum = new ArrayList<>();
+
+        for(int i = 0; i < this.clientVolumeSum.size(); i++){
+            VolSum.add(numeric.open(clientVolumeSum.get(i), 1));
+            PriSum.add(numeric.open(clientPriceVSum.get(i), 1));
+        }
+    }
+
+
+    /**
+     * Applies the pricing function on the evaluated mpc circuit
+     * @param protocolBuilderNumeric The protocol builder used to perform operations using MPC
+     */
+    public OpenStatus OpenEvaluation(ProtocolBuilderNumeric protocolBuilderNumeric) {
         if(priceCalculation != null) {
             try{
                 priceCalculation.apply(protocolBuilderNumeric);
                 log.info("The deal succeeded!");
+                return OpenStatus.valueOf(selectedDeal);
             }
             catch (Exception e){
-                log.error(e.getMessage());
+                if(!e.getMessage().equals("")){
+                    log.info(e.getMessage());
+                }
                 log.info("The deal failed!");
+                return OpenStatus.valueOf(selectedDeal);
             }
         }
+        return OpenStatus.NO_EVAL_FUNCTION;
     }
 
 
@@ -247,9 +314,22 @@ public class ATPManager {
      * Checks whether for all given dates all conditions are true
      * @return is the deal possible (true/false)
      */
-    public boolean isDealPossible(){
-        if(true) { return true; }
-        return (this.cond1.out().equals(BigInteger.ONE) && this.cond2.out().equals(BigInteger.ONE));
+    public Integer isDealPossible(OpenStatus status){
+        if(status != null){
+            broadcastInt(status.getValue(), dealNetwork);
+        } else{
+            status = OpenStatus.valueOf(receiveInt(1, dealNetwork));
+        }
+        switch (status){
+            case FAIL:
+                return -1;
+            case NO_EVAL_FUNCTION:
+                throw new RuntimeException("No Evaluation function was provided");
+            default:
+                return status.getValue();
+        }
+        //if(true) { return true; }
+        //return (this.cond1.out().equals(BigInteger.ONE) && this.cond2.out().equals(BigInteger.ONE));
     }
 
 
@@ -259,7 +339,7 @@ public class ATPManager {
      */
     public void openList(ProtocolBuilderNumeric protocolBuilderNumeric){
         printDebug();
-        if(isDealPossible()){
+        if(isDealPossible(null) > 0){
             for(ATPUnit unit : unitList){
                 if(unit.id == 1){
                     continue;
@@ -277,6 +357,11 @@ public class ATPManager {
     private void input(ATPUnit unit, ProtocolBuilderNumeric protocolBuilderNumeric){
         unit.closedAmount = protocolBuilderNumeric.numeric().input(unit.amount, unit.id);
         unit.closedPrice  = protocolBuilderNumeric.numeric().input(unit.price, unit.id);
+        if(unit.date == null){
+            unit.date = receiveInt(unit.id, orderNetwork);
+        } else {
+            broadcastInt(unit.date, orderNetwork);
+        }
    }
 
     /**
@@ -319,7 +404,7 @@ public class ATPManager {
      * The ATPUnit class, an abstraction of an order and an offer. implements the comparable interface, to
      * easily sort the unitlist using collections.sort().
      */
-    public class ATPUnit implements Comparable<ATPUnit>{
+    public static class ATPUnit implements Comparable<ATPUnit>{
         final int id;
         BigInteger amount;
         DRes<SInt> closedAmount;
@@ -344,15 +429,11 @@ public class ATPManager {
          */
         public ATPUnit(int id, Integer date, BigInteger amount, BigInteger price){
             this.id = id;
-            if(date == null){
-                date = receiveInt(id);
-            } else {
-                broadcastInt(date);
-            }
             this.amount = amount;
             this.price = price;
             this.date = date;
         }
+
 
         public ATPUnit(int id, Integer date, BigInteger amount, BigInteger price, int salesPosition, int olt, int rlz){
             this(id, date, amount, price);
@@ -360,6 +441,7 @@ public class ATPManager {
             this.OLT = olt;
             this.RLZ = rlz;
         }
+
 
         /**
          * This class is serializable for debug reasons
@@ -391,6 +473,32 @@ public class ATPManager {
     }
 
     /**
+     * The ATP Units of the Host(Infineon) are parsed from a JSON file
+     * @param unit the current JSON Object, which should contain a unit
+     * @param manager The ATPManager instance, used to create a new ATP Unit
+     * @return the newly created ATPUnit object with the parsed contents
+     */
+    public static ATPUnit parseATPUnit(JSONObject unit, ATPManager manager)
+    {
+
+        //Get atp object within list
+        JSONObject atpUnit = (JSONObject) unit.get("unit");
+
+        //Get the price
+        BigInteger price = new BigInteger((String) atpUnit.get("price"));
+
+        //Get the amount
+        BigInteger amount = new BigInteger((String) atpUnit.get("amount"));
+
+        if(manager.myID != 1){
+            price = price.multiply(amount);
+        }
+        //Get date
+        int date = Integer.parseInt((String) atpUnit.get("date"));
+        return new ATPUnit(manager.myID, date, amount, price);
+    }
+
+    /**
      * Serialization of the entire ATPManager object. Printing out every ATPUnit it contains.
      * @return Serialized string.
      */
@@ -405,6 +513,31 @@ public class ATPManager {
             }
         }
         return returnString.toString();
+    }
+
+    public enum OpenStatus{
+        NO_EVAL_FUNCTION(0),
+        FAIL(-1),
+        SUCCESS1(1),
+        SUCCESS2(2),
+        SUCCESS3(3);
+        private final Integer value;
+        private static final Map<Integer, OpenStatus> map = new HashMap<>();
+        private OpenStatus(int val){
+            value = val;
+        }
+        static {
+            for (OpenStatus status: OpenStatus.values()){
+                map.put(status.value, status);
+            }
+        }
+        public static OpenStatus valueOf(Integer status){
+            return (OpenStatus) map.get(status);
+        }
+        public int getValue(){
+            return value;
+        }
+
     }
 
     @FunctionalInterface

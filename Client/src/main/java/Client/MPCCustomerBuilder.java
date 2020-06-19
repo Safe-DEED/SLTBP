@@ -27,11 +27,6 @@ public class MPCCustomerBuilder extends MPCBuilder<MPCCustomer> {
 
     public MPCCustomerBuilder withResourcePool(PreprocessingStrategy strategy, int modBitLength, CmdLineParser.obliviousTransferProtocol obliviousTransferProtocol) throws ParseException {
         super.withResourcePool(strategy, modBitLength, obliviousTransferProtocol);
-        myManager = ATPManager.getInstance(myID);
-        myManager.noOfPlayers = numberOfParties;
-        myManager.maxBitLength = maxBitLength;
-        myManager.orderNetwork = myNetworkManager.createExtraNetwork();
-        myManager.createAmountMap(amount);
         return this;
     }
 
@@ -48,6 +43,7 @@ public class MPCCustomerBuilder extends MPCBuilder<MPCCustomer> {
         MPCCustomer.numParties       = numberOfParties;
         MPCCustomer.amount           = amount;
         MPCCustomer.myVolume         = myVolume;
+        MPCCustomer.units            = units;
         MPCCustomer.myP              = myPrice * super.myVolume;
         MPCCustomer.myNetwork        = myNetwork;
         MPCCustomer.mySce            = mySce;
@@ -56,7 +52,6 @@ public class MPCCustomerBuilder extends MPCBuilder<MPCCustomer> {
         MPCCustomer.myManager        = myManager;
         MPCCustomer.logging          = logging;
         MPCCustomer.myNetworkManager = myNetworkManager;
-        log.info("SETUP for client finished!");
         return MPCCustomer;
     }
 }

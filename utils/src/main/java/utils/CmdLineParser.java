@@ -4,6 +4,7 @@ import dk.alexandra.fresco.framework.Party;
 import dk.alexandra.fresco.framework.sce.evaluator.EvaluationStrategy;
 import dk.alexandra.fresco.suite.spdz.configuration.PreprocessingStrategy;
 import org.apache.commons.cli.*;
+import org.json.simple.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -228,11 +229,13 @@ public class CmdLineParser {
         public int id;
         public int price;
         public int volume;
+        public int amount;
         public int date;
         public int hostUnits;
         public Party myParty;
         public Map<Integer, Party> parties;
         public List<Map<Integer, Party>> partyList;
+        public JSONArray units;
         public int maxBitLength;
         public int modBitLength;
         public boolean host;
@@ -243,14 +246,21 @@ public class CmdLineParser {
         public boolean multiThreaded;
 
         public BuilderParams(boolean logging, boolean multiThreaded, boolean host){
+            this(logging, multiThreaded);
+            setHost(host);
+        }
+        public BuilderParams(boolean logging, boolean multiThreaded){
             this.logging = logging;
             this.multiThreaded = multiThreaded;
-            this.host = host;
         }
         public void setId(int id){ this.id = id; }
         public void setHostUnits(int units) {this.hostUnits = units;}
         public void setPrice(int price){ this.price = price; }
         public void setVolume(int volume){ this.volume = volume; }
+        public void setUnits(JSONArray units){
+            this.units = units;
+            this.amount = units.size();
+        }
         public void setDate(int date){ this.date = date; }
         public void setParties(List<Map<Integer, Party>> partyList, Party party){
             this.myParty = party;
@@ -258,6 +268,9 @@ public class CmdLineParser {
             if(!multiThreaded){
                 this.parties = partyList.get(0);
             }
+        }
+        public void setHost(Boolean host){
+            this.host = host;
         }
         public void setOtProtocol(obliviousTransferProtocol otProtocol){
             this.otProtocol = otProtocol;
@@ -267,6 +280,26 @@ public class CmdLineParser {
         public void setModBitLength(int modBitLength){ this.modBitLength = modBitLength; }
         public void setPreprocessingStrategy(PreprocessingStrategy strategy){ this.preprocessingStrategy = strategy; }
         public void setEvaluationStrategy(EvaluationStrategy strategy){ this.evaluationStrategy = strategy; }
+        public String toString(){
+            return "logging: " + logging +
+                    "\nhost " + host +
+                    "\nid " + id +
+                    "\nprice " + price +
+                    "\nvolume " + volume +
+                    "\namount " + amount +
+                    "\ndate " + date +
+                    "\nhostUnits " + hostUnits +
+                    "\nmyParty " + myParty +
+                    "\nparties " + parties +
+                    "\npartyList " + partyList +
+                    "\nmaxBitLength " + maxBitLength +
+                    "\nmodBitLength " + modBitLength +
+                    "\npreprocessing " + preprocessingStrategy +
+                    "\notProtocol " + otProtocol +
+                    "\nevaluation " + evaluationStrategy +
+                    "\npricingFunction " + pricingFunction +
+                    "\nmultithreading " + multiThreaded;
+        }
     }
 
 }

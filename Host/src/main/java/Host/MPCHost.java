@@ -22,7 +22,7 @@ import java.util.*;
  *
  * implements the Application interface, to build the MPC computation.
  */
-public class MPCHost implements Application<Boolean, ProtocolBuilderNumeric> {
+public class MPCHost implements Application<Integer, ProtocolBuilderNumeric> {
 
     private static Logger log = LoggerFactory.getLogger(MPCHost.class);
     int maxVolume;
@@ -32,7 +32,7 @@ public class MPCHost implements Application<Boolean, ProtocolBuilderNumeric> {
     int numParties;
     int myID;
     int amount;
-    public List<ATPManager.ATPUnit> hostUnits;
+    public List<ATPManager.ATPUnit> units;
     boolean logging;
     public ATPManager myManager;
     public SpdzResourcePool myPool;
@@ -48,34 +48,44 @@ public class MPCHost implements Application<Boolean, ProtocolBuilderNumeric> {
      * @param producer The numeric protocol builder used to create the MPC protocol
      * @return returns the Lambda function evaluating whether the deal could be made
      */
-    public DRes<Boolean> buildComputation(ProtocolBuilderNumeric producer) {
+    public DRes<Integer> buildComputation(ProtocolBuilderNumeric producer) {
         return producer.seq(seq -> {
             log("sharing values over the network");
             for (Map.Entry<Integer, Party> entry : myNetworkManager.getParties().entrySet()) {
                 int id = entry.getKey();
                 if(id == 1) {
                     for(int j = 0; j < amount; j++){
-                        myManager.createUnit(hostUnits.get(j), seq);  // for now the host only has one stock!
+                        myManager.createUnit(units.get(j), seq);  // for now the host only has one stock!
                     }
                     continue;
                 }
-                myManager.createUnit(id, null, null, null,seq);
+                for (int j = 0; j < myManager.amountMap.get(id); j++){
+                    myManager.createUnit(id, null, null, null,seq);
+                }
            }
             Collections.sort(myManager.unitList);
             log(myManager.toString());
             return () -> null;
         }).seq((seq, list) -> {
-            myManager.sumWithDate(seq);
+            //myManager.sumWithDate(seq);
+            log("sum Individual date");
+            myManager.sumIndividualDate(seq);
             return () -> null;
         }).seq((seq, list) -> {
-            myManager.CreateDebugLists(seq, 1);
+            //myManager.CreateDebugLists(seq, 1);
             //myManager.EvalConditions(seq);
+            log("openPrice and Vol");
+            myManager.openPriceAndVolSum(seq);
             return () -> null;
         }).seq((seq, list) -> {
+            log("evaluate protocol");
             //myManager.printDebug();
             //myManager.openList(seq);
-            myManager.OpenEvaluation(seq);
-            return () -> myManager.isDealPossible();
+            ATPManager.OpenStatus status = myManager.OpenEvaluation(seq);
+            return () -> myManager.isDealPossible(status);
+        }).seq((seq, in) -> {
+            log("The result was " + in);
+            return () -> in;
         });
     }
 

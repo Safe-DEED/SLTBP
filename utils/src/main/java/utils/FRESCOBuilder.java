@@ -102,7 +102,7 @@ public abstract class FRESCOBuilder<BuilderT> {
                 if(logging){
                     log.info("Initialize naor pinkas ot");
                 }
-                Map<Integer, RotList> seedOts = getSeedOts(myID, partyIds, PRGSeedLength, drbg, myNetworkManager.createExtraNetwork(), obliviousTransferProtocol);
+                Map<Integer, RotList> seedOts = getSeedOts(myID, partyIds, PRGSeedLength, drbg, myNetworkManager.createExtraNetwork("OT Protocol"), obliviousTransferProtocol);
                 if(logging){
                     log.info("Create Random Ssk");
                 }
@@ -111,7 +111,7 @@ public abstract class FRESCOBuilder<BuilderT> {
                     log.info("Create Simple Supplier");
                 }
                 supplier = SpdzMascotDataSupplier.createSimpleSupplier(myID, numberOfParties,
-                        () -> myNetworkManager.createExtraNetwork(), modBitLength,
+                        () -> myNetworkManager.createExtraNetwork("mascot data supplier"), modBitLength,
                         definition, new Function<Integer, SpdzSInt[]>() {
 
                             private SpdzMascotDataSupplier tripleSupplier;
@@ -120,7 +120,7 @@ public abstract class FRESCOBuilder<BuilderT> {
                             @Override
                             public SpdzSInt[] apply(Integer pipeLength) {
                                 if (pipeNetwork == null) {
-                                    pipeNetwork = myNetworkManager.createExtraNetwork();
+                                    pipeNetwork = myNetworkManager.createExtraNetwork("Pipe Network");
                                     tripleSupplier = SpdzMascotDataSupplier.createSimpleSupplier(myID, numberOfParties,
                                             () -> pipeNetwork, modBitLength, definition, null,
                                             seedOts, drbg, ssk);
@@ -129,11 +129,9 @@ public abstract class FRESCOBuilder<BuilderT> {
                                     }
 
                                 }
-                                if(logging){
-                                }
+
                                 DRes<List<DRes<SInt>>> pipe = createPipe(myID, numberOfParties, pipeLength, pipeNetwork, tripleSupplier, maxBitLength);
-                                if(logging){
-                                }
+
                                 return computeSInts(pipe);
                             }
                         }, seedOts, drbg, ssk);
@@ -204,7 +202,7 @@ public abstract class FRESCOBuilder<BuilderT> {
         numberOfParties = parties.size();
         myNetworkConfiguration = new NetworkConfigurationImpl(myID, parties);
         myNetworkManager = new NetworkManager(myNetworkConfiguration, logging, parties);
-        myNetwork = myNetworkManager.createExtraNetwork();
+        myNetwork = myNetworkManager.createExtraNetwork("FRESCOBuilder");
         return this;
     }
 
@@ -288,7 +286,6 @@ public abstract class FRESCOBuilder<BuilderT> {
      */
     public Map<Integer, RotList> getSeedOts(int myId, List<Integer> partyIds, int prgSeedLength,
                                             Drbg drbg, Network network, CmdLineParser.obliviousTransferProtocol obliviousTransferProtocol) {
-        log.info("starting seedOts!");
         Map<Integer, RotList> seedOts = new HashMap<>();
         for (Integer otherId : partyIds) {
             if (myId != otherId) {

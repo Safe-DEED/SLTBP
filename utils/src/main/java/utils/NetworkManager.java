@@ -4,7 +4,6 @@ import dk.alexandra.fresco.framework.Party;
 import dk.alexandra.fresco.framework.configuration.NetworkConfiguration;
 import dk.alexandra.fresco.framework.configuration.NetworkConfigurationImpl;
 import dk.alexandra.fresco.framework.network.Network;
-import dk.alexandra.fresco.framework.network.socket.SocketNetwork;
 import dk.alexandra.fresco.framework.util.ExceptionConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,8 +69,9 @@ public class NetworkManager implements Closeable {
      * Create another network with the same parties but different ports, just to not interfere with the other protocols
      * using the same network.
      * @return the newly created network
+     * @param caller
      */
-    public Network createExtraNetwork(){
+    public Network createExtraNetwork(String caller){
         // log.info("creating extra network");
         NetworkConfiguration conf = UpdateConfiguration();
         log("config: " + configuration.noOfParties());
@@ -157,6 +157,7 @@ public class NetworkManager implements Closeable {
      */
     @Override
     public void close() {
+        log.info("Closing the network manager!");
         openedNetworks.forEach((key, value) -> close((Closeable) value));
     }
 

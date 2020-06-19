@@ -3,8 +3,15 @@ package utils;
 import dk.alexandra.fresco.framework.Party;
 import dk.alexandra.fresco.suite.spdz.configuration.PreprocessingStrategy;
 import org.apache.commons.cli.ParseException;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import static utils.ATPManager.parseATPUnit;
+
 
 /**
  * The abstract builder class to instantiate the application objects. This builder takes care of the boiler plate code
@@ -17,6 +24,7 @@ public abstract class MPCBuilder<ObjectT> extends FRESCOBuilder<ObjectT>{
     protected int myPrice;
     protected int myDate;
     protected int amount;
+    protected List<ATPManager.ATPUnit> units;
     protected ATPManager myManager;
 
 
@@ -49,6 +57,23 @@ public abstract class MPCBuilder<ObjectT> extends FRESCOBuilder<ObjectT>{
     }
 
     /**
+     * Setting the ATP units as a List and not individually
+     * @param units the list of parsed ATP Units used
+     * @return this - used by build pattern
+     */
+    public MPCBuilder<ObjectT> withUnits(JSONArray units){
+        this.units = new ArrayList<>();
+        if(units == null){
+            return this;
+        }
+        for(Object unit : units){
+            ATPManager.ATPUnit cUnit = parseATPUnit((JSONObject) unit, myManager);
+            this.units.add(cUnit);
+        }
+        return this;
+    }
+
+    /**
      * Setting
      * @param volume the requested amount or the provided amount
      * @param amount the number of atp units provided - if > 1 then volume and price are ignored
@@ -65,7 +90,7 @@ public abstract class MPCBuilder<ObjectT> extends FRESCOBuilder<ObjectT>{
      * to achieve active security
      * @param strategy the PreprocessingStrategy used
      * @param modBitLength the bitLength of the modulus (128 bit is recommended)
-     * @param obliviousTransferProtocol
+     * @param obliviousTransferProtocol Define whether secure NAOR Pinkas or Dummy shall be used
      * @return this
      * @throws ParseException thrown when preprocessingStrategy is unknown
      */
@@ -75,7 +100,8 @@ public abstract class MPCBuilder<ObjectT> extends FRESCOBuilder<ObjectT>{
         myManager = ATPManager.getInstance(myID);
         myManager.noOfPlayers = numberOfParties;
         myManager.maxBitLength = maxBitLength;
-        myManager.orderNetwork = myNetworkManager.createExtraNetwork();
+        myManager.orderNetwork = myNetworkManager.createExtraNetwork("ATPManager");
+        myManager.dealNetwork = myNetworkManager.createExtraNetwork("DealNetwork");
         myManager.createAmountMap(amount);
         return this;
     }

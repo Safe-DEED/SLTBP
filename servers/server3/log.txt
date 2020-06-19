@@ -1,0 +1,7 @@
+16:13:13.834 [main] INFO Application.PriceFinder - ---------- starting setup ----------
+16:13:58.422 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
+16:13:58.424 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Client.MPCCustomer@6c5804e6 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@629ff71d
+16:13:59.310 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 30 native protocols in 30 batches.
+16:13:59.310 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Client.MPCCustomer@6c5804e6 finished evaluation in 878 ms.
+16:13:59.311 [SCE-1] INFO utils.NetworkManager - Closing the network manager!
+16:13:59.324 [main] INFO Application.PriceFinder - the resulting deal is: 1

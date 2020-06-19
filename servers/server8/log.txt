@@ -1,0 +1,3 @@
+11:29:21.909 [main] INFO utils.IFXBuilder - These are my parties. [Party(1, localhost:8071), Party(2, localhost:8072), Party(3, localhost:8073), Party(4, localhost:8074), Party(5, localhost:8075), Party(6, localhost:8076), Party(7, localhost:8077), Party(8, localhost:8078)]
+11:29:21.912 [main] INFO utils.NetworkManager - Created NetworkManager
+11:29:21.913 [main] INFO utils.NetworkManager - config: 8

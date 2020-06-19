@@ -11,7 +11,7 @@
     "unit": {
       "date": "2",
       "price": "5",
-      "amount": "20",
+      "amount": "200",
       "Sales Position": "12345679"
     }
   },
@@ -21,14 +21,6 @@
       "price": "4",
       "amount": "25",
       "Sales Position": "12345680"
-    }
-  },
-  {
-    "unit": {
-      "date": "4",
-      "price": "3",
-      "amount": "170",
-      "Sales Position": "12345681"
     }
   }
 ]
