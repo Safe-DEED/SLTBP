@@ -10,11 +10,6 @@ move:
 
 run:
 	@mvn clean install;
-	@mkdir -p servers;
-	@cd servers;
-	@mkdir -p servers/server1;
-	@mkdir -p servers/server2;
-	@mkdir -p servers/server3;
 	@cp Application/target/demo.jar servers/server1;
 	@cp Application/target/demo.jar servers/server2;
 	@cp Application/target/demo.jar servers/server3;
