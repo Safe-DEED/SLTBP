@@ -63,14 +63,10 @@ public class PriceFinder {
             currentHostPrice = man.hostPrice.get(i);
             minPrice = currentVol.multiply(currentHostPrice);
             if(minPrice.compareTo(currentPrice) > 0){
-                System.out.println("currentHostPrice " + currentHostPrice);
-                System.out.println("currentVol " + currentVol);
-                System.out.println("suggested price " + currentPrice);
-                System.out.println("min price " + minPrice);
                 System.out.println("price fail at: " + i);
                 continue;
             }
-            found = i;
+            found = i + 1;
             break;
         }
         man.selectedDeal = found;

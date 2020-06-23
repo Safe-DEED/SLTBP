@@ -80,11 +80,14 @@ public class MPCHost implements Application<Integer, ProtocolBuilderNumeric> {
         }).seq((seq, list) -> {
             log("evaluate protocol");
             //myManager.printDebug();
-            //myManager.openList(seq);
             ATPManager.OpenStatus status = myManager.OpenEvaluation(seq);
             return () -> myManager.isDealPossible(status);
         }).seq((seq, in) -> {
             log("The result was " + in);
+            myManager.openList(seq, in);
+            return () -> in;
+        }).seq((seq, in) -> {
+            myManager.exportResult(in);
             return () -> in;
         });
     }

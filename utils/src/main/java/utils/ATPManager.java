@@ -5,10 +5,14 @@ import dk.alexandra.fresco.framework.builder.numeric.Numeric;
 import dk.alexandra.fresco.framework.builder.numeric.ProtocolBuilderNumeric;
 import dk.alexandra.fresco.framework.network.Network;
 import dk.alexandra.fresco.framework.value.SInt;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -259,6 +263,54 @@ public class ATPManager {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private JSONObject unitToJSON(ATPUnit unit, Boolean host){
+        JSONObject object = new JSONObject();
+        object.put("id", String.valueOf(unit.id));
+        if(host){
+            ATPUnit myUnit = units.get(1).stream().filter(u -> u.date.equals(unit.date)).findAny().orElse(unit);
+            object.put("amount", String.valueOf(unit.openedAmount.out()));
+            object.put("price", String.valueOf(unit.openedPrice.out()));
+            object.put("Sales Position", String.valueOf(myUnit.salesPosition));
+        } else{
+            object.put("amount", String.valueOf(unit.amount));
+            object.put("price", String.valueOf(unit.price));
+            object.put("Sales Position", String.valueOf(unit.salesPosition));
+        }
+
+        JSONObject object1 = new JSONObject();
+        object1.put("unit", object);
+        return object1;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void exportResult(Integer selectedDeal){
+        JSONArray unitsList = new JSONArray();
+        for (ATPUnit unit : unitList) {
+            if(myID == 1){
+                if(unit.id != 1 && unit.date.equals(selectedDeal)){
+                    unitsList.add(unitToJSON(unit, true));
+                }
+            } else{
+                if(unit.id == myID && unit.date.equals(selectedDeal)){
+                    unitsList.add(unitToJSON(unit, false));
+                    System.out.println(unitList);
+                }
+            }
+        }
+        //Write JSON file
+        try (FileWriter file = new FileWriter("accepted_order.json")) {
+            if(unitsList.isEmpty()){
+                JSONObject fail = new JSONObject();
+                fail.put("deal", "failed");
+                unitsList.add(fail);
+            }
+            file.write(unitsList.toJSONString());
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Applies the pricing function on the evaluated mpc circuit
@@ -337,14 +389,14 @@ public class ATPManager {
      * if the deal is possible, opens the list of ATPUnits to the Host (i.e., Infineon)
      * @param protocolBuilderNumeric the protocol builder used to add the open protocol for later execution
      */
-    public void openList(ProtocolBuilderNumeric protocolBuilderNumeric){
-        printDebug();
-        if(isDealPossible(null) > 0){
+    public void openList(ProtocolBuilderNumeric protocolBuilderNumeric, Integer selectedDeal){
+        if(selectedDeal > 0){
             for(ATPUnit unit : unitList){
                 if(unit.id == 1){
                     continue;
+                } if(unit.date.equals(selectedDeal)){
+                    open(unit, 1, protocolBuilderNumeric);
                 }
-                open(unit, 1, protocolBuilderNumeric);
             }
         }
     }
@@ -490,12 +542,14 @@ public class ATPManager {
         //Get the amount
         BigInteger amount = new BigInteger((String) atpUnit.get("amount"));
 
+        int sp = Integer.parseInt((String) atpUnit.get("Sales Position"));
+
         if(manager.myID != 1){
             price = price.multiply(amount);
         }
         //Get date
         int date = Integer.parseInt((String) atpUnit.get("date"));
-        return new ATPUnit(manager.myID, date, amount, price);
+        return new ATPUnit(manager.myID, date, amount, price, sp, 0, 0);
     }
 
     /**

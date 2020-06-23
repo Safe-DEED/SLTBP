@@ -77,7 +77,6 @@ public class CmdLineParser {
      * @throws ParseException throws this exception if some value is not as expected
      */
     public static BuilderParams GetCmdLineParams(String[] args) throws ParseException {
-
         //Define possible CommandLine options
         Options options = new Options();
         options.addOption(Option.builder(ID).desc(IDMSG).longOpt("id").required(true).hasArg().build());

@@ -1,7 +1,26 @@
-16:13:13.852 [main] INFO Application.PriceFinder - ---------- starting setup ----------
-16:13:58.424 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
-16:13:58.426 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Client.MPCCustomer@2a5388f3 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@249473c9
-16:13:59.310 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 30 native protocols in 30 batches.
-16:13:59.310 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Client.MPCCustomer@2a5388f3 finished evaluation in 878 ms.
-16:13:59.311 [SCE-1] INFO utils.NetworkManager - Closing the network manager!
-16:13:59.324 [main] INFO Application.PriceFinder - the resulting deal is: 1
+13:33:42.122 [main] INFO Application.PriceFinder - ---------- starting setup ----------
+13:34:26.509 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
+13:34:26.523 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Client.MPCCustomer@7bde2a32 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@7519db39
+[
+This unit of: 1 contains: null, with date: 1, and price: null
+, 
+This unit of: 2 contains: 10, with date: 1, and price: 40
+, 
+This unit of: 3 contains: null, with date: 1, and price: null
+, 
+This unit of: 1 contains: null, with date: 2, and price: null
+, 
+This unit of: 2 contains: 40, with date: 2, and price: 200
+, 
+This unit of: 3 contains: null, with date: 2, and price: null
+, 
+This unit of: 1 contains: null, with date: 3, and price: null
+, 
+This unit of: 2 contains: null, with date: 3, and price: null
+, 
+This unit of: 3 contains: null, with date: 3, and price: null
+]
+13:34:27.566 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 34 native protocols in 34 batches.
+13:34:27.566 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Client.MPCCustomer@7bde2a32 finished evaluation in 1033 ms.
+13:34:27.567 [SCE-1] INFO utils.NetworkManager - Closing the network manager!
+13:34:27.578 [main] INFO Application.PriceFinder - the resulting deal is: 3

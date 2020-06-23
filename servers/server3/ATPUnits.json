@@ -2,7 +2,7 @@
   {
     "unit": {
       "date": "1",
-      "price": "6",
+      "price": "7",
       "amount": "15",
       "Sales Position": "12345678"
     }
@@ -18,7 +18,7 @@
   {
     "unit": {
       "date": "3",
-      "price": "4",
+      "price": "3",
       "amount": "25",
       "Sales Position": "12345680"
     }

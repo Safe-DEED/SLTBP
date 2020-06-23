@@ -120,7 +120,11 @@ public class MPCCustomer implements Application<Integer, ProtocolBuilderNumeric>
             return () -> myManager.isDealPossible(null);
         }).seq((seq, in) -> {
             log("The result was " + in);
+            myManager.openList(seq, in);
             return () -> in;
+        }).seq((seq, in) -> {
+           myManager.exportResult(in);
+           return () -> in;
         });
     }
 
