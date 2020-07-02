@@ -19,30 +19,35 @@ one also prepares our directory structure for our demonstrator setups. The execu
 
 ## Important make targets
 
-#### Setup
+Let us briefly describe the two make targets. 
 
-In our Makefile we provide several setups to try out our implementation. Let us briefly describe the general idea behind those setups.
-There are setup targets and run targets in the Makefile. The most important setup is, as mentioned above, `make install`. First, this 
-target compiles the program using maven, then, it creates a `servers` directory and also a subdirectory for 8 different servers. Finally
-the compiled executable is copied into those server subdirectories. This way, we can simulate multiple parties on the network and 
-have their respective log files in different folders.
 
-#### Run
+On the one hand, there is `make move`. This target creates a `servers` directory and a subdirectory for each of the possible 8 different servers.
+We use this directory structure to imitate different instances locally. This has to be executed once before running our demonstration setup.
 
-The run targets only differ in the number of parties and the selected preprocessing strategy. There will be a short overview
-of the instructions used, such that different setups can be easily created.
+On the other hand, we have `make run`. This target compiles the project using maven. All the necessary dependencies will be loaded automatically.
+Then it runs the program on three different servers.
 
- `cd servers/server1 && java -jar demo.jar -l -i 1 -H` 
+**Note: each server that is executed, needs the ATPUnits and the NetworkConfig JSON files**
 
- `-p 1:localhost:8081 -p 2:localhost:8082 -p 3:localhost:8083` 
+Here is a short overview of the instructions used, such that different setups can be easily created.
 
- `-DmodBitLength=128 -DmaxBitLength=10 -DpreprocessingStrategy=DUMMY`
+ `mvn clean install;`
 
- `-T 1 --price 5  --volume 100 > log.txt 2`
+Here the project is compiled using maven.
  
- - The first line enters the directory and executes the program. Then, it sets logging as active (deactivate by deleting ``-l``). With ``-i 1`` the id is set to one. This id has to be unique. With `-H` it is declared that this user is in fact the host of the protocol.
- - In the second line, all parties are specified, here localhost has to be replaced by the specific IP addresses of the clients. It is always necessary to specify your own settings, so the network manager can listen to the correct port.
- - The third line specifies the security parameters of FRESCO. Here the first two parameters should be kept the same, while the last one can also be set to 
- ``Strategy=MASCOT``. 
- > **Caution** The protocol can only fulfill the security claims, if MASCOT is used as a preprocessing strategy. Dummy should only be used to test the implementation.
- - In the final line there are the use case specific parameters. ``-T`` states the date, when the amount ordered is due. ``--price`` specified the suggested price for the amount. ``--volume`` specifies the amount requested in the transaction. The final statement piped the output into the logfile.
+ `cp Application/target/demo.jar servers/serverX;`
+
+The created jar file needs to be copied to the directory of each server.
+
+ `cd servers/serverX && java -jar demo.jar 2>&1 |tee log.txt` 
+
+Finally the different instances are started. 
+
+## Running over the network
+
+When running this demonstrator over the network, only one instance of `Application/target/demo.jar` has to be started. In the same directory
+however, the necessary JSON files have to be placed. With the Network Configuration, we can define the IP and Port of each participant. 
+The individual certificates of the other parties and the truststore need to be in the same directory. In our setup they are included 
+in the utils resources and are compiled into the jar.
+ 
