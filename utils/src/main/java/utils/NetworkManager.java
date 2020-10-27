@@ -80,7 +80,7 @@ public class NetworkManager implements Closeable {
             net = new utils.SocketNetwork(conf, Duration.ofMinutes(10));
             log("created extra network");
         } catch (Exception e) {
-            log.info("Failed creating new network");
+            log.info("Failed creating new network: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException();
         }
