@@ -1,4 +1,4 @@
-[!Safe-DEED Logo](https://github.com/Safe-DEED/SLTBP/blob/master/Safe-DEED_logo.png)
+![Safe-DEED Logo](https://github.com/Safe-DEED/SLTBP/blob/master/Safe-DEED_logo.png)
 
 # Secure Lead-Time Based Pricing (SLTBP)
 For a detailed description of this crypthograpic protocol and a possible use-case see https://safe-deed.eu/wp-content/uploads/2020/06/Safe-DEED_D5_4.pdf
