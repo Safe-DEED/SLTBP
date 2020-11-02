@@ -1,3 +1,5 @@
+[!Safe-DEED Logo]https://github.com/Safe-DEED/SLTBP/blob/master/Safe-DEED_logo.png
+
 # Secure Lead-Time Based Pricing (SLTBP)
 For a detailed description of this crypthograpic protocol and a possible use-case see https://safe-deed.eu/wp-content/uploads/2020/06/Safe-DEED_D5_4.pdf
 
@@ -50,4 +52,7 @@ When running this demonstrator over the network, only one instance of `Applicati
 however, the necessary JSON files have to be placed. With the Network Configuration, we can define the IP and Port of each participant. 
 The individual certificates of the other parties and the truststore need to be in the same directory. In our setup they are included 
 in the utils resources and are compiled into the jar.
- 
+
+## Acknowledgements
+
+This project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement No 825225.
