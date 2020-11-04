@@ -69,7 +69,7 @@ public class NetworkManager implements Closeable {
      * Create another network with the same parties but different ports, just to not interfere with the other protocols
      * using the same network.
      * @return the newly created network
-     * @param caller
+     * @param caller former debugging string in approach to track network data
      */
     public Network createExtraNetwork(String caller){
         // log.info("creating extra network");

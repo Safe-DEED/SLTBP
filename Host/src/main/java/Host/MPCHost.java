@@ -17,8 +17,6 @@ import utils.NetworkManager;
 import java.util.*;
 
 /**
- * This is the Infineon counter part to the IFXMPC class. NOTE: could be simplified using inheritance
- * maybe one ifx super class...
  *
  * implements the Application interface, to build the MPC computation.
  */
@@ -98,6 +96,13 @@ public class MPCHost implements Application<Integer, ProtocolBuilderNumeric> {
         }
     }
 
+    /**
+     * Wrapper function to call the MPC Host computation. Allows to run the protocol in parallel. This brought no significant
+     * improvements while weakening our security guarantees.
+     * @param pricingFunction The function to evaluate the deal
+     * @param args the command line arguments to setup the framework and the computation
+     * @throws ParseException Exception thrown when arguments could not be processed.
+     */
     public static void RunComputation(ATPManager.Function pricingFunction, String[] args) throws ParseException {
         CmdLineParser.BuilderParams params = CmdLineParser.GetCmdLineParams(args);
         params.setPricingFunction(pricingFunction);
@@ -116,7 +121,7 @@ public class MPCHost implements Application<Integer, ProtocolBuilderNumeric> {
 
 
     /**
-     * The main entry point for infieon. The params are parsed from the cmd line but could also be constructed in a different
+     * The main entry point for the host. The params are parsed from the cmd line but could also be constructed in a different
      * manner. The application is run in the computation runner, enabling for multithreaded execution (only faster, if the set of
      * ATPUnits can be separated)
      * @param args The command line arguments used to initiate the IFXHost object

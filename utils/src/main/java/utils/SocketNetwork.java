@@ -31,6 +31,18 @@ public class SocketNetwork implements Closeable, Network {
     private final Map<Integer, Sender> senders;
     private final Map<Integer, Receiver> receivers;
 
+    /**
+     * Utility class for handling SSL connections. In the earlier versions of FRESCO this functionality was set private,
+     * so here we implemented the features we needed to make SSL work.
+     * @param conf The network configuration given in the Network Config Json file
+     * @param timeout The duration how long we wait for the network to be setup
+     * @throws NoSuchAlgorithmException
+     * @throws UnrecoverableKeyException
+     * @throws CertificateException
+     * @throws KeyStoreException
+     * @throws IOException
+     * @throws KeyManagementException
+     */
     public SocketNetwork(NetworkConfiguration conf, Duration timeout) throws NoSuchAlgorithmException, UnrecoverableKeyException, CertificateException, KeyStoreException, IOException, KeyManagementException {
         SSLContext context = SSLContext.getInstance("TLSv1.2");
         KeyManager[] kms = getKeyStoreManager(conf.getMyId());
@@ -189,6 +201,15 @@ public class SocketNetwork implements Closeable, Network {
     }
 
 
+    /**
+     * Get truststore from the utils recources. At the moment, trust is precompiled into the application
+     * @return TrustManagers for all parties
+     * @throws KeyStoreException
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws CertificateException
+     * @throws UnrecoverableKeyException
+     */
     private TrustManager[] getTrustStoreManager() throws KeyStoreException, IOException,
             NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException {
 
@@ -203,6 +224,17 @@ public class SocketNetwork implements Closeable, Network {
         //logger.info("retrieved TrustStore: " + tmf);
         return tmf.getTrustManagers();
     }
+
+    /**
+     * Key key from utils resources.
+     * @param id The id of the party according to the network config
+     * @return Returns the key manager according to the key of the party
+     * @throws KeyStoreException
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws CertificateException
+     * @throws UnrecoverableKeyException
+     */
 
     private KeyManager[] getKeyStoreManager(int id) throws KeyStoreException, IOException,
             NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException {

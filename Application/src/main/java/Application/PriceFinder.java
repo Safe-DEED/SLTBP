@@ -35,12 +35,22 @@ import java.util.Map;
 import static utils.ATPManager.parseATPUnit;
 import static utils.NetworkManager.getPartyMap;
 
+/**
+ * The Price Finder represents the basis for the SLTBP MPC computation. Both the host and the client application start in main.
+ * The specific pricing function "singleDateFinder" is given to the protocol as a parameter and can be modified in this
+ * class.
+ */
 public class PriceFinder {
 
     private static Logger log = LoggerFactory.getLogger(PriceFinder.class);
 
     private static ATPManager instance;
 
+    /**
+     * As the ATP Manager represents the stateful logic of the computation it is implemented as a singleton.
+     * Here we defined a wrapper storing the instance for convenience.
+     * @return the ATPManager instance of this application
+     */
     private static ATPManager getATPInstance(){
         if(instance == null){
             instance = ATPManager.getInstance(1);
@@ -48,6 +58,10 @@ public class PriceFinder {
         return instance;
     }
 
+    /**
+     * singleDateFinder is an implementation of the ATPManager Function interface. Functions that implement this interface
+     * must evaluate the pricing problem.
+     */
     private static final ATPManager.Function singleDateFinder = protocolBuilderNumeric -> {
         ATPManager man = ATPManager.getInstance(1);
         BigInteger currentVol, currentPrice, minPrice, currentHostPrice;
@@ -75,6 +89,10 @@ public class PriceFinder {
         }
     };
 
+    /**
+     * The pricingFinder is an alternative pricing evaluation. As this protocol is not at its final stage, this
+     * implementation is kept in order to have a backup.
+     */
     private static final ATPManager.Function pricingFinder = protocolBuilderNumeric -> {
         int lOS, cOS;
         BigInteger costDiff;
@@ -102,8 +120,15 @@ public class PriceFinder {
 
     };
 
+    /**
+     * FRESCO is a very context heavy framework. In the early versions of this project, a lot of settings were set as command
+     * line arguments. This function provides us with the default arguments without the need of such command line heavy interactions.
+     * @param netPath The path to the network configuration json file
+     * @param unitsPath The path to the ATPUnits json file. The data for the protocol.
+     * @return Builderparams object, containing the necessary fields to setup the framework and the protocol.
+     */
     public static CmdLineParser.BuilderParams getDefaultParams(String netPath, String unitsPath){
-        CmdLineParser.BuilderParams params = new CmdLineParser.BuilderParams(false, false);
+        CmdLineParser.BuilderParams params = new CmdLineParser.BuilderParams(true, false);
         params.setMaxBitLength(10);
         params.setModBitLength(128);
         params.setPreprocessingStrategy(PreprocessingStrategy.MASCOT);
@@ -174,7 +199,12 @@ public class PriceFinder {
         return getDefaultParams("NetworkConfig.json", "ATPUnits.json");
     }
 
-
+    /**
+     * Entry point of the generalized protocol. Being host or client is defined in the Network Configuration file
+     * @param args command line arguments -> none necessary
+     * @throws ParseException The CustomerBuilder and HostBuilder classes both parse our input. They throw an exception
+     * if they receive unexpected parameters.
+     */
     public static void main(String[] args) throws ParseException  {
         SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> sce;
         SpdzResourcePool pool;

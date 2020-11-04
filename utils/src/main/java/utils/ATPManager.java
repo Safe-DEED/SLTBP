@@ -70,6 +70,11 @@ public class ATPManager {
         this.myID        = id;
     }
 
+    /**
+     * ATPManager is designed as a singleton
+     * @param id id of current party executing the protocol
+     * @return instance of ATPManager
+     */
     public static ATPManager getInstance(int id){
         if(ATPManager.instance == null){
             ATPManager.instance = new ATPManager(id);
@@ -80,6 +85,10 @@ public class ATPManager {
     }
 
 
+    /**
+     * Setter for the priceCalculation function
+     * @param priceCalculation Evaluator of the final protocol step
+     */
     public void setPriceCalculation(Function priceCalculation) {
         this.priceCalculation = priceCalculation;
     }
@@ -251,7 +260,10 @@ public class ATPManager {
 
     }
 
-
+    /**
+     * Opens the summed up volumes and prices to the host.
+     * @param protocolBuilderNumeric the protocol builder used to evaluate the open call
+     */
     public void openPriceAndVolSum(ProtocolBuilderNumeric protocolBuilderNumeric){
         Numeric numeric = protocolBuilderNumeric.numeric();
         VolSum = new ArrayList<>();
@@ -263,6 +275,12 @@ public class ATPManager {
         }
     }
 
+    /**
+     * Auxilliary function to convert an ATPUnit to a JSON object
+     * @param unit Unit to be transformed to json
+     * @param host Defines whether the host or the client makes the call
+     * @return JSONObject representing an ATPUnit such as in ATPUnits.json
+     */
     @SuppressWarnings("unchecked")
     private JSONObject unitToJSON(ATPUnit unit, Boolean host){
         JSONObject object = new JSONObject();
@@ -283,6 +301,11 @@ public class ATPManager {
         return object1;
     }
 
+    /**
+     * Exporting the result to a json file. we select the data which is accepted and export all atpunits of this date
+     * to a json file
+     * @param selectedDeal selected date for atpUnit selection
+     */
     @SuppressWarnings("unchecked")
     public void exportResult(Integer selectedDeal){
         JSONArray unitsList = new JSONArray();
@@ -569,6 +592,9 @@ public class ATPManager {
         return returnString.toString();
     }
 
+    /**
+     * Status enum of evaluation function - signifies result of the protocol
+     */
     public enum OpenStatus{
         NO_EVAL_FUNCTION(0),
         FAIL(-1),
@@ -586,7 +612,7 @@ public class ATPManager {
             }
         }
         public static OpenStatus valueOf(Integer status){
-            return (OpenStatus) map.get(status);
+            return map.get(status);
         }
         public int getValue(){
             return value;
@@ -594,6 +620,9 @@ public class ATPManager {
 
     }
 
+    /**
+     * Interface for the evaluation function of the protocol
+     */
     @FunctionalInterface
     public interface Function{
         ATPManager manager = null;

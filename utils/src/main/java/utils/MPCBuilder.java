@@ -74,7 +74,7 @@ public abstract class MPCBuilder<ObjectT> extends FRESCOBuilder<ObjectT>{
     }
 
     /**
-     * Setting
+     * Setting the volume
      * @param volume the requested amount or the provided amount
      * @param amount the number of atp units provided - if > 1 then volume and price are ignored
      * @return this

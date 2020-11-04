@@ -281,8 +281,8 @@ public abstract class FRESCOBuilder<BuilderT> {
      * @param prgSeedLength the length of the random seed
      * @param drbg the actual random bit generator instance
      * @param network the network used to do the oblivious transfer
-     * @param obliviousTransferProtocol
-     * @return The map of SeedOts
+     * @param obliviousTransferProtocol OT Protocol used by FRESCO - value used as FRESCO initialization
+     * @return The map of OT protocol seeds
      */
     public Map<Integer, RotList> getSeedOts(int myId, List<Integer> partyIds, int prgSeedLength,
                                             Drbg drbg, Network network, CmdLineParser.obliviousTransferProtocol obliviousTransferProtocol) {

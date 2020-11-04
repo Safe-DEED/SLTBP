@@ -1,0 +1,10 @@
+Application/Application.iml
+.idea/
+Application/target/
+Client/Client.iml
+Client/target/
+Host/Host.iml
+Host/target/
+root-mpc.iml
+utils/mpc-utils.iml
+utils/target/

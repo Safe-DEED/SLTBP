@@ -10,6 +10,8 @@ For a detailed description of this crypthograpic protocol and a possible use-cas
 
 
 ## Installation
+This Project is written and tested in Linux. Details on windows installation can be found in the doc directory.
+
 The current stable release of FRESCO is in the central maven repository. When using that, proceed as follows.
 
 - Go to the main directory of the repository: `cd <project-directory>`
@@ -45,7 +47,13 @@ The created jar file needs to be copied to the directory of each server.
  `cd servers/serverX && java -jar demo.jar 2>&1 |tee log.txt` 
 
 Finally the different instances are started. 
+## Demonstrator run
+With our `make run` target we provide a demonstrator run with predefined inputs.
+We can modify the input to the protocol in the `ATPUnits.json` files for each participant individually.
 
+The individual instances print their outputs to the `log.txt` files in their respective directory.
+More importantly, however, the result of the protocol is stored in the `accepted_order.json`. An empty json object represents a failed deal, while the accepted orders are stored in there otherwhise.
+The clients can see their accepted order, while the server sees all accepted orders.
 ## Running over the network
 
 When running this demonstrator over the network, only one instance of `Application/target/demo.jar` has to be started. In the same directory
