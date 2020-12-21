@@ -44,6 +44,7 @@ public class ATPManager {
     public List<DRes<SInt>> clientVolumeSum, clientPriceVSum;
     public List<DRes<BigInteger>> VolSum, PriSum;
     public List<BigInteger> hostVol, hostPrice;
+    public List<Integer> dateList;
     public static ATPManager instance;
     public Function priceCalculation;
     public Integer selectedDeal;
@@ -61,6 +62,7 @@ public class ATPManager {
         this.ATPLeftOver = new ArrayList<>();
         this.ATPVolumes  = new ArrayList<>();
         this.unitList    = new ArrayList<>();
+        this.dateList    = new ArrayList<>();
         this.units       = new HashMap<>();
         this.amountMap   = new HashMap<>();
         this.clientPriceVSum = new ArrayList<>();
@@ -238,6 +240,7 @@ public class ATPManager {
                 throw new RuntimeException("Date iteration failed at " + unit.date + " by unit of id: " + unit.id);
             } if(unit.date > date){
                 date = unit.date;
+                this.dateList.add(date);
                 if(clientPriceVSum != null){
                     this.clientVolumeSum.add(clientVolumeSum);
                     this.clientPriceVSum.add(clientPriceVSum);
@@ -287,10 +290,12 @@ public class ATPManager {
         object.put("id", String.valueOf(unit.id));
         if(host){
             ATPUnit myUnit = units.get(1).stream().filter(u -> u.date.equals(unit.date)).findAny().orElse(unit);
+            object.put("date", String.valueOf(unit.date));
             object.put("amount", String.valueOf(unit.openedAmount.out()));
             object.put("price", String.valueOf(unit.openedPrice.out()));
             object.put("Sales Position", String.valueOf(myUnit.salesPosition));
         } else{
+            object.put("date", String.valueOf(unit.date));
             object.put("amount", String.valueOf(unit.amount));
             object.put("price", String.valueOf(unit.price));
             object.put("Sales Position", String.valueOf(unit.salesPosition));
@@ -600,19 +605,27 @@ public class ATPManager {
         FAIL(-1),
         SUCCESS1(1),
         SUCCESS2(2),
-        SUCCESS3(3);
-        private final Integer value;
+        SUCCESS3(3),
+        SUCCESS;
+        private Integer value;
         private static final Map<Integer, OpenStatus> map = new HashMap<>();
-        private OpenStatus(int val){
+        OpenStatus(int val){
             value = val;
         }
+        OpenStatus(){}
+        private void setValue(Integer status){ value = status;}
         static {
             for (OpenStatus status: OpenStatus.values()){
                 map.put(status.value, status);
             }
         }
         public static OpenStatus valueOf(Integer status){
-            return map.get(status);
+            OpenStatus result = map.get(status);
+            if(result == null){
+                result = SUCCESS;
+                result.setValue(status);
+            }
+            return result;
         }
         public int getValue(){
             return value;

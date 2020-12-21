@@ -80,11 +80,11 @@ public class PriceFinder {
                 System.out.println("price fail at: " + i);
                 continue;
             }
-            found = i + 1;
+            found = i;
             break;
         }
-        man.selectedDeal = found;
-        if(found == -1){
+        man.selectedDeal = man.dateList.get(found);
+        if(found.equals(-1)){
             throw new RuntimeException("");
         }
     };
