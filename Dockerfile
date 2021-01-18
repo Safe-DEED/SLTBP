@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y \
     maven \
     make
 WORKDIR /home/SLTBP
-ADD . /home/SLTBP
+COPY . /home/SLTBP
 RUN mvn clean install
 CMD make run
+CMD /bin/bash
