@@ -19,7 +19,9 @@ import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.ATPManager;
+import utils.BenchmarkHandler;
 import utils.CmdLineParser;
+import utils.NetworkManager;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -206,9 +208,12 @@ public class PriceFinder {
      * if they receive unexpected parameters.
      */
     public static void main(String[] args) throws ParseException  {
+        BenchmarkHandler handler = BenchmarkHandler.getInstance();
+        handler.startTimer(1);
         SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> sce;
         SpdzResourcePool pool;
         Network net;
+        NetworkManager manager;
         CmdLineParser.BuilderParams params1 = getDefaultParams();
         Application<Integer, ProtocolBuilderNumeric> demo;
         log.info("---------- starting setup ----------");
@@ -227,6 +232,7 @@ public class PriceFinder {
             sce = hdemo.mySce;
             pool = hdemo.myPool;
             net = hdemo.myNetwork;
+            manager = hdemo.myNetworkManager;
             demo = hdemo;
         } else{
             MPCCustomer idemo = new MPCCustomerBuilder(params1.logging)
@@ -242,10 +248,13 @@ public class PriceFinder {
             sce = idemo.getMySce();
             pool = idemo.getMyPool();
             net = idemo.getMyNetwork();
+            manager = idemo.getMyNetworkManager();
             demo = idemo;
         }
         log.info("---------- Starting the protocol ----------");
         Integer deal = sce.runApplication(demo, pool, net, Duration.ofMinutes(20));
+        handler.endTimer(1);
+        handler.printNetwork(manager.getReceivedBytes(), params1.id);
         if(deal > 0){
             log.info("the resulting deal is: " + deal);
         } else{
