@@ -1,150 +1,25 @@
-15:48:25.688 [main] INFO Application.PriceFinder - ---------- starting setup ----------
-15:48:25.733 [main] INFO utils.MPCBuilder - These are my parties. [Party(1, localhost:8081), Party(2, localhost:8082), Party(3, localhost:8083), Party(4, localhost:8084), Party(5, localhost:8085), Party(6, localhost:8086), Party(7, localhost:8087), Party(8, localhost:8088), Party(9, localhost:8089), Party(10, localhost:8090), Party(11, localhost:8091), Party(12, localhost:8092), Party(13, localhost:8093)]
-15:48:25.735 [main] INFO utils.NetworkManager - Created NetworkManager
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:1 at: 1 with port: 808113
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:2 at: 2 with port: 808213
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:3 at: 3 with port: 808313
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:4 at: 4 with port: 808413
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:5 at: 5 with port: 808513
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:6 at: 6 with port: 808613
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:7 at: 7 with port: 808713
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:8 at: 8 with port: 808813
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:9 at: 9 with port: 808913
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:10 at: 10 with port: 809013
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:11 at: 11 with port: 809113
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:12 at: 12 with port: 809213
-15:48:25.735 [main] INFO utils.NetworkManager - adding party:13 at: 13 with port: 809313
-15:48:25.735 [main] INFO utils.NetworkManager - config: 13
-15:48:29.367 [main] INFO utils.SocketNetwork - create socket to 2
-15:48:29.371 [main] INFO utils.SocketNetwork - create socket to 3
-15:48:29.374 [main] INFO utils.SocketNetwork - create socket to 4
-15:48:29.375 [main] INFO utils.SocketNetwork - create socket to 5
-15:48:29.375 [main] INFO utils.SocketNetwork - create socket to 6
-15:48:29.376 [main] INFO utils.SocketNetwork - create socket to 7
-15:48:29.378 [main] INFO utils.SocketNetwork - create socket to 8
-15:48:29.378 [main] INFO utils.SocketNetwork - create socket to 9
-15:48:29.381 [main] INFO utils.SocketNetwork - create socket to 10
-15:48:29.382 [main] INFO utils.SocketNetwork - create socket to 11
-15:48:29.383 [main] INFO utils.SocketNetwork - create socket to 12
-15:48:29.384 [main] INFO utils.SocketNetwork - create socket to 13
-15:48:29.713 [main] INFO utils.NetworkManager - created extra network
-15:48:29.714 [main] INFO utils.MPCBuilder - creating ResourcePool
-15:48:29.715 [main] INFO utils.MPCBuilder - Initialize mascot
-15:48:29.727 [main] INFO utils.MPCBuilder - Initialize naor pinkas ot
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:1 at: 1 with port: 808126
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:2 at: 2 with port: 808226
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:3 at: 3 with port: 808326
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:4 at: 4 with port: 808426
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:5 at: 5 with port: 808526
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:6 at: 6 with port: 808626
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:7 at: 7 with port: 808726
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:8 at: 8 with port: 808826
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:9 at: 9 with port: 808926
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:10 at: 10 with port: 809026
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:11 at: 11 with port: 809126
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:12 at: 12 with port: 809226
-15:48:29.727 [main] INFO utils.NetworkManager - adding party:13 at: 13 with port: 809326
-15:48:29.727 [main] INFO utils.NetworkManager - config: 13
-15:48:30.630 [main] INFO utils.SocketNetwork - create socket to 2
-15:48:30.642 [main] INFO utils.SocketNetwork - create socket to 3
-15:48:30.657 [main] INFO utils.SocketNetwork - create socket to 4
-15:48:30.662 [main] INFO utils.SocketNetwork - create socket to 5
-15:48:30.670 [main] INFO utils.SocketNetwork - create socket to 6
-15:48:30.678 [main] INFO utils.SocketNetwork - create socket to 7
-15:48:30.678 [main] INFO utils.SocketNetwork - create socket to 8
-15:48:30.679 [main] INFO utils.SocketNetwork - create socket to 9
-15:48:30.679 [main] INFO utils.SocketNetwork - create socket to 10
-15:48:30.689 [main] INFO utils.SocketNetwork - create socket to 11
-15:48:30.689 [main] INFO utils.SocketNetwork - create socket to 12
-15:48:30.690 [main] INFO utils.SocketNetwork - create socket to 13
-15:48:30.864 [main] INFO utils.NetworkManager - created extra network
-15:48:30.864 [main] INFO utils.MPCBuilder - Creating seedOt for 1
-15:48:30.864 [main] INFO utils.MPCBuilder - Creating seedOt for 2
-15:48:30.889 [main] INFO utils.MPCBuilder - sending ot protocol seeds
-15:48:51.749 [main] INFO utils.MPCBuilder - Creating seedOt for 3
-15:48:51.750 [main] INFO utils.MPCBuilder - sending ot protocol seeds
-15:49:11.811 [main] INFO utils.MPCBuilder - Creating seedOt for 4
-15:49:11.812 [main] INFO utils.MPCBuilder - sending ot protocol seeds
-15:49:28.788 [main] INFO utils.MPCBuilder - Creating seedOt for 5
-15:49:28.789 [main] INFO utils.MPCBuilder - sending ot protocol seeds
-15:49:47.003 [main] INFO utils.MPCBuilder - Creating seedOt for 6
-15:49:47.003 [main] INFO utils.MPCBuilder - sending ot protocol seeds
-15:50:00.581 [main] INFO utils.MPCBuilder - Creating seedOt for 7
-15:50:00.581 [main] INFO utils.MPCBuilder - sending ot protocol seeds
-15:50:13.962 [main] INFO utils.MPCBuilder - Creating seedOt for 8
-15:50:13.962 [main] INFO utils.MPCBuilder - sending ot protocol seeds
-15:50:27.759 [main] INFO utils.MPCBuilder - Creating seedOt for 9
-15:50:27.759 [main] INFO utils.MPCBuilder - sending ot protocol seeds
-15:50:41.831 [main] INFO utils.MPCBuilder - Creating seedOt for 10
-15:50:41.832 [main] INFO utils.MPCBuilder - sending ot protocol seeds
-15:50:56.438 [main] INFO utils.MPCBuilder - Creating seedOt for 11
-15:50:56.439 [main] INFO utils.MPCBuilder - sending ot protocol seeds
-15:51:11.030 [main] INFO utils.MPCBuilder - Creating seedOt for 12
-15:51:11.031 [main] INFO utils.MPCBuilder - sending ot protocol seeds
-15:51:26.591 [main] INFO utils.MPCBuilder - Creating seedOt for 13
-15:51:26.591 [main] INFO utils.MPCBuilder - sending ot protocol seeds
-15:51:42.601 [main] INFO utils.MPCBuilder - Create Random Ssk
-15:51:42.604 [main] INFO utils.MPCBuilder - Create Simple Supplier
-15:51:42.606 [main] INFO utils.MPCBuilder - SpdzResourcePoolImpl
-15:51:42.607 [main] INFO utils.MPCBuilder - returning from ResourcePool creation
-15:51:42.608 [main] INFO utils.NetworkManager - adding party:1 at: 1 with port: 808139
-15:51:42.608 [main] INFO utils.NetworkManager - adding party:2 at: 2 with port: 808239
-15:51:42.608 [main] INFO utils.NetworkManager - adding party:3 at: 3 with port: 808339
-15:51:42.608 [main] INFO utils.NetworkManager - adding party:4 at: 4 with port: 808439
-15:51:42.608 [main] INFO utils.NetworkManager - adding party:5 at: 5 with port: 808539
-15:51:42.608 [main] INFO utils.NetworkManager - adding party:6 at: 6 with port: 808639
-15:51:42.608 [main] INFO utils.NetworkManager - adding party:7 at: 7 with port: 808739
-15:51:42.608 [main] INFO utils.NetworkManager - adding party:8 at: 8 with port: 808839
-15:51:42.608 [main] INFO utils.NetworkManager - adding party:9 at: 9 with port: 808939
-15:51:42.609 [main] INFO utils.NetworkManager - adding party:10 at: 10 with port: 809039
-15:51:42.609 [main] INFO utils.NetworkManager - adding party:11 at: 11 with port: 809139
-15:51:42.609 [main] INFO utils.NetworkManager - adding party:12 at: 12 with port: 809239
-15:51:42.609 [main] INFO utils.NetworkManager - adding party:13 at: 13 with port: 809339
-15:51:42.609 [main] INFO utils.NetworkManager - config: 13
-15:54:31.923 [main] INFO utils.SocketNetwork - create socket to 2
-15:54:31.923 [main] INFO utils.SocketNetwork - create socket to 3
-15:54:31.924 [main] INFO utils.SocketNetwork - create socket to 4
-15:54:31.924 [main] INFO utils.SocketNetwork - create socket to 5
-15:54:31.924 [main] INFO utils.SocketNetwork - create socket to 6
-15:54:31.925 [main] INFO utils.SocketNetwork - create socket to 7
-15:54:31.925 [main] INFO utils.SocketNetwork - create socket to 8
-15:54:31.925 [main] INFO utils.SocketNetwork - create socket to 9
-15:54:31.926 [main] INFO utils.SocketNetwork - create socket to 10
-15:54:31.926 [main] INFO utils.SocketNetwork - create socket to 11
-15:54:31.926 [main] INFO utils.SocketNetwork - create socket to 12
-15:54:31.927 [main] INFO utils.SocketNetwork - create socket to 13
-15:54:31.986 [main] INFO utils.NetworkManager - created extra network
-15:54:31.986 [main] INFO utils.NetworkManager - adding party:1 at: 1 with port: 808152
-15:54:31.986 [main] INFO utils.NetworkManager - adding party:2 at: 2 with port: 808252
-15:54:31.986 [main] INFO utils.NetworkManager - adding party:3 at: 3 with port: 808352
-15:54:31.986 [main] INFO utils.NetworkManager - adding party:4 at: 4 with port: 808452
-15:54:31.986 [main] INFO utils.NetworkManager - adding party:5 at: 5 with port: 808552
-15:54:31.986 [main] INFO utils.NetworkManager - adding party:6 at: 6 with port: 808652
-15:54:31.987 [main] INFO utils.NetworkManager - adding party:7 at: 7 with port: 808752
-15:54:31.987 [main] INFO utils.NetworkManager - adding party:8 at: 8 with port: 808852
-15:54:31.987 [main] INFO utils.NetworkManager - adding party:9 at: 9 with port: 808952
-15:54:31.987 [main] INFO utils.NetworkManager - adding party:10 at: 10 with port: 809052
-15:54:31.987 [main] INFO utils.NetworkManager - adding party:11 at: 11 with port: 809152
-15:54:31.987 [main] INFO utils.NetworkManager - adding party:12 at: 12 with port: 809252
-15:54:31.987 [main] INFO utils.NetworkManager - adding party:13 at: 13 with port: 809352
-15:54:31.987 [main] INFO utils.NetworkManager - config: 13
-15:54:32.979 [main] INFO utils.SocketNetwork - create socket to 2
-15:54:32.980 [main] INFO utils.SocketNetwork - create socket to 3
-15:54:32.990 [main] INFO utils.SocketNetwork - create socket to 4
-15:54:32.990 [main] INFO utils.SocketNetwork - create socket to 5
-15:54:32.990 [main] INFO utils.SocketNetwork - create socket to 6
-15:54:32.990 [main] INFO utils.SocketNetwork - create socket to 7
-15:54:32.990 [main] INFO utils.SocketNetwork - create socket to 8
-15:54:32.991 [main] INFO utils.SocketNetwork - create socket to 9
-15:54:32.992 [main] INFO utils.SocketNetwork - create socket to 10
-15:54:32.992 [main] INFO utils.SocketNetwork - create socket to 11
-15:54:32.992 [main] INFO utils.SocketNetwork - create socket to 12
-15:54:32.992 [main] INFO utils.SocketNetwork - create socket to 13
-15:54:33.181 [main] INFO utils.NetworkManager - created extra network
-15:54:33.345 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
-15:54:33.350 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Host.MPCHost@2d45bfc3 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@2382441b
-15:54:33.374 [SCE-1] INFO Host.MPCHost - sharing values over the network
-15:54:33.409 [SCE-1] INFO Host.MPCHost - 
+16:05:51.746 [main] INFO Application.PriceFinder - ---------- starting setup ----------
+16:05:51.754 [main] INFO utils.MPCBuilder - These are my parties. [Party(1, localhost:8081), Party(2, localhost:8082), Party(3, localhost:8083)]
+16:05:51.755 [main] INFO utils.NetworkManager - Created NetworkManager
+16:05:51.755 [main] INFO utils.NetworkManager - config: 3
+16:05:52.500 [main] INFO utils.NetworkManager - created extra network
+16:05:52.501 [main] INFO utils.MPCBuilder - creating ResourcePool
+16:05:52.502 [main] INFO utils.MPCBuilder - Initialize mascot
+16:05:52.513 [main] INFO utils.MPCBuilder - Initialize naor pinkas ot
+16:05:52.513 [main] INFO utils.NetworkManager - config: 3
+16:05:52.816 [main] INFO utils.NetworkManager - created extra network
+16:06:32.844 [main] INFO utils.MPCBuilder - Create Random Ssk
+16:06:32.847 [main] INFO utils.MPCBuilder - Create Simple Supplier
+16:06:32.848 [main] INFO utils.MPCBuilder - SpdzResourcePoolImpl
+16:06:32.849 [main] INFO utils.MPCBuilder - returning from ResourcePool creation
+16:06:32.850 [main] INFO utils.NetworkManager - config: 3
+16:06:52.985 [main] INFO utils.NetworkManager - created extra network
+16:06:52.985 [main] INFO utils.NetworkManager - config: 3
+16:06:53.726 [main] INFO utils.NetworkManager - created extra network
+16:06:53.735 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
+16:06:53.738 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Host.MPCHost@22491321 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@2c8ef918
+16:06:53.753 [SCE-1] INFO Host.MPCHost - sharing values over the network
+16:06:53.758 [SCE-1] INFO Host.MPCHost - 
 The units of ID: 1
 
 This unit of: 1 contains: 333, with date: 1, and price: 33
@@ -166,119 +41,24 @@ This unit of: 3 contains: null, with date: 1, and price: null
 This unit of: 3 contains: null, with date: 100, and price: null
 
 This unit of: 3 contains: null, with date: 99, and price: null
-The units of ID: 4
 
-This unit of: 4 contains: null, with date: 1, and price: null
+16:06:53.764 [SCE-1] INFO utils.NetworkManager - config: 3
+16:06:53.995 [SCE-1] INFO utils.NetworkManager - created extra network
+16:06:54.605 [SCE-1] INFO Host.MPCHost - sum Individual date
+16:06:54.606 [SCE-1] INFO Host.MPCHost - openPrice and Vol
+16:06:54.675 [SCE-1] INFO Host.MPCHost - evaluate protocol
+price fail at: 0
+16:06:54.676 [SCE-1] INFO utils.ATPManager - The deal succeeded!
+16:06:54.678 [SCE-1] INFO Host.MPCHost - The result was 99
+16:06:54.704 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 34 native protocols in 34 batches.
+16:06:54.704 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Host.MPCHost@22491321 finished evaluation in 954 ms.
+16:06:54.706 [SCE-1] INFO utils.NetworkManager - Closing the network manager!
+16:06:54.723 [main] INFO utils.BenchmarkHandler - 
 
-This unit of: 4 contains: null, with date: 100, and price: null
+<b3m4>{"timer":"1","time":{"sec":"62.989","min":"1","ms":62989,"h":"0"}}</b3m4>
 
-This unit of: 4 contains: null, with date: 99, and price: null
-The units of ID: 5
+16:06:54.723 [main] INFO utils.BenchmarkHandler - 
 
-This unit of: 5 contains: null, with date: 1, and price: null
+<b3m4>{"party":"1","netdata":{"bytes":"737567","kb":"720"}}</b3m4>
 
-This unit of: 5 contains: null, with date: 100, and price: null
-
-This unit of: 5 contains: null, with date: 99, and price: null
-The units of ID: 6
-
-This unit of: 6 contains: null, with date: 1, and price: null
-
-This unit of: 6 contains: null, with date: 100, and price: null
-
-This unit of: 6 contains: null, with date: 99, and price: null
-The units of ID: 7
-
-This unit of: 7 contains: null, with date: 1, and price: null
-
-This unit of: 7 contains: null, with date: 100, and price: null
-
-This unit of: 7 contains: null, with date: 99, and price: null
-The units of ID: 8
-
-This unit of: 8 contains: null, with date: 1, and price: null
-
-This unit of: 8 contains: null, with date: 100, and price: null
-
-This unit of: 8 contains: null, with date: 99, and price: null
-The units of ID: 9
-
-This unit of: 9 contains: null, with date: 1, and price: null
-
-This unit of: 9 contains: null, with date: 100, and price: null
-
-This unit of: 9 contains: null, with date: 99, and price: null
-The units of ID: 10
-
-This unit of: 10 contains: null, with date: 1, and price: null
-
-This unit of: 10 contains: null, with date: 100, and price: null
-
-This unit of: 10 contains: null, with date: 99, and price: null
-The units of ID: 11
-
-This unit of: 11 contains: null, with date: 1, and price: null
-
-This unit of: 11 contains: null, with date: 100, and price: null
-
-This unit of: 11 contains: null, with date: 99, and price: null
-The units of ID: 12
-
-This unit of: 12 contains: null, with date: 1, and price: null
-
-This unit of: 12 contains: null, with date: 100, and price: null
-
-This unit of: 12 contains: null, with date: 99, and price: null
-The units of ID: 13
-
-This unit of: 13 contains: null, with date: 1, and price: null
-
-This unit of: 13 contains: null, with date: 100, and price: null
-
-This unit of: 13 contains: null, with date: 99, and price: null
-
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:1 at: 1 with port: 808165
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:2 at: 2 with port: 808265
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:3 at: 3 with port: 808365
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:4 at: 4 with port: 808465
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:5 at: 5 with port: 808565
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:6 at: 6 with port: 808665
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:7 at: 7 with port: 808765
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:8 at: 8 with port: 808865
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:9 at: 9 with port: 808965
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:10 at: 10 with port: 809065
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:11 at: 11 with port: 809165
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:12 at: 12 with port: 809265
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - adding party:13 at: 13 with port: 809365
-15:54:33.416 [SCE-1] INFO utils.NetworkManager - config: 13
-15:54:34.541 [SCE-1] INFO utils.SocketNetwork - create socket to 2
-15:54:34.543 [SCE-1] INFO utils.SocketNetwork - create socket to 3
-15:54:34.544 [SCE-1] INFO utils.SocketNetwork - create socket to 4
-15:54:34.545 [SCE-1] INFO utils.SocketNetwork - create socket to 5
-15:54:34.546 [SCE-1] INFO utils.SocketNetwork - create socket to 6
-15:54:34.549 [SCE-1] INFO utils.SocketNetwork - create socket to 7
-15:54:34.550 [SCE-1] INFO utils.SocketNetwork - create socket to 8
-15:54:34.551 [SCE-1] INFO utils.SocketNetwork - create socket to 9
-15:54:34.552 [SCE-1] INFO utils.SocketNetwork - create socket to 10
-15:54:34.553 [SCE-1] INFO utils.SocketNetwork - create socket to 11
-15:54:34.554 [SCE-1] INFO utils.SocketNetwork - create socket to 12
-15:54:34.554 [SCE-1] INFO utils.SocketNetwork - create socket to 13
-15:54:34.596 [SCE-1] INFO utils.NetworkManager - created extra network
-15:54:41.389 [SCE-1] INFO Host.MPCHost - sum Individual date
-15:54:41.392 [SCE-1] INFO Host.MPCHost - openPrice and Vol
-15:54:41.641 [SCE-1] INFO Host.MPCHost - evaluate protocol
-volume fail at: 0
-15:54:41.641 [SCE-1] INFO utils.ATPManager - The deal succeeded!
-15:54:41.643 [SCE-1] INFO Host.MPCHost - The result was 99
-15:54:42.412 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 174 native protocols in 174 batches.
-15:54:42.412 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Host.MPCHost@2d45bfc3 finished evaluation in 9042 ms.
-15:54:42.423 [SCE-1] INFO utils.NetworkManager - Closing the network manager!
-15:54:42.556 [main] INFO utils.BenchmarkHandler - 
-
-<b3m4>{"timer":"1","time":{"seconds":"376.978","ms":376978}}</b3m4>
-
-15:54:42.557 [main] INFO utils.BenchmarkHandler - 
-
-<b3m4>{"party":"1","netdata":{"mb":"4","bytes":"4517239","kb":"4411"}}</b3m4>
-
-15:54:42.558 [main] INFO Application.PriceFinder - the resulting deal is: 99
+16:06:54.723 [main] INFO Application.PriceFinder - the resulting deal is: 99
