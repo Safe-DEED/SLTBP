@@ -52,15 +52,17 @@ public class BenchmarkHandler {
         JSONObject received = new JSONObject();
         received.put("bytes", String.valueOf(receivedBytes));
         if(kb > 0){
-            received.put("kb", String.valueOf(kb));
+            received.put("KB", String.valueOf(kb));
         } if(mb > 0){
             received.put("mb", String.valueOf(mb));
         } if(gb > 0){
             received.put("gb", String.valueOf(gb));
         }
         JSONObject print = new JSONObject();
-        print.put("party", String.valueOf(id));
-        print.put("netdata", received);
+        print.put("player", String.valueOf(id));
+        JSONObject recv = new JSONObject();
+        recv.put("received", received);
+        print.put("netdata", recv);
         log.info("\n\n<b3m4>" + print.toJSONString() + "</b3m4>\n");
     }
 
