@@ -59,7 +59,7 @@ public class BenchmarkHandler {
             received.put("gb", String.valueOf(gb));
         }
         JSONObject print = new JSONObject();
-        print.put("player", String.valueOf(id));
+        print.put("player", String.valueOf(id - 1));
         JSONObject recv = new JSONObject();
         recv.put("received", received);
         print.put("netdata", recv);
