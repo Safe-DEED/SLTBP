@@ -3,23 +3,23 @@
     "unit": {
       "date":"1",
       "amount":"333",
-      "price":"33",
+      "price":"50",
       "Sales Position":"1"
     }
   },
   {
     "unit": {
-      "date":"100",
-      "amount":"222",
-      "price":"22",
+      "date":"2",
+      "amount":"1540",
+      "price":"50",
       "Sales Position":"1"
     }
   },
   {
     "unit": {
-      "date":"99",
-      "amount":"1110",
-      "price":"11",
+      "date":"3",
+      "amount":"4950",
+      "price":"25",
       "Sales Position":"1"
     }
   }

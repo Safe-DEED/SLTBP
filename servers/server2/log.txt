@@ -1,78 +1,78 @@
-16:51:00.924 [main] INFO Application.PriceFinder - ---------- starting setup ----------
-16:51:00.933 [main] INFO utils.MPCBuilder - These are my parties. [Party(1, localhost:8081), Party(2, localhost:8082), Party(3, localhost:8083)]
-16:51:00.933 [main] INFO utils.NetworkManager - Created NetworkManager
-16:51:00.933 [main] INFO utils.NetworkManager - config: 3
-16:51:01.720 [main] INFO utils.NetworkManager - created extra network
-16:51:01.721 [main] INFO utils.MPCBuilder - creating ResourcePool
-16:51:01.722 [main] INFO utils.MPCBuilder - Initialize mascot
-16:51:01.735 [main] INFO utils.MPCBuilder - Initialize naor pinkas ot
-16:51:01.735 [main] INFO utils.NetworkManager - config: 3
-16:51:02.592 [main] INFO utils.NetworkManager - created extra network
-16:52:07.737 [main] INFO utils.MPCBuilder - Create Random Ssk
-16:52:07.742 [main] INFO utils.MPCBuilder - Create Simple Supplier
-16:52:07.745 [main] INFO utils.MPCBuilder - SpdzResourcePoolImpl
-16:52:07.749 [main] INFO utils.MPCBuilder - returning from ResourcePool creation
-16:52:07.751 [main] INFO utils.NetworkManager - config: 3
-16:52:08.057 [main] INFO utils.NetworkManager - created extra network
-16:52:08.057 [main] INFO utils.NetworkManager - config: 3
-16:52:08.803 [main] INFO utils.NetworkManager - created extra network
-16:52:08.813 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
-16:52:08.816 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Client.MPCCustomer@6c3a6d71 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@62fd8e86
-16:52:08.854 [SCE-1] INFO Client.MPCCustomer - unit list: [
+11:02:05.253 [main] INFO Application.PriceFinder - ---------- starting setup ----------
+11:02:05.261 [main] INFO utils.MPCBuilder - These are my parties. [Party(1, localhost:8081), Party(2, localhost:8082), Party(3, localhost:8083)]
+11:02:05.262 [main] INFO utils.NetworkManager - Created NetworkManager
+11:02:05.262 [main] INFO utils.NetworkManager - config: 3
+11:02:06.383 [main] INFO utils.NetworkManager - created extra network
+11:02:06.385 [main] INFO utils.MPCBuilder - creating ResourcePool
+11:02:06.386 [main] INFO utils.MPCBuilder - Initialize mascot
+11:02:06.395 [main] INFO utils.MPCBuilder - Initialize naor pinkas ot
+11:02:06.395 [main] INFO utils.NetworkManager - config: 3
+11:02:07.212 [main] INFO utils.NetworkManager - created extra network
+11:02:57.701 [main] INFO utils.MPCBuilder - Create Random Ssk
+11:02:57.706 [main] INFO utils.MPCBuilder - Create Simple Supplier
+11:02:57.708 [main] INFO utils.MPCBuilder - SpdzResourcePoolImpl
+11:02:57.712 [main] INFO utils.MPCBuilder - returning from ResourcePool creation
+11:02:57.715 [main] INFO utils.NetworkManager - config: 3
+11:02:58.097 [main] INFO utils.NetworkManager - created extra network
+11:02:58.098 [main] INFO utils.NetworkManager - config: 3
+11:02:58.864 [main] INFO utils.NetworkManager - created extra network
+11:02:58.879 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
+11:02:58.884 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Client.MPCCustomer@1d25b355 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@13e25e81
+11:02:58.915 [SCE-1] INFO Client.MPCCustomer - unit list: [
 This unit of: 1 contains: null, with date: 1, and price: null
 , 
-This unit of: 2 contains: 50, with date: 1, and price: 500
+This unit of: 2 contains: 180, with date: 1, and price: 11700
 , 
 This unit of: 3 contains: null, with date: 1, and price: null
 , 
-This unit of: 1 contains: null, with date: 99, and price: null
+This unit of: 1 contains: null, with date: 2, and price: null
 , 
-This unit of: 2 contains: 20, with date: 99, and price: 2200
+This unit of: 2 contains: 10, with date: 2, and price: 400
 , 
-This unit of: 3 contains: null, with date: 99, and price: null
+This unit of: 3 contains: null, with date: 2, and price: null
 , 
-This unit of: 1 contains: null, with date: 100, and price: null
+This unit of: 1 contains: null, with date: 3, and price: null
 , 
-This unit of: 2 contains: 50, with date: 100, and price: 1100
+This unit of: 2 contains: 20, with date: 3, and price: 600
 , 
-This unit of: 3 contains: null, with date: 100, and price: null
+This unit of: 3 contains: null, with date: 3, and price: null
 ]
-16:52:08.855 [SCE-1] INFO Client.MPCCustomer - parties: [1=Party(1, localhost:8081), 2=Party(2, localhost:8082), 3=Party(3, localhost:8083)]
-16:52:08.855 [SCE-1] INFO Client.MPCCustomer - sharing the values over the network
-16:52:08.864 [SCE-1] INFO utils.NetworkManager - config: 3
-16:52:09.618 [SCE-1] INFO utils.NetworkManager - created extra network
-16:52:10.348 [SCE-1] INFO Client.MPCCustomer - beginning arithmetic operations
-16:52:10.350 [SCE-1] INFO Client.MPCCustomer - beginning comparison operations
-16:52:10.413 [SCE-1] INFO Client.MPCCustomer - finished online computation.
-16:52:10.416 [SCE-1] INFO Client.MPCCustomer - The result was 99
+11:02:58.915 [SCE-1] INFO Client.MPCCustomer - parties: [1=Party(1, localhost:8081), 2=Party(2, localhost:8082), 3=Party(3, localhost:8083)]
+11:02:58.915 [SCE-1] INFO Client.MPCCustomer - sharing the values over the network
+11:02:58.923 [SCE-1] INFO utils.NetworkManager - config: 3
+11:02:59.660 [SCE-1] INFO utils.NetworkManager - created extra network
+11:03:00.378 [SCE-1] INFO Client.MPCCustomer - beginning arithmetic operations
+11:03:00.380 [SCE-1] INFO Client.MPCCustomer - beginning comparison operations
+11:03:00.431 [SCE-1] INFO Client.MPCCustomer - finished online computation.
+11:03:00.433 [SCE-1] INFO Client.MPCCustomer - The result was 3
 [
 This unit of: 1 contains: null, with date: 1, and price: null
 , 
-This unit of: 2 contains: 50, with date: 1, and price: 500
+This unit of: 2 contains: 180, with date: 1, and price: 11700
 , 
 This unit of: 3 contains: null, with date: 1, and price: null
 , 
-This unit of: 1 contains: null, with date: 99, and price: null
+This unit of: 1 contains: null, with date: 2, and price: null
 , 
-This unit of: 2 contains: null, with date: 99, and price: null
+This unit of: 2 contains: 10, with date: 2, and price: 400
 , 
-This unit of: 3 contains: null, with date: 99, and price: null
+This unit of: 3 contains: null, with date: 2, and price: null
 , 
-This unit of: 1 contains: null, with date: 100, and price: null
+This unit of: 1 contains: null, with date: 3, and price: null
 , 
-This unit of: 2 contains: 50, with date: 100, and price: 1100
+This unit of: 2 contains: null, with date: 3, and price: null
 , 
-This unit of: 3 contains: null, with date: 100, and price: null
+This unit of: 3 contains: null, with date: 3, and price: null
 ]
-16:52:10.431 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 34 native protocols in 34 batches.
-16:52:10.431 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Client.MPCCustomer@6c3a6d71 finished evaluation in 1595 ms.
-16:52:10.433 [SCE-1] INFO utils.NetworkManager - Closing the network manager!
-16:52:10.451 [main] INFO utils.BenchmarkHandler - 
+11:03:00.452 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 34 native protocols in 34 batches.
+11:03:00.452 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Client.MPCCustomer@1d25b355 finished evaluation in 1546 ms.
+11:03:00.454 [SCE-1] INFO utils.NetworkManager - Closing the network manager!
+11:03:00.467 [main] INFO utils.BenchmarkHandler - 
 
-<b3m4>{"timer":"1","time":{"sec":"69.54","min":"1","ms":69540,"h":"0"}}</b3m4>
+<b3m4>{"timer":"1","time":{"sec":"55.225","min":"0","ms":55225,"h":"0"}}</b3m4>
 
-16:52:10.452 [main] INFO utils.BenchmarkHandler - 
+11:03:00.468 [main] INFO utils.BenchmarkHandler - 
 
 <b3m4>{"player":"1","netdata":{"received":{"bytes":"742169","KB":"724"}}}</b3m4>
 
-16:52:10.452 [main] INFO Application.PriceFinder - the resulting deal is: 99
+11:03:00.469 [main] INFO Application.PriceFinder - the resulting deal is: 3
