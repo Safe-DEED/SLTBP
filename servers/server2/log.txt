@@ -1,24 +1,24 @@
-11:02:05.253 [main] INFO Application.PriceFinder - ---------- starting setup ----------
-11:02:05.261 [main] INFO utils.MPCBuilder - These are my parties. [Party(1, localhost:8081), Party(2, localhost:8082), Party(3, localhost:8083)]
-11:02:05.262 [main] INFO utils.NetworkManager - Created NetworkManager
-11:02:05.262 [main] INFO utils.NetworkManager - config: 3
-11:02:06.383 [main] INFO utils.NetworkManager - created extra network
-11:02:06.385 [main] INFO utils.MPCBuilder - creating ResourcePool
-11:02:06.386 [main] INFO utils.MPCBuilder - Initialize mascot
-11:02:06.395 [main] INFO utils.MPCBuilder - Initialize naor pinkas ot
-11:02:06.395 [main] INFO utils.NetworkManager - config: 3
-11:02:07.212 [main] INFO utils.NetworkManager - created extra network
-11:02:57.701 [main] INFO utils.MPCBuilder - Create Random Ssk
-11:02:57.706 [main] INFO utils.MPCBuilder - Create Simple Supplier
-11:02:57.708 [main] INFO utils.MPCBuilder - SpdzResourcePoolImpl
-11:02:57.712 [main] INFO utils.MPCBuilder - returning from ResourcePool creation
-11:02:57.715 [main] INFO utils.NetworkManager - config: 3
-11:02:58.097 [main] INFO utils.NetworkManager - created extra network
-11:02:58.098 [main] INFO utils.NetworkManager - config: 3
-11:02:58.864 [main] INFO utils.NetworkManager - created extra network
-11:02:58.879 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
-11:02:58.884 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Client.MPCCustomer@1d25b355 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@13e25e81
-11:02:58.915 [SCE-1] INFO Client.MPCCustomer - unit list: [
+12:26:02.411 [main] INFO Application.PriceFinder - ---------- starting setup ----------
+12:26:02.419 [main] INFO utils.MPCBuilder - These are my parties. [Party(1, localhost:8081), Party(2, localhost:8082), Party(3, localhost:8083)]
+12:26:02.420 [main] INFO utils.NetworkManager - Created NetworkManager
+12:26:02.420 [main] INFO utils.NetworkManager - config: 3
+12:26:03.207 [main] INFO utils.NetworkManager - created extra network
+12:26:03.208 [main] INFO utils.MPCBuilder - creating ResourcePool
+12:26:03.209 [main] INFO utils.MPCBuilder - Initialize mascot
+12:26:03.222 [main] INFO utils.MPCBuilder - Initialize naor pinkas ot
+12:26:03.222 [main] INFO utils.NetworkManager - config: 3
+12:26:04.054 [main] INFO utils.NetworkManager - created extra network
+12:26:56.318 [main] INFO utils.MPCBuilder - Create Random Ssk
+12:26:56.322 [main] INFO utils.MPCBuilder - Create Simple Supplier
+12:26:56.325 [main] INFO utils.MPCBuilder - SpdzResourcePoolImpl
+12:26:56.329 [main] INFO utils.MPCBuilder - returning from ResourcePool creation
+12:26:56.331 [main] INFO utils.NetworkManager - config: 3
+12:26:56.786 [main] INFO utils.NetworkManager - created extra network
+12:26:56.787 [main] INFO utils.NetworkManager - config: 3
+12:26:57.567 [main] INFO utils.NetworkManager - created extra network
+12:26:57.582 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
+12:26:57.586 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Client.MPCCustomer@1d653213 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@13a2dfcf
+12:26:57.611 [SCE-1] INFO Client.MPCCustomer - unit list: [
 This unit of: 1 contains: null, with date: 1, and price: null
 , 
 This unit of: 2 contains: 180, with date: 1, and price: 11700
@@ -37,14 +37,14 @@ This unit of: 2 contains: 20, with date: 3, and price: 600
 , 
 This unit of: 3 contains: null, with date: 3, and price: null
 ]
-11:02:58.915 [SCE-1] INFO Client.MPCCustomer - parties: [1=Party(1, localhost:8081), 2=Party(2, localhost:8082), 3=Party(3, localhost:8083)]
-11:02:58.915 [SCE-1] INFO Client.MPCCustomer - sharing the values over the network
-11:02:58.923 [SCE-1] INFO utils.NetworkManager - config: 3
-11:02:59.660 [SCE-1] INFO utils.NetworkManager - created extra network
-11:03:00.378 [SCE-1] INFO Client.MPCCustomer - beginning arithmetic operations
-11:03:00.380 [SCE-1] INFO Client.MPCCustomer - beginning comparison operations
-11:03:00.431 [SCE-1] INFO Client.MPCCustomer - finished online computation.
-11:03:00.433 [SCE-1] INFO Client.MPCCustomer - The result was 3
+12:26:57.611 [SCE-1] INFO Client.MPCCustomer - parties: [1=Party(1, localhost:8081), 2=Party(2, localhost:8082), 3=Party(3, localhost:8083)]
+12:26:57.611 [SCE-1] INFO Client.MPCCustomer - sharing the values over the network
+12:26:57.616 [SCE-1] INFO utils.NetworkManager - config: 3
+12:26:58.369 [SCE-1] INFO utils.NetworkManager - created extra network
+12:26:59.060 [SCE-1] INFO Client.MPCCustomer - beginning arithmetic operations
+12:26:59.062 [SCE-1] INFO Client.MPCCustomer - beginning comparison operations
+12:26:59.129 [SCE-1] INFO Client.MPCCustomer - finished online computation.
+12:26:59.133 [SCE-1] INFO Client.MPCCustomer - The result was 3
 [
 This unit of: 1 contains: null, with date: 1, and price: null
 , 
@@ -64,15 +64,15 @@ This unit of: 2 contains: null, with date: 3, and price: null
 , 
 This unit of: 3 contains: null, with date: 3, and price: null
 ]
-11:03:00.452 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 34 native protocols in 34 batches.
-11:03:00.452 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Client.MPCCustomer@1d25b355 finished evaluation in 1546 ms.
-11:03:00.454 [SCE-1] INFO utils.NetworkManager - Closing the network manager!
-11:03:00.467 [main] INFO utils.BenchmarkHandler - 
+12:26:59.148 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 34 native protocols in 34 batches.
+12:26:59.148 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Client.MPCCustomer@1d653213 finished evaluation in 1545 ms.
+12:26:59.150 [SCE-1] INFO utils.NetworkManager - Closing the network manager!
+12:26:59.162 [main] INFO utils.BenchmarkHandler - 
 
-<b3m4>{"timer":"1","time":{"sec":"55.225","min":"0","ms":55225,"h":"0"}}</b3m4>
+<b3m4>{"timer":"1","time":{"sec":"56.767","min":"0","ms":56767,"h":"0"}}</b3m4>
 
-11:03:00.468 [main] INFO utils.BenchmarkHandler - 
+12:26:59.163 [main] INFO utils.BenchmarkHandler - 
 
 <b3m4>{"player":"1","netdata":{"received":{"bytes":"742169","KB":"724"}}}</b3m4>
 
-11:03:00.469 [main] INFO Application.PriceFinder - the resulting deal is: 3
+12:26:59.163 [main] INFO Application.PriceFinder - the resulting deal is: 3
