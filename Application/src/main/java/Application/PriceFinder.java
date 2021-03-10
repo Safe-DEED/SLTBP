@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static utils.ATPManager.parseATPUnit;
 import static utils.NetworkManager.getPartyMap;
 
 /**
@@ -199,17 +198,11 @@ public class PriceFinder {
         return getDefaultParams("NetworkConfig.json", "ATPUnits.json");
     }
 
-    /**
-     * Entry point of the generalized protocol. Being host or client is defined in the Network Configuration file
-     * @param args command line arguments -> none necessary
-     * @throws ParseException The CustomerBuilder and HostBuilder classes both parse our input. They throw an exception
-     * if they receive unexpected parameters.
-     */
-    public static void main(String[] args) throws ParseException  {
+
+    public static void volumePriceAggregator(CmdLineParser.BuilderParams params1) throws ParseException{
         SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> sce;
         SpdzResourcePool pool;
         Network net;
-        CmdLineParser.BuilderParams params1 = getDefaultParams();
         Application<Integer, ProtocolBuilderNumeric> demo;
         log.info("---------- starting setup ----------");
         if(params1.host){
@@ -251,8 +244,39 @@ public class PriceFinder {
         } else{
             log.info("No deal can be made");
         }
+    }
 
 
+    public static void secureLeadTimeBasedPriceFinder(CmdLineParser.BuilderParams params) throws ParseException {
+        log.info("---------- starting setup ----------");
+
+        SecretDateHost secretDateHost = new DateHostBuilder(params.logging)
+                .withProtocol(SecretDateHost.EvaluationProtocol.LINEAR)
+                .withVolume(params.volume, params.amount)
+                .withNetwork(getPartyMap(params.partyList, params.myParty), params.myParty)
+                .withResourcePool(params.preprocessingStrategy, params.modBitLength, params.otProtocol)
+                .withDate(params.date)
+                .withPrice(params.price)
+                .withUnits(params.units)
+                .withBatchEvalStrat(params.evaluationStrategy)
+                .withSpdzLength(params.maxBitLength)
+                .build();
+
+        log.info("---------- Starting the protocol ----------");
+        secretDateHost.runProtocol();
+    }
+
+    /**
+     * Entry point of the generalized protocol. Being host or client is defined in the Network Configuration file
+     * @param args command line arguments -> none necessary
+     * @throws ParseException The CustomerBuilder and HostBuilder classes both parse our input. They throw an exception
+     * if they receive unexpected parameters.
+     */
+    public static void main(String[] args) throws ParseException  {
+        CmdLineParser.BuilderParams params1 = getDefaultParams();
+
+        //volumePriceAggregator(params1);
+        secureLeadTimeBasedPriceFinder(params1);
 
     }
 

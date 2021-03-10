@@ -1,19 +1,19 @@
 [
   {
     "id": "1",
-    "ip": "192.168.0.227",
+    "ip": "localhost",
     "port": "8081",
     "myID": false
   },
   {
     "id": "2",
-    "ip": "192.168.0.151",
+    "ip": "localhost",
     "port": "8082",
     "myID": false
   },
   {
     "id": "3",
-    "ip": "192.168.0.227",
+    "ip": "localhost",
     "port": "8083",
     "myID": true
   }

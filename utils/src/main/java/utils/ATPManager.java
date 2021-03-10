@@ -486,7 +486,7 @@ public class ATPManager {
      */
     public static class ATPUnit implements Comparable<ATPUnit>{
         final int id;
-        BigInteger amount;
+        public BigInteger amount;
         DRes<SInt> closedAmount;
         DRes<BigInteger> openedAmount;
         Integer date;
