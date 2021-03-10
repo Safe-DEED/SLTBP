@@ -288,6 +288,7 @@ public abstract class FRESCOBuilder<BuilderT> {
                                             Drbg drbg, Network network, CmdLineParser.obliviousTransferProtocol obliviousTransferProtocol) {
         Map<Integer, RotList> seedOts = new HashMap<>();
         for (Integer otherId : partyIds) {
+            //log.info("Creating seedOt for " + otherId);
             if (myId != otherId) {
                 DHParameterSpec staticSpec = DhParameters.getStaticDhParams();
                 Ot ot;
@@ -299,6 +300,7 @@ public abstract class FRESCOBuilder<BuilderT> {
 
                 RotList currentSeedOts = new RotList(drbg, prgSeedLength);
                 // TODO: improve the communication performance
+                //log.info("sending ot protocol seeds");
                 if (myId < otherId) {
                     currentSeedOts.send(ot);
                     currentSeedOts.receive(ot);

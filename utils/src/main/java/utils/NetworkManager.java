@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class NetworkManager implements Closeable {
 
     private static Logger log = LoggerFactory.getLogger(NetworkManager.class);
-    private final AtomicInteger PORT_OFFSET_COUNTER = new AtomicInteger(0);
+    private final AtomicInteger PORT_OFFSET_COUNTER = new AtomicInteger(50000);
     private final int PORT_INCREMENT = 20;
     private final Map<Integer, Network> openedNetworks;
     private final Map<Integer, Party> partyMap;
@@ -59,7 +59,7 @@ public class NetworkManager implements Closeable {
         for(Map.Entry<Integer, Party> entry : partyMap.entrySet()){
             int i = entry.getKey();
             Party p = configuration.getParty(i);
-            //log.info("adding party:" + p.getPartyId() + " at: " + i + " with port: " + p.getPort());
+            //log.info("adding party:" + p.getPartyId() + " at: " + i + " with port: " + (p.getPort() + portOffset));
             parties.put(i, new Party(i, p.getHostname(), p.getPort() + portOffset));
         }
         return new NetworkConfigurationImpl(configuration.getMyId(), parties);
@@ -150,6 +150,11 @@ public class NetworkManager implements Closeable {
         values.put(NetworkLoggingDecorator.NETWORK_TOTAL_BYTES, totalNoBytes);
         values.put(NetworkLoggingDecorator.NETWORK_TOTAL_BATCHES, noNetworkBatches);
         return values;
+    }
+
+    public long getReceivedBytes(){
+        Map<String, Long> values = getLoggedValues();
+        return values.get(NetworkLoggingDecorator.NETWORK_TOTAL_BYTES);
     }
 
     /**

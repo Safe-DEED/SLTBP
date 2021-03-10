@@ -58,6 +58,7 @@ public class SocketNetwork implements Closeable, Network {
         Objects.requireNonNull(socketMap);
 
         for (Map.Entry<Integer, Socket> entry : socketMap.entrySet()) {
+            //logger.info("create socket to " + entry.getKey());
             int i = entry.getKey();
             Socket s = entry.getValue();
             if (i == conf.getMyId()) {

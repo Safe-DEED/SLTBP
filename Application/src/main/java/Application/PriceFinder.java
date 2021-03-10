@@ -19,7 +19,9 @@ import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.ATPManager;
+import utils.BenchmarkHandler;
 import utils.CmdLineParser;
+import utils.NetworkManager;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -32,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static utils.ATPManager.parseATPUnit;
 import static utils.NetworkManager.getPartyMap;
 
 /**
@@ -200,9 +203,18 @@ public class PriceFinder {
 
 
     public static void volumePriceAggregator(CmdLineParser.BuilderParams params1) throws ParseException{
+    /**
+     * Entry point of the generalized protocol. Being host or client is defined in the Network Configuration file
+     * @param args command line arguments -> none necessary
+     * @throws ParseException The CustomerBuilder and HostBuilder classes both parse our input. They throw an exception
+     * if they receive unexpected parameters.
+     */
+        BenchmarkHandler handler = BenchmarkHandler.getInstance();
+        handler.startTimer(1);
         SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> sce;
         SpdzResourcePool pool;
         Network net;
+        NetworkManager manager;
         Application<Integer, ProtocolBuilderNumeric> demo;
         log.info("---------- starting setup ----------");
         if(params1.host){
@@ -220,6 +232,7 @@ public class PriceFinder {
             sce = hdemo.mySce;
             pool = hdemo.myPool;
             net = hdemo.myNetwork;
+            manager = hdemo.myNetworkManager;
             demo = hdemo;
         } else{
             MPCCustomer idemo = new MPCCustomerBuilder(params1.logging)
@@ -235,10 +248,13 @@ public class PriceFinder {
             sce = idemo.getMySce();
             pool = idemo.getMyPool();
             net = idemo.getMyNetwork();
+            manager = idemo.getMyNetworkManager();
             demo = idemo;
         }
         log.info("---------- Starting the protocol ----------");
         Integer deal = sce.runApplication(demo, pool, net, Duration.ofMinutes(20));
+        handler.endTimer(1);
+        handler.printNetwork(manager.getReceivedBytes(), params1.id);
         if(deal > 0){
             log.info("the resulting deal is: " + deal);
         } else{
@@ -272,7 +288,7 @@ public class PriceFinder {
      * @throws ParseException The CustomerBuilder and HostBuilder classes both parse our input. They throw an exception
      * if they receive unexpected parameters.
      */
-    public static void main(String[] args) throws ParseException  {
+    public static void main(String[] args) throws ParseException {
         CmdLineParser.BuilderParams params1 = getDefaultParams();
 
         //volumePriceAggregator(params1);
