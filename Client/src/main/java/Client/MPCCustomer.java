@@ -15,7 +15,6 @@ import utils.CmdLineParser;
 import utils.NetworkManager;
 
 
-import java.math.BigInteger;
 import java.time.Duration;
 import java.util.*;
 import java.util.Collections;
@@ -78,11 +77,11 @@ public class MPCCustomer implements Application<Integer, ProtocolBuilderNumeric>
             if (myID == id){
                 for (int j = 0; j < amount; j++){
                     //myManager.createUnit(id, myDate, BigInteger.valueOf(myVolume), BigInteger.valueOf(myP), protocolBuilderNumeric);
-                    myManager.createUnit(units.get(j), protocolBuilderNumeric);
+                    myManager.createUnit(units.get(j), protocolBuilderNumeric, false);
                 }
             } else {  // TODO: integrate date as a pricing factor
                 for(int j = 0; j < myManager.amountMap.get(id); j++){
-                    myManager.createUnit(id, null, null, null, protocolBuilderNumeric);
+                    myManager.createUnit(id, null, null, null, protocolBuilderNumeric, false);
                 }
             }
         }

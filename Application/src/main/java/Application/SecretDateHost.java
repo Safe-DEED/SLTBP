@@ -53,7 +53,7 @@ public class SecretDateHost {
         for (ATPManager.ATPUnit unit: units) {
             volumeCheck = new VolumeCheck(this, unit.amount);
             result = mySce.runApplication(volumeCheck, myPool, myNetwork, Duration.ofMinutes(5));
-            logger.info("The result of the volume check is: " + result);
+            logger.info("The result of the volume check is: " + result.toString());
         }
     }
 

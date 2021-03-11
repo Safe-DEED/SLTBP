@@ -6,6 +6,8 @@ import dk.alexandra.fresco.framework.Party;
 import dk.alexandra.fresco.framework.builder.numeric.Numeric;
 import dk.alexandra.fresco.framework.builder.numeric.ProtocolBuilderNumeric;
 import dk.alexandra.fresco.framework.value.SInt;
+import dk.alexandra.fresco.lib.common.compare.Comparison;
+import dk.alexandra.fresco.lib.common.math.AdvancedNumeric;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -16,12 +18,16 @@ public class VolumeCheck implements Application<BigInteger, ProtocolBuilderNumer
 
     private final BigInteger volume;
     private DRes<SInt> hostAmount, totalClientVolume, result;
-    private List<DRes<SInt>> clientAmounts;
+    private final List<DRes<SInt>> clientAmounts;
     private final SecretDateHost secretDateHost;
 
     public VolumeCheck(SecretDateHost secretDateHost, BigInteger volume){
         this.volume = volume;
         this.secretDateHost = secretDateHost;
+        clientAmounts = new ArrayList<>();
+        hostAmount = null;
+        result = null;
+        totalClientVolume = null;
     }
 
     @Override
@@ -32,7 +38,6 @@ public class VolumeCheck implements Application<BigInteger, ProtocolBuilderNumer
             hostAmount = secretDateHost.myID == 1 ?
                     num.input(volume, 1) :
                     num.input(null, 1);
-            clientAmounts = new ArrayList<>();
             for (Map.Entry<Integer, Party> entry : secretDateHost.myNetworkManager.getParties().entrySet()){
                 int id = entry.getKey();
                 if(id == 1) {
@@ -45,10 +50,10 @@ public class VolumeCheck implements Application<BigInteger, ProtocolBuilderNumer
             }
             return () -> null;
         }).seq((seq, nil) -> {
-            totalClientVolume = seq.advancedNumeric().sum(clientAmounts);
+            totalClientVolume = AdvancedNumeric.using(seq).sum(clientAmounts);
             return () -> null;
         }).seq((seq, nil) -> {
-            result = seq.comparison().compareLEQ(totalClientVolume, hostAmount);
+            result = Comparison.using(seq).compareLEQ(totalClientVolume, hostAmount);
             return () -> null;
         }).seq((seq, nil) -> seq.numeric().open(result));
     }

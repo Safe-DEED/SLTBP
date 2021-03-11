@@ -53,12 +53,12 @@ public class MPCHost implements Application<Integer, ProtocolBuilderNumeric> {
                 int id = entry.getKey();
                 if(id == 1) {
                     for(int j = 0; j < amount; j++){
-                        myManager.createUnit(units.get(j), seq);  // for now the host only has one stock!
+                        myManager.createUnit(units.get(j), seq, false);  // for now the host only has one stock!
                     }
                     continue;
                 }
                 for (int j = 0; j < myManager.amountMap.get(id); j++){
-                    myManager.createUnit(id, null, null, null,seq);
+                    myManager.createUnit(id, null, null, null,seq, false);
                 }
            }
             Collections.sort(myManager.unitList);

@@ -5,12 +5,12 @@ import dk.alexandra.fresco.framework.builder.numeric.Numeric;
 import dk.alexandra.fresco.framework.builder.numeric.ProtocolBuilderNumeric;
 import dk.alexandra.fresco.framework.network.Network;
 import dk.alexandra.fresco.framework.value.SInt;
+import dk.alexandra.fresco.lib.common.compare.Comparison;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -377,11 +377,11 @@ public class ATPManager {
         DRes<SInt> lOS, costDiff, cOS;
         DRes<SInt> costSign = null;
         for (int i = 0; i < ATPLeftOver.size(); i++) {
-            lOS = protocolBuilderNumeric.comparison().compareLEQ(protocolBuilderNumeric.numeric().known(BigInteger.ZERO), ATPLeftOver.get(i));
+            lOS = Comparison.using(protocolBuilderNumeric).compareLEQ(protocolBuilderNumeric.numeric().known(BigInteger.ZERO), ATPLeftOver.get(i));
             leftOverSign = (leftOverSign == null) ? lOS : protocolBuilderNumeric.numeric().mult(leftOverSign, lOS);
             DEBUGLeftOver.add(protocolBuilderNumeric.numeric().open(leftOverSign));
             costDiff = protocolBuilderNumeric.numeric().sub(ATPCost.get(i), ATPMinCost.get(i));
-            cOS = protocolBuilderNumeric.comparison().compareLEQ(protocolBuilderNumeric.numeric().known(BigInteger.ZERO), costDiff);
+            cOS = Comparison.using(protocolBuilderNumeric).compareLEQ(protocolBuilderNumeric.numeric().known(BigInteger.ZERO), costDiff);
             costSign = (costSign == null) ? cOS : protocolBuilderNumeric.numeric().mult(cOS, costSign);
         }
         this.cond1 = protocolBuilderNumeric.numeric().open(leftOverSign);
@@ -423,7 +423,7 @@ public class ATPManager {
                 if(unit.id == 1){
                     continue;
                 } if(unit.date.equals(selectedDeal)){
-                    open(unit, 1, protocolBuilderNumeric);
+                    open(unit, 1, protocolBuilderNumeric, false);
                 }
             }
         }
@@ -433,10 +433,15 @@ public class ATPManager {
      * When creating an ATPUnit, this function creates the secretly shared values, and distributes them.
      * @param unit the unit to be shared or to receive shares for
      * @param protocolBuilderNumeric the protocol builder to add the input protocol
+     * @param closedDate Determines whether the date is secret
      */
-    private void input(ATPUnit unit, ProtocolBuilderNumeric protocolBuilderNumeric){
+    private void input(ATPUnit unit, ProtocolBuilderNumeric protocolBuilderNumeric, boolean closedDate){
         unit.closedAmount = protocolBuilderNumeric.numeric().input(unit.amount, unit.id);
         unit.closedPrice  = protocolBuilderNumeric.numeric().input(unit.price, unit.id);
+        if(closedDate){
+            unit.closedDate = protocolBuilderNumeric.numeric().input(unit.date, unit.id);
+            return;
+        }
         if(unit.date == null){
             unit.date = receiveInt(unit.id, orderNetwork);
         } else {
@@ -448,9 +453,10 @@ public class ATPManager {
      * Adding an existing unit to the unitlist and secret sharing its price and amount
      * @param unit the unit to be added and secretly distributed
      * @param numeric the protocol builder
+     * @param closedDate Determines whether the date is secret
      */
-   public void createUnit(ATPUnit unit, ProtocolBuilderNumeric numeric){
-        input(unit, numeric);
+   public void createUnit(ATPUnit unit, ProtocolBuilderNumeric numeric, boolean closedDate){
+        input(unit, numeric, closedDate);
         units.computeIfAbsent(unit.id, (i) -> new ArrayList<>()).add(unit);
         unitList.add(unit);
    }
@@ -462,10 +468,11 @@ public class ATPManager {
      * @param amount The amount requested or null if it belongs to someone else
      * @param price  The price offered or null if it belongs to someone else
      * @param protocolBuilderNumeric the protocol builder used in the input function
+     * @param closedDate Determines whether the date is secret
      */
-   public void createUnit(int unitID, Integer date, BigInteger amount, BigInteger price, ProtocolBuilderNumeric protocolBuilderNumeric){
+   public void createUnit(int unitID, Integer date, BigInteger amount, BigInteger price, ProtocolBuilderNumeric protocolBuilderNumeric, boolean closedDate){
         ATPUnit unit = new ATPUnit(unitID, date, amount, price);
-        createUnit(unit, protocolBuilderNumeric);
+        createUnit(unit, protocolBuilderNumeric, closedDate);
    }
 
     /**
@@ -473,10 +480,17 @@ public class ATPManager {
      * @param unit the unit to be opened
      * @param id the identification of the party, the unit has to be opened for. E.g. id=1, the unit will be opened for infineon
      * @param protocolBuilderNumeric the protocol builder used to open the values.
+     * @param closedDate Determines whether the date is secret
      */
-   public void open(ATPUnit unit, int id, ProtocolBuilderNumeric protocolBuilderNumeric){
+   public void open(ATPUnit unit, int id, ProtocolBuilderNumeric protocolBuilderNumeric, boolean closedDate){
+       if(unit.opened){
+           return;
+       }
         unit.openedAmount = protocolBuilderNumeric.numeric().open(unit.closedAmount, id);
         unit.openedPrice  =  protocolBuilderNumeric.numeric().open(unit.closedPrice, id);
+        if(closedDate){
+            unit.openedDate = protocolBuilderNumeric.numeric().open(unit.closedDate, id);
+        }
         unit.opened = true;
    }
 
@@ -487,15 +501,17 @@ public class ATPManager {
     public static class ATPUnit implements Comparable<ATPUnit>{
         final int id;
         public BigInteger amount;
-        DRes<SInt> closedAmount;
-        DRes<BigInteger> openedAmount;
-        Integer date;
-        Integer salesPosition;
-        Integer RLZ;
-        Integer OLT;
-        BigInteger price;
-        DRes<SInt> closedPrice;
-        DRes<BigInteger> openedPrice;
+        public DRes<SInt> closedAmount;
+        public DRes<BigInteger> openedAmount;
+        public DRes<SInt> closedDate;
+        public DRes<BigInteger> openedDate;
+        public Integer date;
+        public Integer salesPosition;
+        public Integer RLZ;
+        public Integer OLT;
+        public BigInteger price;
+        public DRes<SInt> closedPrice;
+        public DRes<BigInteger> openedPrice;
         private Boolean opened = false;
 
         /**

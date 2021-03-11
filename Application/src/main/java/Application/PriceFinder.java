@@ -131,7 +131,7 @@ public class PriceFinder {
      */
     public static CmdLineParser.BuilderParams getDefaultParams(String netPath, String unitsPath){
         CmdLineParser.BuilderParams params = new CmdLineParser.BuilderParams(true, false);
-        params.setMaxBitLength(10);
+        params.setMaxBitLength(64);
         params.setModBitLength(128);
         params.setPreprocessingStrategy(PreprocessingStrategy.MASCOT);
         params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.NAOR);
