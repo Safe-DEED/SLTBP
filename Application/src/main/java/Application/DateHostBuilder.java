@@ -45,6 +45,11 @@ public class DateHostBuilder extends MPCBuilder<SecretDateHost> {
         host.myManager        = myManager;
         host.units            = units;
         host.protocol         = protocol;
+        if(protocol == SecretDateHost.EvaluationProtocol.LINEAR){
+            host.priceProtocol = new LinearProtocol();
+        } else {
+            host.priceProtocol = null;
+        }
         return host;
     }
 }

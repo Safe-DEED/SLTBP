@@ -17,5 +17,5 @@ run:
 	cp Application/target/demo.jar servers/server2;
 	cp Application/target/demo.jar servers/server3;
 	cd servers/server3 && java -jar demo.jar  > log.txt 2>&1 &
-	cd servers/server2 && java -jar demo.jar  > log.txt 2>&1 &
-	cd servers/server1 && java -jar demo.jar  2>&1 |tee log.txt
+#	cd servers/server2 && java -jar demo.jar  > log.txt 2>&1 &
+	cd servers/server2 && java -jar demo.jar  2>&1 |tee log.txt

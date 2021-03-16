@@ -101,7 +101,7 @@ public class ATPManager {
      * @param network The network to receive from
      * @return the received integer.
      */
-    private int receiveInt(int id, Network network){
+    public int receiveInt(int id, Network network){
         return ByteBuffer.wrap(network.receive(id)).getInt();
     }
 
@@ -110,8 +110,17 @@ public class ATPManager {
      * @param Int The integer which is to send to everyone
      * @param network The network to broadcast to
      */
-    private void broadcastInt(int Int, Network network){
+    public void broadcastInt(int Int, Network network){
         network.sendToAll(ByteBuffer.allocate(Integer.BYTES).putInt(Int).array());
+    }
+
+    public void clearNetwork(Network network){
+        if(network instanceof SocketNetwork){
+            ((SocketNetwork) network).clearSelfQueue();
+        }
+        if(network instanceof NetworkLoggingDecorator){
+            ((NetworkLoggingDecorator) network).clearSelfQueue();
+        }
     }
 
     /**
@@ -499,7 +508,7 @@ public class ATPManager {
      * easily sort the unitlist using collections.sort().
      */
     public static class ATPUnit implements Comparable<ATPUnit>{
-        final int id;
+        public final int id;
         public BigInteger amount;
         public DRes<SInt> closedAmount;
         public DRes<BigInteger> openedAmount;
@@ -507,8 +516,6 @@ public class ATPManager {
         public DRes<BigInteger> openedDate;
         public Integer date;
         public Integer salesPosition;
-        public Integer RLZ;
-        public Integer OLT;
         public BigInteger price;
         public DRes<SInt> closedPrice;
         public DRes<BigInteger> openedPrice;
@@ -531,11 +538,9 @@ public class ATPManager {
         }
 
 
-        public ATPUnit(int id, Integer date, BigInteger amount, BigInteger price, int salesPosition, int olt, int rlz){
+        public ATPUnit(int id, Integer date, BigInteger amount, BigInteger price, int salesPosition){
             this(id, date, amount, price);
             this.salesPosition = salesPosition;
-            this.OLT = olt;
-            this.RLZ = rlz;
         }
 
 
@@ -549,6 +554,8 @@ public class ATPManager {
             }
             return "\nThis unit of: " + id+ " contains: " + amount +", with date: " + date + ", and price: " + price + "\n";
         }
+
+
 
         /**
          * The compareTo method implementing the comparable interface. This unit is compared according to its date.
@@ -593,7 +600,7 @@ public class ATPManager {
         }
         //Get date
         int date = Integer.parseInt((String) atpUnit.get("date"));
-        return new ATPUnit(manager.myID, date, amount, price, sp, 0, 0);
+        return new ATPUnit(manager.myID, date, amount, price, sp);
     }
 
     /**

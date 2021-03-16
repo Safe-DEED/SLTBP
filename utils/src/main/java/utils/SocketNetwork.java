@@ -201,6 +201,10 @@ public class SocketNetwork implements Closeable, Network {
         }
     }
 
+    public void clearSelfQueue(){
+        this.selfQueue.clear();
+    }
+
 
     /**
      * Get truststore from the utils recources. At the moment, trust is precompiled into the application

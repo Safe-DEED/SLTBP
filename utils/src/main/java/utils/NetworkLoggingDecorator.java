@@ -63,6 +63,12 @@ public class NetworkLoggingDecorator implements Network, PerformanceLogger, Clos
         }
     }
 
+    public void clearSelfQueue(){
+        if(delegate instanceof SocketNetwork){
+            ((SocketNetwork) delegate).clearSelfQueue();
+        }
+    }
+
     /**
      * The data structure to store information about received transmissions
      */

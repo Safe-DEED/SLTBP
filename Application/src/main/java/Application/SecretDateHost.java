@@ -23,7 +23,7 @@ import java.util.Map;
 public class SecretDateHost {
 
     static Logger logger = LoggerFactory.getLogger(SecretDateHost.class);
-    int myID;
+    public int myID;
     int maxBitLength;
     int numParties;
     int myVolume;
@@ -38,23 +38,40 @@ public class SecretDateHost {
     public ATPManager myManager;
     public List<ATPManager.ATPUnit> units;
     public EvaluationProtocol protocol;
+    public PriceProtocol priceProtocol;
 
     public enum EvaluationProtocol{
         LINEAR,
         CONVEX,
         CONCAVE,
-        BUCKET
+        BUCKET;
     }
 
     public void runProtocol(){
-        VolumeCheck volumeCheck;
-        BigInteger result;
 
-        for (ATPManager.ATPUnit unit: units) {
-            volumeCheck = new VolumeCheck(this, unit.amount);
-            result = mySce.runApplication(volumeCheck, myPool, myNetwork, Duration.ofMinutes(5));
-            logger.info("The result of the volume check is: " + result.toString());
+        logger.info("Setup aggregator");
+        AggregateInputs aggregator = new AggregateInputs(this);
+        logger.info("Starting aggregator");
+        mySce.runApplication(aggregator, myPool, myNetwork, Duration.ofMinutes(5));
+        logger.info("Starting Volume Checks");
+        aggregator.checkVolumes(mySce, myPool, myNetwork, Duration.ofMinutes(2));
+        logger.info("Sorting Dates");
+        Map<Integer, DRes<SInt>> dates = aggregator.sortByDate(mySce, myPool, myNetwork, Duration.ofMinutes(2));
+
+        logger.info("Setup price Protocol " + protocol.toString());
+        priceProtocol.initMPCParameters(mySce, myPool, myNetwork, Duration.ofMinutes(5));
+
+        logger.info("Evaluate Price for all SalesPositions");
+        Map<Integer, Boolean> results = priceProtocol.executeForAllPositions(aggregator.pricesTotal, dates,
+                                        aggregator.hostUnits, aggregator.volumesTotal);
+
+        logger.info("Results of the pricing");
+        for(Map.Entry<Integer, Boolean> entry : results.entrySet()){
+            logger.info("Sales Position: " + entry.getKey() +
+                    "\nResulted in: " + entry.getValue());
         }
+
+
     }
 
 
