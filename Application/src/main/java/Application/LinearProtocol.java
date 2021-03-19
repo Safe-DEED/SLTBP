@@ -8,6 +8,7 @@ import dk.alexandra.fresco.lib.common.compare.Comparison;
 import dk.alexandra.fresco.lib.common.math.AdvancedNumeric;
 
 import java.math.BigInteger;
+import java.util.Collections;
 
 public class LinearProtocol extends PriceProtocol{
 
@@ -38,5 +39,22 @@ public class LinearProtocol extends PriceProtocol{
 
     }
 
+    @Override
+    public Integer checkProtocol(int myDate, Integer hostPrice){
+        super.checkProtocol(myDate, hostPrice);
+        int hostDate = debugDates.get(0);
+        debugDates.remove(0);
+        Collections.sort(debugDates);
+        int clientDate = debugDates.get(0);
+
+        if(SecretDateHost.myID == 0){
+            int pricePremium = (hostDate - clientDate) * hostPrice;
+            pricePremium /= hostDate;
+            pricePremium += hostPrice;
+            return pricePremium;
+        }
+
+        return 0;
+    }
 
 }

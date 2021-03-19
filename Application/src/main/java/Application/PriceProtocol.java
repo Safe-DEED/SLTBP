@@ -12,12 +12,14 @@ import utils.ATPManager;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class PriceProtocol implements Application<BigInteger, ProtocolBuilderNumeric> {
 
     DRes<SInt> standardLeadTime, orderedLeadTime, priceHost, priceClient, resultPrice, clientVolume;
 
+    List<Integer> debugDates = null;
     boolean protocolInit = false;
     boolean mpcInit = false;
 
@@ -74,10 +76,20 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
             initProtocol(standardDate, orderDate, priceHost, priceClient, volumeClient);
             SecretDateHost.logger.info("Start protocol for SP: " + salesPosition);
             BigInteger res = Sce.runApplication(this, pool, network, duration);
+            //checkProtocol()
             results.put(salesPosition, res.equals(BigInteger.ONE));
         }
 
         return results;
+    }
+
+    public Integer checkProtocol(int myDate, Integer hostPrice){
+        SecretDateHost.logger.info("UNSAFE DEBUG PROTOCOL");
+        SecretDateHost.logger.warn("DATES ARE EXCHANGED IN PLAIN");
+        ATPManager.instance.broadcastInt(myDate, network);
+        debugDates = ATPManager.instance.receiveFromAll(network);
+        SecretDateHost.logger.info("all dates: " + debugDates + "\nhost date " + debugDates.get(0));
+        return 0;
     }
 
 }
