@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The ATPManager holds all the logic used to work with ATPUnits, which are the core objects for this use case.
@@ -112,6 +113,10 @@ public class ATPManager {
      */
     public void broadcastInt(int Int, Network network){
         network.sendToAll(ByteBuffer.allocate(Integer.BYTES).putInt(Int).array());
+    }
+
+    public List<Integer> receiveFromAll(Network network){
+        return network.receiveFromAll().stream().map(b -> ByteBuffer.wrap(b).getInt()).collect(Collectors.toList());
     }
 
     public void clearNetwork(Network network){

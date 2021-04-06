@@ -8,6 +8,7 @@ import dk.alexandra.fresco.lib.common.compare.Comparison;
 import dk.alexandra.fresco.lib.common.math.AdvancedNumeric;
 
 import java.math.BigInteger;
+import java.util.Collections;
 
 public class LinearProtocol extends PriceProtocol{
 

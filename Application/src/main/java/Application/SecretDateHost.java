@@ -24,7 +24,7 @@ import java.util.Map;
 public class SecretDateHost {
 
     static Logger logger = LoggerFactory.getLogger(SecretDateHost.class);
-    public int myID;
+    public static int myID;
     int maxBitLength;
     int numParties;
     boolean logging;
