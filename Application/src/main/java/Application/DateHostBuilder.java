@@ -10,6 +10,7 @@ import utils.MPCBuilder;
 public class DateHostBuilder extends MPCBuilder<SecretDateHost> {
 
     private SecretDateHost.EvaluationProtocol protocol = SecretDateHost.EvaluationProtocol.LINEAR;
+    private PriceProtocol priceProtocol;
 
     /**
      * Creating the builder following the builder pattern.
@@ -22,6 +23,20 @@ public class DateHostBuilder extends MPCBuilder<SecretDateHost> {
 
     public DateHostBuilder withProtocol(SecretDateHost.EvaluationProtocol protocol){
         this.protocol = protocol;
+        switch (protocol){
+            case LINEAR:
+                priceProtocol = new LinearProtocol();
+                break;
+            case BUCKET:
+                priceProtocol = new BucketProtocol();
+                break;
+            case CONVEX:
+                priceProtocol = new ConvexProtocol();
+                break;
+            case CONCAVE:
+                priceProtocol = new ConcaveProtocol();
+                break;
+        }
         return this;
     }
 
@@ -31,25 +46,24 @@ public class DateHostBuilder extends MPCBuilder<SecretDateHost> {
         BatchedProtocolEvaluator<SpdzResourcePool> evaluator = new BatchedProtocolEvaluator<>(batchEvalStrat, mySuite, 4096);
         SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> mySce = new SecureComputationEngineImpl<>(mySuite, evaluator);
         SecretDateHost host = new SecretDateHost();
+        if(debug){
+            SecretDateHost.logger.warn("Care - insecure debug protocol activated!");
+            SecretDateHost.logger.info("Care - insecure debug protocol activated!");
+            SecretDateHost.logger.error("Care - insecure debug protocol activated!");
+        }
+        host.debug            = debug;
         host.myID             = myID;
         host.maxBitLength     = maxBitLength;
         host.numParties       = numberOfParties;
-        host.myVolume        = myVolume;
-        host.minPrice         = myPrice;
         host.myNetwork        = myNetwork;
         host.mySce            = mySce;
-        host.myDate           = myDate;
         host.myPool           = myPool;
         host.logging          = logging;
         host.myNetworkManager = myNetworkManager;
         host.myManager        = myManager;
         host.units            = units;
         host.protocol         = protocol;
-        if(protocol == SecretDateHost.EvaluationProtocol.LINEAR){
-            host.priceProtocol = new LinearProtocol();
-        } else {
-            host.priceProtocol = null;
-        }
+        host.priceProtocol    = priceProtocol;
         return host;
     }
 }

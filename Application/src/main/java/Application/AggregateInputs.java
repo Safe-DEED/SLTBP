@@ -166,8 +166,8 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
         SecretDateHost.logger.info("Sorting salesPosition by date");
         for(Map.Entry<Integer, List<DRes<SInt>>> entry : datesAll.entrySet()){
             List<DRes<SInt>> current_dates = entry.getValue();
-            current_dates.sort(comparator);
-            result.put(entry.getKey(), current_dates.get(0)); // At the moment lowest date is returned
+            DRes<SInt> min = Collections.min(current_dates, comparator);
+            result.put(entry.getKey(), min); // At the moment lowest date is returned
         }
         return result;
     }

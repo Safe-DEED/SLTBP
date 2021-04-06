@@ -12,31 +12,55 @@ import java.math.BigInteger;
 public class LinearProtocol extends PriceProtocol{
 
 
+
     @Override
     public DRes<BigInteger> buildComputation(ProtocolBuilderNumeric builder) {
+
         if(!protocolInit){
             throw new IllegalStateException("Running Price evaluation before protocol init");
         }
         protocolInit = false;
         return builder.seq(seq -> {
             SecretDateHost.logger.info("Starting linear price Computation");
+            if(debug){
+                openValues(seq);
+            }
             Numeric numeric = seq.numeric();
             DRes<SInt> sub = numeric.sub(standardLeadTime, orderedLeadTime);
             DRes<SInt> mul = numeric.mult(sub, priceHost);
             DRes<SInt> div = AdvancedNumeric.using(seq).div(mul, standardLeadTime);
             DRes<SInt> add = numeric.add(priceHost, div);
             resultPrice = numeric.mult(add, clientVolume);
-            return () -> null;
+            return null;
         }).seq((seq, nil) -> {
-            resultPrice = Comparison.using(seq).compareLEQ(resultPrice, priceClient);
-            return () -> null;
-        }).seq((seq, nil) -> seq.numeric().open(resultPrice));
+            resultEvaluation = Comparison.using(seq).compareLEQ(resultPrice, priceClient);
+            return null;
+        }).seq((seq, nil) -> {
+            if(debug){
+                price = seq.numeric().open(resultPrice);
+            }
+            protocolFinished = true;
+            return seq.numeric().open(resultEvaluation);
+        });
     }
 
     @Override
-    public void close() {
+    public boolean checkResult() {
+        if(!protocolFinished){
+            return false;
+        }
+        if(debug){
+            SecretDateHost.logger.info("checking result\n\n\n");
+            BigInteger sub = standardLeadTimeOpen.out().subtract(orderedLeadTimeOpen.out());
+            BigInteger mul = sub.multiply(priceHostOpen.out());
+            BigInteger div = mul.divide(standardLeadTimeOpen.out());
+            BigInteger add = div.add(priceHostOpen.out());
+            BigInteger result = add.multiply(clientVolumeOpen.out());
+            SecretDateHost.logger.info(super.stringify());
+            return result.equals(price.out());
+        }
 
+        return false;
     }
-
 
 }

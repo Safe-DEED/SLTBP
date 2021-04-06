@@ -133,9 +133,10 @@ public class PriceFinder {
         CmdLineParser.BuilderParams params = new CmdLineParser.BuilderParams(true, false);
         params.setMaxBitLength(64);
         params.setModBitLength(128);
-        params.setPreprocessingStrategy(PreprocessingStrategy.MASCOT);
-        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.NAOR);
+        params.setPreprocessingStrategy(PreprocessingStrategy.DUMMY);
+        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.DUMMY);
         params.setEvaluationStrategy(EvaluationStrategy.SEQUENTIAL);
+        params.setDebug(true);
         JSONParser jsonParser = new JSONParser();
         JSONArray networkConfig, unitList;
         Party party;
@@ -265,7 +266,6 @@ public class PriceFinder {
 
     public static void secureLeadTimeBasedPriceFinder(CmdLineParser.BuilderParams params) throws ParseException {
         log.info("---------- starting setup ----------");
-
         SecretDateHost secretDateHost = new DateHostBuilder(params.logging)
                 .withProtocol(SecretDateHost.EvaluationProtocol.LINEAR)
                 .withVolume(params.volume, params.amount)
@@ -275,6 +275,7 @@ public class PriceFinder {
                 .withPrice(params.price)
                 .withUnits(params.units)
                 .withBatchEvalStrat(params.evaluationStrategy)
+                .withDebug(params.debug)
                 .withSpdzLength(params.maxBitLength)
                 .build();
 
@@ -289,10 +290,13 @@ public class PriceFinder {
      * if they receive unexpected parameters.
      */
     public static void main(String[] args) throws ParseException {
-        CmdLineParser.BuilderParams params1 = getDefaultParams();
-
-        //volumePriceAggregator(params1);
-        secureLeadTimeBasedPriceFinder(params1);
+        log.info("---------- Reading params ----------");
+        CmdLineParser.BuilderParams params = getDefaultParams();
+        if(params.logging){
+            log.info(params.toString());
+        }
+        //volumePriceAggregator(params);
+        secureLeadTimeBasedPriceFinder(params);
 
     }
 

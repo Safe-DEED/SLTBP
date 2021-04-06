@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.ATPManager;
 import utils.NetworkManager;
+import utils.SIntComparator;
 
 import java.math.BigInteger;
 import java.time.Duration;
@@ -26,10 +27,8 @@ public class SecretDateHost {
     public int myID;
     int maxBitLength;
     int numParties;
-    int myVolume;
-    int minPrice;
-    int myDate;
     boolean logging;
+    boolean debug;
 
     public Network myNetwork;
     public SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> mySce;
@@ -58,12 +57,16 @@ public class SecretDateHost {
         logger.info("Sorting Dates");
         Map<Integer, DRes<SInt>> dates = aggregator.sortByDate(mySce, myPool, myNetwork, Duration.ofMinutes(2));
 
+
+
         logger.info("Setup price Protocol " + protocol.toString());
         priceProtocol.initMPCParameters(mySce, myPool, myNetwork, Duration.ofMinutes(5));
 
         logger.info("Evaluate Price for all SalesPositions");
         Map<Integer, Boolean> results = priceProtocol.executeForAllPositions(aggregator.pricesTotal, dates,
-                                        aggregator.hostUnits, aggregator.volumesTotal);
+                                        aggregator.hostUnits, aggregator.volumesTotal, debug);
+
+
 
         logger.info("Results of the pricing");
         for(Map.Entry<Integer, Boolean> entry : results.entrySet()){

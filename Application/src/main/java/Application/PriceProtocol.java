@@ -7,7 +7,10 @@ import dk.alexandra.fresco.framework.network.Network;
 import dk.alexandra.fresco.framework.sce.SecureComputationEngine;
 import dk.alexandra.fresco.framework.value.SInt;
 import dk.alexandra.fresco.suite.spdz.SpdzResourcePool;
+import dk.alexandra.fresco.suite.spdz.gates.SpdzMultProtocol;
 import utils.ATPManager;
+import utils.MultApplication;
+import utils.SIntComparator;
 
 import java.math.BigInteger;
 import java.time.Duration;
@@ -16,25 +19,43 @@ import java.util.Map;
 
 public abstract class PriceProtocol implements Application<BigInteger, ProtocolBuilderNumeric> {
 
-    DRes<SInt> standardLeadTime, orderedLeadTime, priceHost, priceClient, resultPrice, clientVolume;
+    DRes<SInt> standardLeadTime, orderedLeadTime, priceHost, priceClient, resultPrice, clientVolume, resultEvaluation;
+    DRes<BigInteger> price;
+
+    // DEBUG Values
+    DRes<BigInteger> standardLeadTimeOpen, orderedLeadTimeOpen, priceHostOpen, priceClientOpen, clientVolumeOpen;
 
     boolean protocolInit = false;
     boolean mpcInit = false;
+    boolean protocolFinished = false;
+    boolean debug = false;
 
     SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> Sce;
     SpdzResourcePool pool;
     Network network;
     Duration duration;
 
+    protected void openValues(ProtocolBuilderNumeric seq){
+        if(debug){
+            standardLeadTimeOpen = seq.numeric().open(standardLeadTime);
+            orderedLeadTimeOpen  = seq.numeric().open(orderedLeadTime);
+            priceHostOpen        = seq.numeric().open(priceHost);
+            priceClientOpen      = seq.numeric().open(priceClient);
+            clientVolumeOpen     = seq.numeric().open(clientVolume);
+        }
+    }
+
     public void initProtocol(DRes<SInt> standardLeadTime, DRes<SInt> orderedLeadTime,
-                             DRes<SInt> priceHost, DRes<SInt> priceClient, DRes<SInt> clientVolume){
+                             DRes<SInt> priceHost, DRes<SInt> priceClient, DRes<SInt> clientVolume, boolean debug){
         this.standardLeadTime = standardLeadTime;
         this.orderedLeadTime = orderedLeadTime;
         this.priceClient = priceClient;
         this.priceHost = priceHost;
         this.resultPrice = null;
         this.clientVolume = clientVolume;
+        this.debug = debug;
         protocolInit = true;
+        protocolFinished = false;
     }
 
     public void initMPCParameters(SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> Sce,
@@ -49,7 +70,8 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
     public Map<Integer, Boolean> executeForAllPositions(Map<Integer, DRes<SInt>> clientPrices,
                                                         Map<Integer, DRes<SInt>> orderedDates,
                                                         Map<Integer, ATPManager.ATPUnit> hostUnits,
-                                                        Map<Integer, DRes<SInt>> clientVolumes) {
+                                                        Map<Integer, DRes<SInt>> clientVolumes,
+                                                        boolean debug) {
         if(clientPrices.size() != orderedDates.size() || orderedDates.size() != hostUnits.size()){
             throw new IllegalArgumentException("Maps for Protocol evaluation have to be of same size");
         }
@@ -58,8 +80,8 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
         }
 
         Map<Integer, Boolean> results = new HashMap<>();
-
-        for(Map.Entry<Integer, ATPManager.ATPUnit> hostEntry : hostUnits.entrySet()){
+        SIntComparator comparator = new SIntComparator(Sce, pool, network, duration);
+        for(Map.Entry<Integer, ATPManager.ATPUnit> hostEntry : hostUnits.entrySet()) {
             int salesPosition = hostEntry.getKey();
             SecretDateHost.logger.info("Setup protocol for SP: " + salesPosition);
             ATPManager.ATPUnit hostUnit = hostEntry.getValue();
@@ -68,16 +90,44 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
             DRes<SInt> volumeClient = clientVolumes.getOrDefault(salesPosition, null);
             DRes<SInt> priceHost = hostUnit.closedPrice;
             DRes<SInt> standardDate = hostUnit.closedDate;
-            if(orderDate == null || priceClient == null || priceHost == null || standardDate == null || volumeClient == null){
+            if (orderDate == null || priceClient == null || priceHost == null || standardDate == null || volumeClient == null) {
                 throw new IllegalArgumentException("Input to price protocol has to be pre-shared and cannot be null");
             }
-            initProtocol(standardDate, orderDate, priceHost, priceClient, volumeClient);
-            SecretDateHost.logger.info("Start protocol for SP: " + salesPosition);
-            BigInteger res = Sce.runApplication(this, pool, network, duration);
-            results.put(salesPosition, res.equals(BigInteger.ONE));
+            int standardHigherOrder = comparator.compare(standardDate, orderDate);
+            if (standardHigherOrder < 0) {
+                SecretDateHost.logger.info("order date is bigger than standard -> standard is considered");
+                MultApplication multApplication = new MultApplication(priceHost, clientVolume);
+                ATPManager.instance.clearNetwork(network);
+                DRes<SInt> totalPrice = Sce.runApplication(multApplication, pool, network, duration);
+                int res = comparator.compare(priceClient, totalPrice);
+                results.put(salesPosition, res > -1);
+            } else {
+                initProtocol(standardDate, orderDate, priceHost, priceClient, volumeClient, debug);
+                SecretDateHost.logger.info("Start protocol for SP: " + salesPosition);
+                ATPManager.instance.clearNetwork(network);
+                BigInteger res = Sce.runApplication(this, pool, network, duration);
+                results.put(salesPosition, res.equals(BigInteger.ONE));
+                if(debug){
+                    SecretDateHost.logger.info("Final result check yields: " + checkResult());
+                }
+            }
         }
 
         return results;
     }
+
+    @Override
+    public void close(){
+
+    }
+
+    public String stringify(){
+        if(debug){
+            return "\nThis price protocol(" + this.getClass().toString() + ") has the following input:\nstandard Lead: " + standardLeadTimeOpen.out() + "\nordered Lead: " + orderedLeadTimeOpen.out() + "\n priceHost: " + priceHostOpen.out() + "\npriceClient: " + priceClientOpen.out() + "\nclientVolume:" +  clientVolumeOpen.out() + "\nprice expected:" + price.out();
+        }
+        return this.getClass().toString();
+    }
+
+    public abstract boolean checkResult();
 
 }

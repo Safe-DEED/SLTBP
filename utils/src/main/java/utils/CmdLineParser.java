@@ -238,6 +238,7 @@ public class CmdLineParser {
         public int maxBitLength;
         public int modBitLength;
         public boolean host;
+        public boolean debug;
         public PreprocessingStrategy preprocessingStrategy;
         public obliviousTransferProtocol otProtocol;
         public EvaluationStrategy evaluationStrategy;
@@ -247,6 +248,10 @@ public class CmdLineParser {
         public BuilderParams(boolean logging, boolean multiThreaded, boolean host){
             this(logging, multiThreaded);
             setHost(host);
+        }
+        public void setDebug(boolean debug){
+            this.debug = debug;
+            this.logging = debug || logging;
         }
         public BuilderParams(boolean logging, boolean multiThreaded){
             this.logging = logging;
@@ -281,6 +286,7 @@ public class CmdLineParser {
         public void setEvaluationStrategy(EvaluationStrategy strategy){ this.evaluationStrategy = strategy; }
         public String toString(){
             return "logging: " + logging +
+                    "\ndebug " + debug +
                     "\nhost " + host +
                     "\nid " + id +
                     "\nprice " + price +

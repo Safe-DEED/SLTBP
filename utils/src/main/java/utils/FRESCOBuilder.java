@@ -60,6 +60,7 @@ public abstract class FRESCOBuilder<BuilderT> {
     protected NetworkManager myNetworkManager;
     protected Logger log = LoggerFactory.getLogger(MPCBuilder.class);
     protected boolean logging;
+    protected boolean debug;
 
     /**
      * Creating the builder following the builder pattern.
@@ -69,6 +70,15 @@ public abstract class FRESCOBuilder<BuilderT> {
         this.logging = logging;
     }
 
+    /**
+     * Setting the debug flag for pricing protocols
+     * @param debug the flag to be set
+     */
+    public FRESCOBuilder<BuilderT> withDebug(boolean debug){
+        this.debug = debug;
+        this.logging = debug || this.logging;
+        return this;
+    }
 
     /**
      * Initializing the resourcePool Object required by the framework. MASCOT has to be used as a preprocessingStrategy
