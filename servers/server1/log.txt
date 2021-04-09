@@ -1,65 +1,53 @@
-12:26:02.411 [main] INFO Application.PriceFinder - ---------- starting setup ----------
-12:26:02.420 [main] INFO utils.MPCBuilder - These are my parties. [Party(1, localhost:8081), Party(2, localhost:8082), Party(3, localhost:8083)]
-12:26:02.420 [main] INFO utils.NetworkManager - Created NetworkManager
-12:26:02.420 [main] INFO utils.NetworkManager - config: 3
-12:26:03.271 [main] INFO utils.NetworkManager - created extra network
-12:26:03.272 [main] INFO utils.MPCBuilder - creating ResourcePool
-12:26:03.273 [main] INFO utils.MPCBuilder - Initialize mascot
-12:26:03.286 [main] INFO utils.MPCBuilder - Initialize naor pinkas ot
-12:26:03.286 [main] INFO utils.NetworkManager - config: 3
-12:26:03.596 [main] INFO utils.NetworkManager - created extra network
-12:26:39.241 [main] INFO utils.MPCBuilder - Create Random Ssk
-12:26:39.246 [main] INFO utils.MPCBuilder - Create Simple Supplier
-12:26:39.249 [main] INFO utils.MPCBuilder - SpdzResourcePoolImpl
-12:26:39.253 [main] INFO utils.MPCBuilder - returning from ResourcePool creation
-12:26:39.256 [main] INFO utils.NetworkManager - config: 3
-12:26:56.818 [main] INFO utils.NetworkManager - created extra network
-12:26:56.818 [main] INFO utils.NetworkManager - config: 3
-12:26:57.063 [main] INFO utils.NetworkManager - created extra network
-12:26:57.582 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
-12:26:57.586 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Host.MPCHost@7d1f209 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@9160c83
-12:26:57.606 [SCE-1] INFO Host.MPCHost - sharing values over the network
-12:26:57.611 [SCE-1] INFO Host.MPCHost - 
-The units of ID: 1
-
+18:10:16.174 [main] INFO Application.PriceFinder - ---------- starting setup ----------
+18:10:16.179 [main] INFO utils.MPCBuilder - These are my parties. [Party(1, localhost:8081), Party(2, localhost:8082), Party(3, localhost:8083)]
+18:10:16.180 [main] INFO utils.NetworkManager - Created NetworkManager
+18:10:16.180 [main] INFO utils.NetworkManager - config: 3
+18:10:16.871 [main] INFO utils.NetworkManager - created extra network
+18:10:16.872 [main] INFO utils.MPCBuilder - creating ResourcePool
+18:10:16.875 [main] INFO utils.MPCBuilder - SpdzResourcePoolImpl
+18:10:16.878 [main] INFO utils.MPCBuilder - returning from ResourcePool creation
+18:10:16.880 [main] INFO utils.NetworkManager - config: 3
+18:10:19.248 [main] INFO utils.NetworkManager - created extra network
+18:10:19.248 [main] INFO utils.NetworkManager - config: 3
+18:10:19.498 [main] INFO utils.NetworkManager - created extra network
+18:10:19.509 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
+18:10:19.509 [main] INFO Application.SecretDateHost - Setup aggregator
+18:10:19.513 [main] INFO Application.SecretDateHost - List before sort: [
 This unit of: 1 contains: 333, with date: 1, and price: 50
-
+, 
 This unit of: 1 contains: 1540, with date: 2, and price: 50
-
+, 
 This unit of: 1 contains: 4950, with date: 3, and price: 25
-The units of ID: 2
-
-This unit of: 2 contains: null, with date: 1, and price: null
-
-This unit of: 2 contains: null, with date: 2, and price: null
-
-This unit of: 2 contains: null, with date: 3, and price: null
-The units of ID: 3
-
-This unit of: 3 contains: null, with date: 1, and price: null
-
-This unit of: 3 contains: null, with date: 2, and price: null
-
-This unit of: 3 contains: null, with date: 3, and price: null
-
-12:26:57.619 [SCE-1] INFO utils.NetworkManager - config: 3
-12:26:58.390 [SCE-1] INFO utils.NetworkManager - created extra network
-12:26:59.060 [SCE-1] INFO Host.MPCHost - sum Individual date
-12:26:59.061 [SCE-1] INFO Host.MPCHost - openPrice and Vol
-12:26:59.129 [SCE-1] INFO Host.MPCHost - evaluate protocol
-volume fail at: 0
-price fail at: 1
-12:26:59.130 [SCE-1] INFO utils.ATPManager - The deal succeeded!
-12:26:59.132 [SCE-1] INFO Host.MPCHost - The result was 3
-12:26:59.150 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 34 native protocols in 34 batches.
-12:26:59.150 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Host.MPCHost@7d1f209 finished evaluation in 1547 ms.
-12:26:59.151 [SCE-1] INFO utils.NetworkManager - Closing the network manager!
-12:26:59.162 [main] INFO utils.BenchmarkHandler - 
-
-<b3m4>{"timer":"1","time":{"sec":"56.766","min":"0","ms":56766,"h":"0"}}</b3m4>
-
-12:26:59.163 [main] INFO utils.BenchmarkHandler - 
-
-<b3m4>{"player":"0","netdata":{"received":{"bytes":"737567","KB":"720"}}}</b3m4>
-
-12:26:59.163 [main] INFO Application.PriceFinder - the resulting deal is: 3
+]
+18:10:19.514 [main] INFO Application.SecretDateHost - List after sort: [
+This unit of: 1 contains: 333, with date: 1, and price: 50
+, 
+This unit of: 1 contains: 1540, with date: 2, and price: 50
+, 
+This unit of: 1 contains: 4950, with date: 3, and price: 25
+]
+18:10:19.514 [main] INFO Application.SecretDateHost - Starting aggregator
+18:10:19.516 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Application.AggregateInputs@d90d8b9 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@357277b
+18:10:19.525 [SCE-1] INFO Application.SecretDateHost - Input values to aggregator
+Exception in thread "main" java.lang.RuntimeException: Execution exception when running the application
+	at dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl.runApplication(SecureComputationEngineImpl.java:61)
+	at Application.SecretDateHost.runProtocol(SecretDateHost.java:55)
+	at Application.PriceFinder.secureLeadTimeBasedPriceFinder(PriceFinder.java:282)
+	at Application.PriceFinder.main(PriceFinder.java:295)
+Caused by: java.lang.ArrayIndexOutOfBoundsException: arraycopy: last source index 16 out of bounds for byte[0]
+	at java.base/java.lang.System.arraycopy(Native Method)
+	at dk.alexandra.fresco.framework.builder.numeric.field.FieldUtils.deserializeWithOffset(FieldUtils.java:77)
+	at dk.alexandra.fresco.framework.builder.numeric.field.FieldUtils.deserialize(FieldUtils.java:68)
+	at dk.alexandra.fresco.framework.builder.numeric.field.BigIntegerFieldDefinition.deserialize(BigIntegerFieldDefinition.java:91)
+	at dk.alexandra.fresco.framework.builder.numeric.field.BigIntegerFieldDefinition.deserialize(BigIntegerFieldDefinition.java:10)
+	at dk.alexandra.fresco.suite.spdz.gates.SpdzInputProtocol.evaluate(SpdzInputProtocol.java:44)
+	at dk.alexandra.fresco.suite.spdz.gates.SpdzInputProtocol.evaluate(SpdzInputProtocol.java:14)
+	at dk.alexandra.fresco.framework.sce.evaluator.SequentialStrategy.processBatch(SequentialStrategy.java:19)
+	at dk.alexandra.fresco.logging.BatchEvaluationLoggingDecorator.processBatch(BatchEvaluationLoggingDecorator.java:42)
+	at dk.alexandra.fresco.framework.sce.evaluator.BatchedProtocolEvaluator.eval(BatchedProtocolEvaluator.java:58)
+	at dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl.evalApplication(SecureComputationEngineImpl.java:81)
+	at dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl.lambda$startApplication$0(SecureComputationEngineImpl.java:69)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.base/java.lang.Thread.run(Thread.java:834)

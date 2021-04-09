@@ -12,6 +12,7 @@ import dk.alexandra.fresco.suite.spdz.SpdzResourcePool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.ATPManager;
+import utils.BenchmarkHandler;
 import utils.NetworkManager;
 import utils.SIntComparator;
 
@@ -27,8 +28,11 @@ public class SecretDateHost {
     public static int myID;
     int maxBitLength;
     int numParties;
-    boolean logging;
-    boolean debug;
+    static boolean logging;
+    static boolean debug;
+    boolean benchmark;
+
+    public static final Integer benchmarkId = 2;
 
     public Network myNetwork;
     public SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> mySce;
@@ -39,6 +43,12 @@ public class SecretDateHost {
     public EvaluationProtocol protocol;
     public PriceProtocol priceProtocol;
 
+    public static void log(String info){
+        if(debug || logging){
+            logger.info(info);
+        }
+    }
+
     public enum EvaluationProtocol{
         LINEAR,
         CONVEX,
@@ -48,31 +58,55 @@ public class SecretDateHost {
 
     public void runProtocol(){
 
-        logger.info("Setup aggregator");
+        BenchmarkHandler handler = BenchmarkHandler.getInstance();
+        handler.startTimer(benchmarkId);
+
+        log("Setup aggregator");
         AggregateInputs aggregator = new AggregateInputs(this);
-        logger.info("Starting aggregator");
-        mySce.runApplication(aggregator, myPool, myNetwork, Duration.ofMinutes(5));
-        logger.info("Starting Volume Checks");
-        aggregator.checkVolumes(mySce, myPool, myNetwork, Duration.ofMinutes(2));
-        logger.info("Sorting Dates");
-        Map<Integer, DRes<SInt>> dates = aggregator.sortByDate(mySce, myPool, myNetwork, Duration.ofMinutes(2));
+        log("Starting aggregator");
+        ATPManager.instance.clearNetwork(myNetwork);
+        mySce.runApplication(aggregator, myPool, myNetwork, Duration.ofMinutes(10));
+        log("Starting Volume Checks");
+        ATPManager.instance.clearNetwork(myNetwork);
+        aggregator.checkVolumes(mySce, myPool, myNetwork, Duration.ofMinutes(30));
+        log("Sorting Dates");
+        ATPManager.instance.clearNetwork(myNetwork);
+        Map<Integer, DRes<SInt>> dates = aggregator.sortByDate(mySce, myPool, myNetwork, Duration.ofMinutes(15));
+        ATPManager.instance.clearNetwork(myNetwork);
 
+        handler.endTimer(benchmarkId);
 
+        if(benchmark){
+            PriceProtocolBenchmark priceProtocolBenchmark = new PriceProtocolBenchmark();
+            log("Setup protocol benchmarking");
+            priceProtocolBenchmark.initMPCParameters(mySce, myPool, myNetwork, Duration.ofMinutes(20));
+            log("Evaluate Price for all SalesPositions for all protocols");
+            Map<Integer, List<Boolean>> results = priceProtocolBenchmark.executeForAllPositions(aggregator.pricesTotal, dates,
+                    aggregator.hostUnits, aggregator.volumesTotal, debug);
 
-        logger.info("Setup price Protocol " + protocol.toString());
-        priceProtocol.initMPCParameters(mySce, myPool, myNetwork, Duration.ofMinutes(5));
+            logger.info("Results of the pricing");
+            for(Map.Entry<Integer, List<Boolean>> entry : results.entrySet()){
+                logger.info("Sales Position: " + entry.getKey() +
+                        "\nResulted in: " + entry.getValue());
+            }
 
-        logger.info("Evaluate Price for all SalesPositions");
-        Map<Integer, Boolean> results = priceProtocol.executeForAllPositions(aggregator.pricesTotal, dates,
-                                        aggregator.hostUnits, aggregator.volumesTotal, debug);
+        } else {
 
+            log("Setup price Protocol " + protocol.toString());
+            priceProtocol.initMPCParameters(mySce, myPool, myNetwork, Duration.ofMinutes(20));
 
+            log("Evaluate Price for all SalesPositions");
+            Map<Integer, Boolean> results = priceProtocol.executeForAllPositions(aggregator.pricesTotal, dates,
+                    aggregator.hostUnits, aggregator.volumesTotal, debug);
 
-        logger.info("Results of the pricing");
-        for(Map.Entry<Integer, Boolean> entry : results.entrySet()){
-            logger.info("Sales Position: " + entry.getKey() +
-                    "\nResulted in: " + entry.getValue());
+            logger.info("Results of the pricing");
+            for(Map.Entry<Integer, Boolean> entry : results.entrySet()){
+                logger.info("Sales Position: " + entry.getKey() +
+                        "\nResulted in: " + entry.getValue());
+            }
         }
+
+
 
 
     }

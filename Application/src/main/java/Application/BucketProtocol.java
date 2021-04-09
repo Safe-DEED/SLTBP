@@ -13,21 +13,21 @@ import java.util.Map;
 
 public class BucketProtocol extends PriceProtocol{
 
-    DRes<SInt> percent, comparison1, comparison2, comparison3;
+    DRes<SInt> percent, comparison1, comparison2, comparison3, scalesClientPrice;
     DRes<BigInteger> openComp1, openComp2, openComp3;
     Map<Integer, Integer> bucketToPremiumMap = new HashMap<>();
+    Integer pricePremium;
+
+
+
 
     private boolean isNotBool(long value){
         return value != 1 && value != 0;
     }
 
-    @Override
-    public boolean checkResult() {
-        return false;
-    }
-
     public BucketProtocol(){
         super();
+        benchmarkId = 6;
         bucketToPremiumMap.put(7, 100);
         bucketToPremiumMap.put(6, 102);
         bucketToPremiumMap.put(5, 105);
@@ -42,13 +42,14 @@ public class BucketProtocol extends PriceProtocol{
     public DRes<BigInteger> buildComputation(ProtocolBuilderNumeric builder) {
 
 
+
         if(!protocolInit){
             throw new IllegalStateException("Running Price evaluation before protocol init");
         }
         protocolInit = false;
 
         return builder.seq(seq -> {
-            SecretDateHost.logger.info("Starting bucket price finder");
+            SecretDateHost.log("Starting bucket price finder");
             if(debug){
                 openValues(seq);
             }
@@ -99,12 +100,14 @@ public class BucketProtocol extends PriceProtocol{
                 throw new RuntimeException("Error in comparison or opening of values");
             }
             int mapAccess = (int) (4 * comp1 + 2 * comp2 + comp3);
-            int pricePremium = bucketToPremiumMap.get(mapAccess);
+            pricePremium = bucketToPremiumMap.get(mapAccess);
+            SecretDateHost.log("map category: " + mapAccess + " -> " + pricePremium);
             DRes<SInt> singlePrice = seq.numeric().mult(pricePremium, priceHost);
             resultPrice = seq.numeric().mult(singlePrice, clientVolume);
+            scalesClientPrice = seq.numeric().mult(100, priceClient);
             return null;
         }).seq((seq, nil) -> {
-            resultEvaluation = Comparison.using(seq).compareLEQ(resultPrice, priceClient);
+            resultEvaluation = Comparison.using(seq).compareLEQ(resultPrice, scalesClientPrice);
             return null;
         }).seq((seq, nil) -> {
             if(debug){
@@ -113,5 +116,45 @@ public class BucketProtocol extends PriceProtocol{
             protocolFinished = true;
             return seq.numeric().open(resultEvaluation);
         });
+    }
+
+
+    @Override
+    public boolean checkResult(){
+        if(debug){
+            SecretDateHost.log("checking result\n\n");
+            long standard = standardLeadTimeOpen.out().longValue();
+            long ordered = orderedLeadTimeOpen.out().longValue();
+            long sub = standard - ordered;
+            double div = 100 * ((double) sub / standard);
+            int pricePremium;
+            if(div <= 10){
+                pricePremium = 0;
+            } else if(div <= 20){
+                pricePremium = 2;
+            } else if(div <= 35){
+                pricePremium = 5;
+            } else if(div <= 50){
+                pricePremium = 10;
+            } else if(div <= 65){
+                pricePremium = 20;
+            } else if(div <= 80){
+                pricePremium = 40;
+            } else if(div <= 90){
+                pricePremium = 80;
+            } else if(div <= 100){
+                pricePremium = 90;
+            } else{
+                return false;
+            }
+            pricePremium += 100;
+            long totalPrice = pricePremium * priceHostOpen.out().longValue() * clientVolumeOpen.out().longValue();
+            SecretDateHost.log(super.stringify());
+            SecretDateHost.log("Correct result: " + totalPrice);
+            SecretDateHost.log("Actual result: " + this.price.out());
+            SecretDateHost.log("\n\n");
+            return totalPrice == this.price.out().longValue();
+        }
+        return false;
     }
 }

@@ -82,6 +82,7 @@ public class BenchmarkHandler {
         long now = System.currentTimeMillis();
         long duration = now - timer;
         printTime(duration, id);
+        timerMap.remove(id);
     }
 
 }

@@ -25,6 +25,8 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
     // DEBUG Values
     DRes<BigInteger> standardLeadTimeOpen, orderedLeadTimeOpen, priceHostOpen, priceClientOpen, clientVolumeOpen;
 
+    public  Integer benchmarkId;
+
     boolean protocolInit = false;
     boolean mpcInit = false;
     boolean protocolFinished = false;
@@ -83,7 +85,7 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
         SIntComparator comparator = new SIntComparator(Sce, pool, network, duration);
         for(Map.Entry<Integer, ATPManager.ATPUnit> hostEntry : hostUnits.entrySet()) {
             int salesPosition = hostEntry.getKey();
-            SecretDateHost.logger.info("Setup protocol for SP: " + salesPosition);
+            SecretDateHost.log("Setup protocol for SP: " + salesPosition);
             ATPManager.ATPUnit hostUnit = hostEntry.getValue();
             DRes<SInt> orderDate = orderedDates.getOrDefault(salesPosition, null);
             DRes<SInt> priceClient = clientPrices.getOrDefault(salesPosition, null);
@@ -94,8 +96,8 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
                 throw new IllegalArgumentException("Input to price protocol has to be pre-shared and cannot be null");
             }
             int standardHigherOrder = comparator.compare(standardDate, orderDate);
-            if (standardHigherOrder < 0) {
-                SecretDateHost.logger.info("order date is bigger than standard -> standard is considered");
+            if (standardHigherOrder <= 0) {
+                SecretDateHost.log("order date is bigger or equal than standard -> standard is considered");
                 MultApplication multApplication = new MultApplication(priceHost, clientVolume);
                 ATPManager.instance.clearNetwork(network);
                 DRes<SInt> totalPrice = Sce.runApplication(multApplication, pool, network, duration);
@@ -103,12 +105,12 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
                 results.put(salesPosition, res > -1);
             } else {
                 initProtocol(standardDate, orderDate, priceHost, priceClient, volumeClient, debug);
-                SecretDateHost.logger.info("Start protocol for SP: " + salesPosition);
+                SecretDateHost.log("Start protocol for SP: " + salesPosition);
                 ATPManager.instance.clearNetwork(network);
                 BigInteger res = Sce.runApplication(this, pool, network, duration);
                 results.put(salesPosition, res.equals(BigInteger.ONE));
                 if(debug){
-                    SecretDateHost.logger.info("Final result check yields: " + checkResult());
+                    SecretDateHost.log("Final result check yields: " + checkResult());
                 }
             }
         }

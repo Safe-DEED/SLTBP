@@ -61,6 +61,7 @@ public abstract class FRESCOBuilder<BuilderT> {
     protected Logger log = LoggerFactory.getLogger(MPCBuilder.class);
     protected boolean logging;
     protected boolean debug;
+    protected boolean benchmark;
 
     /**
      * Creating the builder following the builder pattern.
@@ -77,6 +78,16 @@ public abstract class FRESCOBuilder<BuilderT> {
     public FRESCOBuilder<BuilderT> withDebug(boolean debug){
         this.debug = debug;
         this.logging = debug || this.logging;
+        return this;
+    }
+
+    /**
+     * Setting the benchmark flag for pricing protocols
+     * @param benchmark the flag to be set
+     */
+    public FRESCOBuilder<BuilderT> withBenchmark(boolean benchmark){
+        this.benchmark = benchmark;
+        this.debug = !benchmark && debug;
         return this;
     }
 

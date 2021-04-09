@@ -51,14 +51,15 @@ public class DateHostBuilder extends MPCBuilder<SecretDateHost> {
             SecretDateHost.logger.info("Care - insecure debug protocol activated!");
             SecretDateHost.logger.error("Care - insecure debug protocol activated!");
         }
-        host.debug            = debug;
-        host.myID             = myID;
+        SecretDateHost.debug  = debug;
+        host.benchmark        = benchmark;
+        SecretDateHost.myID   = myID;
         host.maxBitLength     = maxBitLength;
         host.numParties       = numberOfParties;
         host.myNetwork        = myNetwork;
         host.mySce            = mySce;
         host.myPool           = myPool;
-        host.logging          = logging;
+        SecretDateHost.logging= logging;
         host.myNetworkManager = myNetworkManager;
         host.myManager        = myManager;
         host.units            = units;

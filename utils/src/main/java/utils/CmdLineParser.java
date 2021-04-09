@@ -239,6 +239,7 @@ public class CmdLineParser {
         public int modBitLength;
         public boolean host;
         public boolean debug;
+        public boolean benchmark;
         public PreprocessingStrategy preprocessingStrategy;
         public obliviousTransferProtocol otProtocol;
         public EvaluationStrategy evaluationStrategy;
@@ -252,6 +253,9 @@ public class CmdLineParser {
         public void setDebug(boolean debug){
             this.debug = debug;
             this.logging = debug || logging;
+        }
+        public void setBenchmark(boolean benchmark){
+            this.benchmark = benchmark;
         }
         public BuilderParams(boolean logging, boolean multiThreaded){
             this.logging = logging;

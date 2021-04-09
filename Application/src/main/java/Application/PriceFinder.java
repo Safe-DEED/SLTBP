@@ -133,10 +133,11 @@ public class PriceFinder {
         CmdLineParser.BuilderParams params = new CmdLineParser.BuilderParams(true, false);
         params.setMaxBitLength(64);
         params.setModBitLength(128);
-        params.setPreprocessingStrategy(PreprocessingStrategy.DUMMY);
-        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.DUMMY);
-        params.setEvaluationStrategy(EvaluationStrategy.SEQUENTIAL);
-        params.setDebug(true);
+        params.setPreprocessingStrategy(PreprocessingStrategy.MASCOT);
+        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.NAOR);
+        params.setEvaluationStrategy(EvaluationStrategy.SEQUENTIAL_BATCHED);
+        params.setDebug(false);
+        params.setBenchmark(true);
         JSONParser jsonParser = new JSONParser();
         JSONArray networkConfig, unitList;
         Party party;
@@ -266,8 +267,10 @@ public class PriceFinder {
 
     public static void secureLeadTimeBasedPriceFinder(CmdLineParser.BuilderParams params) throws ParseException {
         log.info("---------- starting setup ----------");
+        BenchmarkHandler handler = BenchmarkHandler.getInstance();
+        handler.startTimer(1);
         SecretDateHost secretDateHost = new DateHostBuilder(params.logging)
-                .withProtocol(SecretDateHost.EvaluationProtocol.LINEAR)
+                .withProtocol(SecretDateHost.EvaluationProtocol.BUCKET)
                 .withVolume(params.volume, params.amount)
                 .withNetwork(getPartyMap(params.partyList, params.myParty), params.myParty)
                 .withResourcePool(params.preprocessingStrategy, params.modBitLength, params.otProtocol)
@@ -276,11 +279,14 @@ public class PriceFinder {
                 .withUnits(params.units)
                 .withBatchEvalStrat(params.evaluationStrategy)
                 .withDebug(params.debug)
+                .withBenchmark(params.benchmark)
                 .withSpdzLength(params.maxBitLength)
                 .build();
 
         log.info("---------- Starting the protocol ----------");
         secretDateHost.runProtocol();
+        handler.endTimer(1);
+        handler.printNetwork(secretDateHost.myNetworkManager.getReceivedBytes(), params.id);
     }
 
     /**

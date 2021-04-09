@@ -11,6 +11,15 @@ import java.math.BigInteger;
 
 public class ConcaveProtocol extends PriceProtocol{
 
+    DRes<SInt> pricePremium, premiumLimit, powerOLT, powerSDT;
+    DRes<BigInteger> isOverflow, pricePremiumOpen, powerOLTOpen, powerSDTOpen;
+
+
+
+    public ConcaveProtocol(){
+        benchmarkId = 4;
+    }
+
     @Override
     public DRes<BigInteger> buildComputation(ProtocolBuilderNumeric builder) {
         if(!protocolInit){
@@ -18,30 +27,82 @@ public class ConcaveProtocol extends PriceProtocol{
         }
         protocolInit = false;
         return builder.seq(seq -> {
-            SecretDateHost.logger.info("Starting concave price Computation");
+            SecretDateHost.log("Starting concave price Computation");
             if(debug){
                 openValues(seq);
             }
             Numeric numeric = seq.numeric();
-            DRes<SInt> sub = numeric.sub(standardLeadTime, orderedLeadTime);
-            DRes<SInt> mul = numeric.mult(100, sub);
-            DRes<SInt> div = AdvancedNumeric.using(seq).div(mul, standardLeadTime);
-            DRes<SInt> log = AdvancedNumeric.using(seq).log(div, seq.getBasicNumericContext().getMaxBitLength());
-            DRes<SInt> mul2 = numeric.mult(log, priceHost);
-            DRes<SInt> half = AdvancedNumeric.using(seq).div(mul2, 2);
-            resultPrice =  numeric.mult(half, clientVolume);
+            AdvancedNumeric advancedNumeric = AdvancedNumeric.using(seq);
+            int bitLen = seq.getBasicNumericContext().getMaxBitLength();
+            powerOLT = numeric.sub(standardLeadTime, orderedLeadTime);
+            powerOLT = numeric.mult(100, powerOLT);
+            powerOLT = advancedNumeric.exp(powerOLT, 10);
+            powerOLT = advancedNumeric.log(powerOLT, bitLen);
+            powerSDT = advancedNumeric.exp(standardLeadTime, 10);
+            powerSDT = advancedNumeric.log(powerSDT, bitLen);
+            pricePremium = numeric.sub(powerOLT, powerSDT);
+
             return () -> null;
         }).seq((seq, nil) -> {
-            if(debug){
-                price = seq.numeric().open(resultPrice, 1);
+            premiumLimit = Comparison.using(seq).compareLEQ(pricePremium, seq.numeric().known(20));
+            if(debug)
+            {
+                pricePremiumOpen = seq.numeric().open(pricePremium);
+                powerOLTOpen = seq.numeric().open(powerOLT);
+                powerSDTOpen = seq.numeric().open(powerSDT);
             }
-            resultPrice = Comparison.using(seq).compareLEQ(resultPrice, priceClient);
+            return null;
+        }).seq((seq, nil) -> {
+            isOverflow = seq.numeric().open(premiumLimit);
+            return null;
+        }).seq((seq, nil) -> {
+            if(debug){
+                SecretDateHost.log("pricePremium: " + pricePremiumOpen.out() + "\npowerOLT: " + powerOLTOpen.out() + "\npowerSDT: "+ powerSDTOpen.out());
+            }
+            if(isOverflow.out().equals(BigInteger.ZERO)){
+                pricePremium = seq.numeric().known(40);
+                SecretDateHost.log("scaled down!");
+            } else {
+                pricePremium = seq.numeric().add(20, pricePremium);
+            }
+            pricePremium = seq.numeric().mult(pricePremium, priceHost);
+            resultPrice = seq.numeric().mult(pricePremium, clientVolume);
+            resultPrice = AdvancedNumeric.using(seq).div(resultPrice, 20);
+            return null;
+        }).seq((seq, nil) -> {
+            if(debug){
+                price = seq.numeric().open(resultPrice);
+            }
+            resultEvaluation = Comparison.using(seq).compareLEQ(resultPrice, priceClient);
+            protocolFinished = true;
             return () -> null;
-        }).seq((seq, nil) -> seq.numeric().open(resultPrice));
+        }).seq((seq, nil) -> seq.numeric().open(resultEvaluation));
     }
 
     @Override
     public boolean checkResult() {
+
+        if(debug){
+            SecretDateHost.log("checking result\n\n");
+            long standard = standardLeadTimeOpen.out().longValue();
+            long ordered = orderedLeadTimeOpen.out().longValue();
+            long clientVol = clientVolumeOpen.out().longValue();
+            long priceHost = priceHostOpen.out().longValue();
+            long sub = standard - ordered;
+            sub *= 100;
+            double div = (double) sub / standard;
+            double log = Math.log(div);
+            log /= 2;
+            log = (log > 1) ? 2 : log + 1;
+            log *= priceHost;
+            long result = (long) log * clientVol;
+            long actual = price.out().longValue();
+            SecretDateHost.log(super.stringify());
+            SecretDateHost.log("Correct result: " + result);
+            SecretDateHost.log("Actual result:" + actual);
+            SecretDateHost.log("\n\n");
+            return (Math.abs(result - actual) < result * 0.1);
+        }
         return false;
     }
 

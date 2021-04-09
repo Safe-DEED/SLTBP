@@ -92,10 +92,9 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
                 throw new IllegalArgumentException("Mismatch in SalesPosition List:\n" + salesPositions);
             }
         }
-        SecretDateHost.logger.info("List before sort: " + myUnits);
+        SecretDateHost.log("List before sort: " + myUnits);
         myUnits.sort(new SortByPosition());
-        SecretDateHost.logger.info("List after sort: " + myUnits);
-        ATPManager.instance.clearNetwork(secretDateHost.myNetwork);
+        SecretDateHost.log("List after sort: " + myUnits);
     }
 
     @Override
@@ -104,20 +103,19 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
             return null;
         }
 
-
         return builder.seq(seq -> {
             Numeric numeric = seq.numeric();
-            SecretDateHost.logger.info("Input values to aggregator");
+            SecretDateHost.log("Input values to aggregator");
             for (int i = 0; i < myUnits.size(); ++i) {
                 int salesPos = salesPositions.get(i);
-                SecretDateHost.logger.info("gathering input of SP "+ salesPos);
+                SecretDateHost.log("gathering input of SP "+ salesPos);
                 ATPManager.ATPUnit myUnit = myUnits.get(i);
                 ATPManager.ATPUnit currentUnit;
                 List<ATPManager.ATPUnit> currentUnitList = new ArrayList<>();
 
                 for (int id : partyList) {
-                    SecretDateHost.logger.info("gathering input of Party "+ id);
-                    if (secretDateHost.myID == id) {
+                    SecretDateHost.log("gathering input of Party "+ id);
+                    if (SecretDateHost.myID == id) {
                         myUnit.closedDate = numeric.input(myUnit.date, id);
                         myUnit.closedAmount = numeric.input(myUnit.amount, id);
                         myUnit.closedPrice = numeric.input(myUnit.price, id);
@@ -131,11 +129,11 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
                     currentUnitList.add(currentUnit);
                 }
                 unitListMap.put(salesPos, currentUnitList);
-                SecretDateHost.logger.info("Map: " + unitListMap);
+                SecretDateHost.log("Map: " + unitListMap);
             }
             return () -> null;
         }).seq((seq, nil) -> {
-            SecretDateHost.logger.info("Summing up values");
+            SecretDateHost.log("Summing up values");
             for(Map.Entry<Integer, List<ATPManager.ATPUnit>> entry : unitListMap.entrySet()){
                 List<ATPManager.ATPUnit> currentList = entry.getValue();
                 int salesPos = entry.getKey();
@@ -163,10 +161,11 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
                                                      SpdzResourcePool pool, Network network, Duration duration){
         Map<Integer, DRes<SInt>> result = new HashMap<>();
         SIntComparator comparator = new SIntComparator(Sce, pool, network, duration);
-        SecretDateHost.logger.info("Sorting salesPosition by date");
+        SecretDateHost.log("Sorting salesPosition by date");
         for(Map.Entry<Integer, List<DRes<SInt>>> entry : datesAll.entrySet()){
             List<DRes<SInt>> current_dates = entry.getValue();
             DRes<SInt> min = Collections.min(current_dates, comparator);
+            //DRes<SInt> min = current_dates.get(0);
             result.put(entry.getKey(), min); // At the moment lowest date is returned
         }
         return result;
@@ -194,7 +193,7 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
             volumesTotal.remove(pos);
             datesAll.remove(pos);
             pricesTotal.remove(pos);
-            SecretDateHost.logger.info("deleted " + pos + " from lists");
+            SecretDateHost.log("deleted " + pos + " from lists");
         }
 
 

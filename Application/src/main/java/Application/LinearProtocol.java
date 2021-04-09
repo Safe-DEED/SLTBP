@@ -12,7 +12,9 @@ import java.util.Collections;
 
 public class LinearProtocol extends PriceProtocol{
 
-
+    public LinearProtocol(){
+        benchmarkId = 3;
+    }
 
     @Override
     public DRes<BigInteger> buildComputation(ProtocolBuilderNumeric builder) {
@@ -22,7 +24,7 @@ public class LinearProtocol extends PriceProtocol{
         }
         protocolInit = false;
         return builder.seq(seq -> {
-            SecretDateHost.logger.info("Starting linear price Computation");
+            SecretDateHost.log("Starting linear price Computation");
             if(debug){
                 openValues(seq);
             }
@@ -51,13 +53,13 @@ public class LinearProtocol extends PriceProtocol{
             return false;
         }
         if(debug){
-            SecretDateHost.logger.info("checking result\n\n\n");
+            SecretDateHost.log("checking result\n\n\n");
             BigInteger sub = standardLeadTimeOpen.out().subtract(orderedLeadTimeOpen.out());
             BigInteger mul = sub.multiply(priceHostOpen.out());
             BigInteger div = mul.divide(standardLeadTimeOpen.out());
             BigInteger add = div.add(priceHostOpen.out());
             BigInteger result = add.multiply(clientVolumeOpen.out());
-            SecretDateHost.logger.info(super.stringify());
+            SecretDateHost.log(super.stringify());
             return result.equals(price.out());
         }
 
