@@ -9,3 +9,5 @@ root-mpc.iml
 utils/mpc-utils.iml
 utils/target/
 log.txt
+SecStores/
+utils/src/main/resources/

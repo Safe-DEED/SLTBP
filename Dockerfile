@@ -6,5 +6,4 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /home/SLTBP
 COPY . /home/SLTBP
 RUN mvn clean install
-CMD make run
 CMD /bin/bash

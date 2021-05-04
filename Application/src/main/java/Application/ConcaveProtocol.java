@@ -32,6 +32,7 @@ public class ConcaveProtocol extends PriceProtocol{
                 openValues(seq);
             }
             Numeric numeric = seq.numeric();
+
             AdvancedNumeric advancedNumeric = AdvancedNumeric.using(seq);
             int bitLen = seq.getBasicNumericContext().getMaxBitLength();
             powerOLT = numeric.sub(standardLeadTime, orderedLeadTime);

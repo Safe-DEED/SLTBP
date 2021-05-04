@@ -60,26 +60,26 @@ public class SecretDateHost {
 
         BenchmarkHandler handler = BenchmarkHandler.getInstance();
         handler.startTimer(benchmarkId);
-
+        handler.startNetwork(benchmarkId, myNetworkManager.getReceivedBytes());
         log("Setup aggregator");
         AggregateInputs aggregator = new AggregateInputs(this);
         log("Starting aggregator");
         ATPManager.instance.clearNetwork(myNetwork);
-        mySce.runApplication(aggregator, myPool, myNetwork, Duration.ofMinutes(10));
+        mySce.runApplication(aggregator, myPool, myNetwork, Duration.ofMinutes(60));
         log("Starting Volume Checks");
         ATPManager.instance.clearNetwork(myNetwork);
-        aggregator.checkVolumes(mySce, myPool, myNetwork, Duration.ofMinutes(30));
+        aggregator.checkVolumes(mySce, myPool, myNetwork, Duration.ofMinutes(60));
         log("Sorting Dates");
         ATPManager.instance.clearNetwork(myNetwork);
-        Map<Integer, DRes<SInt>> dates = aggregator.sortByDate(mySce, myPool, myNetwork, Duration.ofMinutes(15));
+        Map<Integer, DRes<SInt>> dates = aggregator.sortByDate(mySce, myPool, myNetwork, Duration.ofMinutes(60));
         ATPManager.instance.clearNetwork(myNetwork);
 
         handler.endTimer(benchmarkId);
-
+        handler.endNetwork(benchmarkId, myNetworkManager.getReceivedBytes());
         if(benchmark){
-            PriceProtocolBenchmark priceProtocolBenchmark = new PriceProtocolBenchmark();
+            PriceProtocolBenchmark priceProtocolBenchmark = new PriceProtocolBenchmark(myNetworkManager);
             log("Setup protocol benchmarking");
-            priceProtocolBenchmark.initMPCParameters(mySce, myPool, myNetwork, Duration.ofMinutes(20));
+            priceProtocolBenchmark.initMPCParameters(mySce, myPool, myNetwork, Duration.ofMinutes(200));
             log("Evaluate Price for all SalesPositions for all protocols");
             Map<Integer, List<Boolean>> results = priceProtocolBenchmark.executeForAllPositions(aggregator.pricesTotal, dates,
                     aggregator.hostUnits, aggregator.volumesTotal, debug);

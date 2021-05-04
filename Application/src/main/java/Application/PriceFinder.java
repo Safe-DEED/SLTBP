@@ -133,8 +133,8 @@ public class PriceFinder {
         CmdLineParser.BuilderParams params = new CmdLineParser.BuilderParams(true, false);
         params.setMaxBitLength(64);
         params.setModBitLength(128);
-        params.setPreprocessingStrategy(PreprocessingStrategy.MASCOT);
-        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.NAOR);
+        params.setPreprocessingStrategy(PreprocessingStrategy.DUMMY);
+        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.DUMMY);
         params.setEvaluationStrategy(EvaluationStrategy.SEQUENTIAL_BATCHED);
         params.setDebug(false);
         params.setBenchmark(true);
@@ -219,6 +219,7 @@ public class PriceFinder {
         NetworkManager manager;
         Application<Integer, ProtocolBuilderNumeric> demo;
         log.info("---------- starting setup ----------");
+        handler.startNetwork(params1.id, 0);
         if(params1.host){
             MPCHost hdemo = new MPCHostBuilder(params1.logging)
                     .withVolume(params1.volume, params1.amount)
@@ -256,7 +257,7 @@ public class PriceFinder {
         log.info("---------- Starting the protocol ----------");
         Integer deal = sce.runApplication(demo, pool, net, Duration.ofMinutes(20));
         handler.endTimer(1);
-        handler.printNetwork(manager.getReceivedBytes(), params1.id);
+        handler.endNetwork(params1.id, manager.getReceivedBytes());
         if(deal > 0){
             log.info("the resulting deal is: " + deal);
         } else{
@@ -269,6 +270,7 @@ public class PriceFinder {
         log.info("---------- starting setup ----------");
         BenchmarkHandler handler = BenchmarkHandler.getInstance();
         handler.startTimer(1);
+        handler.startNetwork(1, 0);
         SecretDateHost secretDateHost = new DateHostBuilder(params.logging)
                 .withProtocol(SecretDateHost.EvaluationProtocol.BUCKET)
                 .withVolume(params.volume, params.amount)
@@ -286,7 +288,7 @@ public class PriceFinder {
         log.info("---------- Starting the protocol ----------");
         secretDateHost.runProtocol();
         handler.endTimer(1);
-        handler.printNetwork(secretDateHost.myNetworkManager.getReceivedBytes(), params.id);
+        handler.endNetwork(1, secretDateHost.myNetworkManager.getReceivedBytes());
     }
 
     /**
