@@ -15,6 +15,7 @@ public class BenchmarkHandler {
 
 
     Map<Integer, Long> timerMap;
+    Map<Integer, Long> networkMap;
 
     public static BenchmarkHandler getInstance(){
         if(BenchmarkHandler.instance == null){
@@ -25,10 +26,11 @@ public class BenchmarkHandler {
 
     BenchmarkHandler(){
         timerMap = new HashMap<>();
+        networkMap = new HashMap<>();
     }
 
     @SuppressWarnings("unchecked")
-    public void printTime(long time, int id){
+    void printTime(long time, int id){
         long seconds = time / 1000;
         long minutes = seconds / 60;
         long hours = minutes / 60;
@@ -45,7 +47,7 @@ public class BenchmarkHandler {
     }
 
     @SuppressWarnings("unchecked")
-    public void printNetwork(long receivedBytes, int id){
+    void printNetwork(long receivedBytes, int id){
         long kb = receivedBytes / 1024;
         long mb = kb / 1024;
         long gb = mb / 1024;
@@ -59,7 +61,7 @@ public class BenchmarkHandler {
             received.put("gb", String.valueOf(gb));
         }
         JSONObject print = new JSONObject();
-        print.put("player", String.valueOf(id - 1));
+        print.put("player", String.valueOf(id));
         JSONObject recv = new JSONObject();
         recv.put("received", received);
         print.put("netdata", recv);
@@ -72,6 +74,22 @@ public class BenchmarkHandler {
         }
         long timer = System.currentTimeMillis();
         timerMap.put(id, timer);
+    }
+
+    public void startNetwork(Integer id, long start){
+        if(networkMap.containsKey(id)){
+            throw new RuntimeException("network tracking for id " + id + " is already running");
+        }
+        networkMap.put(id, start);
+    }
+
+    public void endNetwork(Integer id, long traffic){
+        if(!networkMap.containsKey(id)){
+            throw new RuntimeException("No network traffic measured under id " + id);
+        }
+        long start = networkMap.get(id);
+        long received = traffic - start;
+        printNetwork(received, id);
     }
 
     public void endTimer(Integer id){
