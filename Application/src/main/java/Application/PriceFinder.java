@@ -133,11 +133,11 @@ public class PriceFinder {
         CmdLineParser.BuilderParams params = new CmdLineParser.BuilderParams(true, false);
         params.setMaxBitLength(64);
         params.setModBitLength(128);
-        params.setPreprocessingStrategy(PreprocessingStrategy.MASCOT);
-        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.NAOR);
+        params.setPreprocessingStrategy(PreprocessingStrategy.DUMMY);
+        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.DUMMY);
         params.setEvaluationStrategy(EvaluationStrategy.SEQUENTIAL_BATCHED);
         params.setDebug(false);
-        params.setBenchmark(true);
+        params.setBenchmark(false);
         JSONParser jsonParser = new JSONParser();
         JSONArray networkConfig, unitList;
         Party party;
@@ -272,12 +272,9 @@ public class PriceFinder {
         handler.startTimer(1);
         handler.startNetwork(1, 0);
         SecretDateHost secretDateHost = new DateHostBuilder(params.logging)
-                .withProtocol(SecretDateHost.EvaluationProtocol.BUCKET)
-                .withVolume(params.volume, params.amount)
+                .withProtocol(SecretDateHost.EvaluationProtocol.LINEAR)
                 .withNetwork(getPartyMap(params.partyList, params.myParty), params.myParty)
                 .withResourcePool(params.preprocessingStrategy, params.modBitLength, params.otProtocol)
-                .withDate(params.date)
-                .withPrice(params.price)
                 .withUnits(params.units)
                 .withBatchEvalStrat(params.evaluationStrategy)
                 .withDebug(params.debug)

@@ -303,11 +303,12 @@ public class ATPManager {
         JSONObject object = new JSONObject();
         object.put("id", String.valueOf(unit.id));
         if(host){
-            ATPUnit myUnit = units.get(1).stream().filter(u -> u.date.equals(unit.date)).findAny().orElse(unit);
+            //ATPUnit myUnit = units.get(1).stream().filter(u -> u.date.equals(unit.date)).findAny().orElse(unit);
+            log.info(unit.toString());
             object.put("date", String.valueOf(unit.date));
             object.put("amount", String.valueOf(unit.openedAmount.out()));
             object.put("price", String.valueOf(unit.openedPrice.out()));
-            object.put("Sales Position", String.valueOf(myUnit.salesPosition));
+            object.put("Sales Position", String.valueOf(unit.salesPosition));
         } else{
             object.put("date", String.valueOf(unit.date));
             object.put("amount", String.valueOf(unit.amount));
@@ -318,6 +319,48 @@ public class ATPManager {
         JSONObject object1 = new JSONObject();
         object1.put("unit", object);
         return object1;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void exportResult(Map<Integer, Boolean> pricingResults, Map<Integer, List<ATPManager.ATPUnit>> unitListMap){
+        JSONArray resultList = new JSONArray();
+        for(Map.Entry<Integer, Boolean> resultEntry : pricingResults.entrySet()){
+            Integer salesPosition = resultEntry.getKey();
+            if(resultEntry.getValue()){
+                List<ATPManager.ATPUnit> unitList = unitListMap.getOrDefault(salesPosition, null);
+                if(unitList == null){
+                    log.error("unitList cannot be found in unitListMap.\n" + salesPosition + " cannot be added to accepted order");
+                    continue;
+                }
+                JSONArray unitsList = new JSONArray();
+                // TODO: change selection of correct atp unit
+                for (ATPUnit unit : unitList) {
+                    if(myID == 1){
+                        if(unit.id != 1){
+                            unitsList.add(unitToJSON(unit, true));
+                        }
+                    } else{
+                        if(unit.id == myID){
+                            unitsList.add(unitToJSON(unit, false));
+                            System.out.println(unitList);
+                        }
+                    }
+                }
+                resultList.add(unitsList);
+            }
+        }
+        //Write JSON file
+        try (FileWriter file = new FileWriter("accepted_order.json")) {
+            if(resultList.isEmpty()){
+                JSONObject fail = new JSONObject();
+                fail.put("deal", "failed");
+                resultList.add(fail);
+            }
+            file.write(resultList.toJSONString());
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

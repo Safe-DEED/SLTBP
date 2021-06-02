@@ -24,7 +24,7 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
     private final List<Integer> salesPositions;
     private final List<Integer> partyList;
     private final SecretDateHost secretDateHost;
-    private final Map<Integer, List<ATPManager.ATPUnit>> unitListMap;
+    public final Map<Integer, List<ATPManager.ATPUnit>> unitListMap;
 
     public Map<Integer, DRes<SInt>> pricesTotal = new HashMap<>();
     public Map<Integer, DRes<SInt>> volumesTotal= new HashMap<>();
