@@ -6,21 +6,5 @@
       "price":"200",
       "Sales Position":"2"
     }
-  },
-  {
-    "unit": {
-      "date":"4",
-      "amount":"10",
-      "price":"150",
-      "Sales Position":"4"
-    }
-  },
-  {
-    "unit": {
-      "date":"9",
-      "amount":"10",
-      "price":"120",
-      "Sales Position":"5"
-    }
   }
 ]
