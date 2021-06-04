@@ -32,8 +32,8 @@ public class LinearProtocol extends PriceProtocol{
             DRes<SInt> sub = numeric.sub(standardLeadTime, orderedLeadTime);
             DRes<SInt> mul = numeric.mult(sub, priceHost);
             DRes<SInt> div = AdvancedNumeric.using(seq).div(mul, standardLeadTime);
-            DRes<SInt> add = numeric.add(priceHost, div);
-            resultPrice = numeric.mult(add, clientVolume);
+            pricePremium = numeric.add(priceHost, div);
+            resultPrice = numeric.mult(pricePremium, clientVolume);
             return null;
         }).seq((seq, nil) -> {
             resultEvaluation = Comparison.using(seq).compareLEQ(resultPrice, priceClient);

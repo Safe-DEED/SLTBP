@@ -16,7 +16,7 @@ public class BucketProtocol extends PriceProtocol{
     DRes<SInt> percent, comparison1, comparison2, comparison3, scalesClientPrice;
     DRes<BigInteger> openComp1, openComp2, openComp3;
     Map<Integer, Integer> bucketToPremiumMap = new HashMap<>();
-    Integer pricePremium;
+    Integer premium;
 
 
 
@@ -100,9 +100,10 @@ public class BucketProtocol extends PriceProtocol{
                 throw new RuntimeException("Error in comparison or opening of values");
             }
             int mapAccess = (int) (4 * comp1 + 2 * comp2 + comp3);
-            pricePremium = bucketToPremiumMap.get(mapAccess);
-            SecretDateHost.log("map category: " + mapAccess + " -> " + pricePremium);
-            DRes<SInt> singlePrice = seq.numeric().mult(pricePremium, priceHost);
+            premium = bucketToPremiumMap.get(mapAccess);
+            SecretDateHost.log("map category: " + mapAccess + " -> " + premium);
+            DRes<SInt> singlePrice = seq.numeric().mult(premium, priceHost);
+            pricePremium = AdvancedNumeric.using(seq).div(singlePrice, 100);
             resultPrice = seq.numeric().mult(singlePrice, clientVolume);
             scalesClientPrice = seq.numeric().mult(100, priceClient);
             return null;

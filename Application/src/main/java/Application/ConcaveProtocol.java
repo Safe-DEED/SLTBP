@@ -11,7 +11,7 @@ import java.math.BigInteger;
 
 public class ConcaveProtocol extends PriceProtocol{
 
-    DRes<SInt> pricePremium, premiumLimit, powerOLT, powerSDT;
+    DRes<SInt> premiumLimit, powerOLT, powerSDT;
     DRes<BigInteger> isOverflow, pricePremiumOpen, powerOLTOpen, powerSDTOpen;
 
 
@@ -67,8 +67,8 @@ public class ConcaveProtocol extends PriceProtocol{
                 pricePremium = seq.numeric().add(20, pricePremium);
             }
             pricePremium = seq.numeric().mult(pricePremium, priceHost);
+            pricePremium = AdvancedNumeric.using(seq).div(pricePremium, 20);
             resultPrice = seq.numeric().mult(pricePremium, clientVolume);
-            resultPrice = AdvancedNumeric.using(seq).div(resultPrice, 20);
             return null;
         }).seq((seq, nil) -> {
             if(debug){

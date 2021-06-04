@@ -316,7 +316,9 @@ public class ATPManager {
         } else{
             object.put("date", String.valueOf(unit.date));
             object.put("amount", String.valueOf(unit.amount));
-            object.put("price", String.valueOf(unit.price));
+            log.info(unit.openedPrice.toString());
+            log.info(unit.openedPrice.out().toString());
+            object.put("price", String.valueOf(unit.openedPrice.out()));
             object.put("Sales Position", String.valueOf(unit.salesPosition));
         }
 

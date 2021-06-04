@@ -19,13 +19,14 @@ import java.util.Map;
 
 public abstract class PriceProtocol implements Application<BigInteger, ProtocolBuilderNumeric> {
 
-    DRes<SInt> standardLeadTime, orderedLeadTime, priceHost, priceClient, resultPrice, clientVolume, resultEvaluation;
+    DRes<SInt> standardLeadTime, orderedLeadTime, priceHost, priceClient, resultPrice, clientVolume, resultEvaluation, pricePremium;
     DRes<BigInteger> price;
 
     // DEBUG Values
     DRes<BigInteger> standardLeadTimeOpen, orderedLeadTimeOpen, priceHostOpen, priceClientOpen, clientVolumeOpen;
 
     public  Integer benchmarkId;
+    public Map<Integer, DRes<SInt>> pricePerUnitMap;
 
     boolean protocolInit = false;
     boolean mpcInit = false;
@@ -80,7 +81,7 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
         if(!mpcInit){
             throw new IllegalStateException("Call to protocol before initialization");
         }
-
+        pricePerUnitMap = new HashMap<>();
         Map<Integer, Boolean> results = new HashMap<>();
         SIntComparator comparator = new SIntComparator(Sce, pool, network, duration);
         for(Map.Entry<Integer, ATPManager.ATPUnit> hostEntry : hostUnits.entrySet()) {
@@ -111,7 +112,7 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
                 boolean result = res.equals(BigInteger.ONE);
                 results.put(salesPosition, result);
                 if(result){
-
+                    pricePerUnitMap.put(salesPosition, pricePremium);
                 }
                 if(debug){
                     SecretDateHost.log("Final result check yields: " + checkResult());

@@ -18,14 +18,21 @@ import java.util.Map;
 public class OpenProtocol implements Application<BigInteger, ProtocolBuilderNumeric> {
     List<ATPManager.ATPUnit> acceptedOrders;
 
-    public OpenProtocol(Map<Integer, Boolean> resultMap, Map<Integer, List<ATPManager.ATPUnit>> unitListMap){
+    public OpenProtocol(Map<Integer, Boolean> resultMap, Map<Integer, List<ATPManager.ATPUnit>> unitListMap, Map<Integer,
+            DRes<SInt>> pricePerUnitMap){
+
         acceptedOrders = new ArrayList<>();
         for(Map.Entry<Integer, Boolean> entry : resultMap.entrySet()){
             int salesPos = entry.getKey();
             if(entry.getValue()){
+                DRes<SInt> pricePerUnit = pricePerUnitMap.get(salesPos);
                 List<ATPManager.ATPUnit> atpList = unitListMap.get(salesPos);
+                if(pricePerUnit == null || atpList == null){
+                    throw new RuntimeException("Order Succeeded while price or list is null - at Sales Position: " + salesPos);
+                }
                 for (ATPManager.ATPUnit unit: atpList) {
                     if(unit.id != 1){
+                        unit.closedPrice = pricePerUnit;
                         acceptedOrders.add(unit);
                     }
                 }
@@ -41,7 +48,17 @@ public class OpenProtocol implements Application<BigInteger, ProtocolBuilderNume
         return builder.seq(seq -> {
             SecretDateHost.log("Starting the open Protocol");
             for (ATPManager.ATPUnit unit: acceptedOrders) {
+                unit.closedPrice = seq.numeric().mult(unit.closedPrice, unit.closedAmount);
+            }
+            return null;
+        }).seq((seq, nil) -> {
+            SecretDateHost.log("Open Values");
+            for (ATPManager.ATPUnit unit: acceptedOrders) {
                 ATPManager.instance.open(unit, 1, seq, true);
+                DRes<BigInteger> openedPrice  =  seq.numeric().open(unit.closedPrice, unit.id);
+                if(SecretDateHost.myID == unit.id){
+                    unit.openedPrice = openedPrice;
+                }
             }
             return null;
         });

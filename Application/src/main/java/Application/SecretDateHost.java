@@ -99,7 +99,7 @@ public class SecretDateHost {
             Map<Integer, Boolean> results = priceProtocol.executeForAllPositions(aggregator.pricesTotal, dates,
                     aggregator.hostUnits, aggregator.volumesTotal, debug);
 
-            OpenProtocol openProtocol = new OpenProtocol(results, aggregator.unitListMap);
+            OpenProtocol openProtocol = new OpenProtocol(results, aggregator.unitListMap, priceProtocol.pricePerUnitMap);
             ATPManager.instance.clearNetwork(myNetwork);
             mySce.runApplication(openProtocol, myPool, myNetwork, Duration.ofMinutes(60));
 
