@@ -305,7 +305,11 @@ public class ATPManager {
         if(host){
             //ATPUnit myUnit = units.get(1).stream().filter(u -> u.date.equals(unit.date)).findAny().orElse(unit);
             log.info(unit.toString());
-            object.put("date", String.valueOf(unit.date));
+            if(unit.date == null){
+                object.put("date", String.valueOf(unit.openedDate.out()));
+            } else{
+                object.put("date", String.valueOf(unit.date));
+            }
             object.put("amount", String.valueOf(unit.openedAmount.out()));
             object.put("price", String.valueOf(unit.openedPrice.out()));
             object.put("Sales Position", String.valueOf(unit.salesPosition));

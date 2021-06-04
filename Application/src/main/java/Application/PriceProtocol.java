@@ -108,7 +108,11 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
                 SecretDateHost.log("Start protocol for SP: " + salesPosition);
                 ATPManager.instance.clearNetwork(network);
                 BigInteger res = Sce.runApplication(this, pool, network, duration);
-                results.put(salesPosition, res.equals(BigInteger.ONE));
+                boolean result = res.equals(BigInteger.ONE);
+                results.put(salesPosition, result);
+                if(result){
+
+                }
                 if(debug){
                     SecretDateHost.log("Final result check yields: " + checkResult());
                 }

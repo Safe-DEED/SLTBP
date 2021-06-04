@@ -133,8 +133,8 @@ public class PriceFinder {
         CmdLineParser.BuilderParams params = new CmdLineParser.BuilderParams(true, false);
         params.setMaxBitLength(64);
         params.setModBitLength(128);
-        params.setPreprocessingStrategy(PreprocessingStrategy.MASCOT);
-        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.NAOR);
+        params.setPreprocessingStrategy(PreprocessingStrategy.DUMMY);
+        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.DUMMY);
         params.setEvaluationStrategy(EvaluationStrategy.SEQUENTIAL_BATCHED);
         params.setDebug(false);
         params.setBenchmark(false);
