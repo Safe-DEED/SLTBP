@@ -303,10 +303,16 @@ public class ATPManager {
         JSONObject object = new JSONObject();
         object.put("id", String.valueOf(unit.id));
         if(host){
+            long price = unit.openedPrice.out().longValue();
+            long amount = unit.openedAmount.out().longValue();
             //ATPUnit myUnit = units.get(1).stream().filter(u -> u.date.equals(unit.date)).findAny().orElse(unit);
             log.info(unit.toString());
             if(unit.date == null){
-                object.put("date", String.valueOf(unit.openedDate.out()));
+                if(price == 0 || amount == 0){
+                    object.put("date", String.valueOf(0));
+                } else {
+                    object.put("date", String.valueOf(unit.openedDate.out()));
+                }
             } else{
                 object.put("date", String.valueOf(unit.date));
             }
@@ -339,7 +345,7 @@ public class ATPManager {
                     continue;
                 }
                 JSONArray unitsList = new JSONArray();
-                // TODO: change selection of correct atp unit
+
                 for (ATPUnit unit : unitList) {
                     if(myID == 1){
                         if(unit.id != 1){
@@ -654,6 +660,9 @@ public class ATPManager {
         }
         //Get date
         int date = Integer.parseInt((String) atpUnit.get("date"));
+        if(price.equals(BigInteger.ZERO) || amount.equals(BigInteger.ZERO)){
+            date = 100000;
+        }
         return new ATPUnit(manager.myID, date, amount, price, sp);
     }
 

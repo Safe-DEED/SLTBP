@@ -1,9 +1,6 @@
 package Application;
 
-import dk.alexandra.fresco.framework.Application;
 import dk.alexandra.fresco.framework.DRes;
-import dk.alexandra.fresco.framework.Party;
-import dk.alexandra.fresco.framework.builder.numeric.Numeric;
 import dk.alexandra.fresco.framework.builder.numeric.ProtocolBuilderNumeric;
 import dk.alexandra.fresco.framework.network.Network;
 import dk.alexandra.fresco.framework.sce.SecureComputationEngine;
@@ -13,12 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.ATPManager;
 import utils.BenchmarkHandler;
+import utils.EvaluationProtocol;
 import utils.NetworkManager;
-import utils.SIntComparator;
 
-import java.math.BigInteger;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,13 +42,6 @@ public class SecretDateHost {
         if(debug || logging){
             logger.info(info);
         }
-    }
-
-    public enum EvaluationProtocol{
-        LINEAR,
-        CONVEX,
-        CONCAVE,
-        BUCKET;
     }
 
     public void runProtocol(){

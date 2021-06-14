@@ -5,11 +5,12 @@ import dk.alexandra.fresco.framework.sce.SecureComputationEngine;
 import dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl;
 import dk.alexandra.fresco.framework.sce.evaluator.BatchedProtocolEvaluator;
 import dk.alexandra.fresco.suite.spdz.SpdzResourcePool;
+import utils.EvaluationProtocol;
 import utils.MPCBuilder;
 
 public class DateHostBuilder extends MPCBuilder<SecretDateHost> {
 
-    private SecretDateHost.EvaluationProtocol protocol = SecretDateHost.EvaluationProtocol.LINEAR;
+    private EvaluationProtocol protocol = EvaluationProtocol.LINEAR;
     private PriceProtocol priceProtocol;
 
     /**
@@ -21,7 +22,7 @@ public class DateHostBuilder extends MPCBuilder<SecretDateHost> {
         super(logging);
     }
 
-    public DateHostBuilder withProtocol(SecretDateHost.EvaluationProtocol protocol){
+    public DateHostBuilder withProtocol(EvaluationProtocol protocol){
         this.protocol = protocol;
         switch (protocol){
             case LINEAR:

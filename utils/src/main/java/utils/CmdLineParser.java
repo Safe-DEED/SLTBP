@@ -243,6 +243,7 @@ public class CmdLineParser {
         public PreprocessingStrategy preprocessingStrategy;
         public obliviousTransferProtocol otProtocol;
         public EvaluationStrategy evaluationStrategy;
+        public EvaluationProtocol evaluationProtocol;
         public ATPManager.Function pricingFunction;
         public boolean multiThreaded;
 
@@ -260,6 +261,12 @@ public class CmdLineParser {
         public BuilderParams(boolean logging, boolean multiThreaded){
             this.logging = logging;
             this.multiThreaded = multiThreaded;
+        }
+        public void setEvaluationProtocol(String protocol) throws IllegalArgumentException {
+            evaluationProtocol = Enum.valueOf(EvaluationProtocol.class, protocol);
+        }
+        public void setEvaluationProtocol(EvaluationProtocol protocol){
+            evaluationProtocol = protocol;
         }
         public void setId(int id){ this.id = id; }
         public void setHostUnits(int units) {this.hostUnits = units;}

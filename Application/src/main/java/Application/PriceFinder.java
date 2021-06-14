@@ -18,10 +18,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.ATPManager;
-import utils.BenchmarkHandler;
-import utils.CmdLineParser;
-import utils.NetworkManager;
+import utils.*;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -29,12 +26,8 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static utils.ATPManager.parseATPUnit;
 import static utils.NetworkManager.getPartyMap;
 
 /**
@@ -44,8 +37,8 @@ import static utils.NetworkManager.getPartyMap;
  */
 public class PriceFinder {
 
-    private static Logger log = LoggerFactory.getLogger(PriceFinder.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(PriceFinder.class);
+    private static boolean logging = true;
     private static ATPManager instance;
 
     /**
@@ -58,6 +51,12 @@ public class PriceFinder {
             instance = ATPManager.getInstance(1);
         }
         return instance;
+    }
+
+    private static void log(String text){
+        if(logging){
+            logger.info(text);
+        }
     }
 
     /**
@@ -122,6 +121,180 @@ public class PriceFinder {
 
     };
 
+    private static Party parseNetObject(Map<Integer, Party> parties, JSONArray networkConfig) throws UnknownHostException, ParseException {
+        Party party;
+        Party myParty = null;
+        for(Object obj : networkConfig){
+            int id = Integer.parseInt((String) ((JSONObject)obj).get("id"));
+            int port = Integer.parseInt((String) ((JSONObject)obj).get("port"));
+            String ip = (String) ((JSONObject)obj).get("ip");
+            InetAddress.getByName(ip);
+            party = new Party(id, ip, port);
+            if(parties.containsKey(id)){
+                throw new ParseException("Party ids must be unique");
+            } if (((JSONObject)obj).get("myID") instanceof Boolean && (Boolean) ((JSONObject)obj).get("myID")){
+                if(myParty != null){
+                    throw new ParseException("Two parties are selected!");
+                }
+                myParty = party;
+            }
+            parties.put(id, party);
+        }
+        if(myParty == null){
+            throw new ParseException("No Party is selected: add myID = true");
+        }
+        return myParty;
+    }
+
+    private static void checkSchema(JSONObject settings) throws ParseException{
+        boolean check;
+        check = settings.containsKey("evaluationProtocol");
+        check &= settings.containsKey("preprocessing");
+        check &= settings.containsKey("otProtocol");
+        check &= settings.containsKey("evaluationStrategy");
+        check &= settings.containsKey("maxBitLength");
+        check &= settings.containsKey("modBitLength");
+        check &= settings.containsKey("benchmarking");
+        check &= settings.containsKey("debug");
+        if(!check){
+            throw new ParseException("MPCSettings.json does not follow schema");
+        }
+    }
+
+
+    private static void parseMPCSettings(CmdLineParser.BuilderParams params, JSONObject settings_) throws ParseException, IllegalArgumentException{
+
+        JSONObject settings = (JSONObject) settings_.get("settings");
+        String evaluationProtocol, preprocessing, otProtocol, evaluationStrategy;
+        int maxBitLength, modBitLength;
+        boolean benchmarking, debug;
+        boolean check;
+        checkSchema(settings);
+
+        log("schema check successful");
+        Object evaluationProtocolObject = settings.get("evaluationProtocol");
+        check = evaluationProtocolObject instanceof String;
+        if(check){
+            evaluationProtocol = (String) evaluationProtocolObject;
+            EvaluationProtocol evaluationProtocol1 = Enum.valueOf(EvaluationProtocol.class, evaluationProtocol);
+            params.setEvaluationProtocol(evaluationProtocol1);
+            log("entering evalProtocol: " + evaluationProtocol1);
+        }
+
+        Object preprocessingObject = settings.get("preprocessing");
+        check &= preprocessingObject instanceof String;
+        if(check){
+            preprocessing = (String) preprocessingObject;
+            PreprocessingStrategy strategy = Enum.valueOf(PreprocessingStrategy.class, preprocessing);
+            params.setPreprocessingStrategy(strategy);
+            log("entering preprocessing: " + preprocessing);
+        }
+
+        Object otProtocolObject = settings.get("otProtocol");
+        check &= otProtocolObject instanceof String;
+        if(check){
+            otProtocol = (String) otProtocolObject;
+            CmdLineParser.obliviousTransferProtocol protocol = Enum.valueOf(CmdLineParser.obliviousTransferProtocol.class, otProtocol);
+            params.setOtProtocol(protocol);
+            log("entering otProtocol: " + otProtocol);
+        }
+
+        Object evaluationStrategyObject = settings.get("evaluationStrategy");
+        check &= evaluationStrategyObject instanceof String;
+        if(check){
+            evaluationStrategy = (String) evaluationStrategyObject;
+            EvaluationStrategy strategy = Enum.valueOf(EvaluationStrategy.class, evaluationStrategy);
+            params.setEvaluationStrategy(strategy);
+            log("entering evaluationStrategy: " + evaluationStrategy);
+        }
+
+        Object maxBitLengthObject = settings.get("maxBitLength");
+        check &= maxBitLengthObject instanceof String;
+        if(check){
+            maxBitLength = Integer.parseInt((String) maxBitLengthObject);
+            params.setMaxBitLength(maxBitLength);
+            log("entering maxBitLength: " + maxBitLength);
+        }
+
+        Object modBitLengthObject = settings.get("modBitLength");
+        check &= modBitLengthObject instanceof String;
+        if(check){
+            modBitLength = Integer.parseInt((String) modBitLengthObject);
+            params.setModBitLength(modBitLength);
+            log("entering modBitLength: " + modBitLength);
+        }
+
+        Object benchmarkingObject = settings.get("benchmarking");
+        check &= benchmarkingObject instanceof Boolean;
+        if(check){
+            benchmarking = (Boolean) benchmarkingObject;
+            params.setBenchmark(benchmarking);
+            log("entering benchmarking: " + benchmarking);
+        }
+
+        Object debugObject = settings.get("debug");
+        check &= debugObject instanceof Boolean;
+        if(check){
+            debug = (Boolean) debugObject;
+            params.setDebug(debug);
+            log("entering debug: " + debug);
+        } else {
+            throw new ParseException("Wrong types in MPCSettings.json");
+        }
+    }
+
+    public static CmdLineParser.BuilderParams getParamsFromSettings(String netPath, String unitsPath, String settingsPath){
+        CmdLineParser.BuilderParams params = new CmdLineParser.BuilderParams(true, false);
+        JSONParser jsonParser = new JSONParser();
+        JSONArray networkConfig, unitList;
+        JSONObject settings;
+        Party myParty;
+        Map<Integer, Party> parties = new HashMap<>();
+
+        try(FileReader reader = new FileReader(netPath)){
+            networkConfig = (JSONArray) jsonParser.parse(reader);
+        } catch (org.json.simple.parser.ParseException | IOException e){
+            e.printStackTrace();
+            return null;
+        }
+        try {
+            myParty = parseNetObject(parties, networkConfig);
+        } catch (UnknownHostException | ParseException e){
+            e.printStackTrace();
+            return null;
+        }
+        params.setHost(myParty.getPartyId() == 1);
+        List<Map<Integer, Party>> list = new ArrayList<>();
+        list.add(parties);
+        params.setParties(list, myParty);
+        params.setId(myParty.getPartyId());
+
+
+        try (FileReader reader = new FileReader(unitsPath)) {
+            jsonParser.reset();
+            unitList =  (JSONArray) jsonParser.parse(reader);
+        } catch ( org.json.simple.parser.ParseException | IOException e){
+            e.printStackTrace();
+            return null;
+        }
+        params.setUnits(unitList);
+
+        try(FileReader reader = new FileReader(settingsPath)){
+            jsonParser.reset();
+            settings = (JSONObject) jsonParser.parse(reader);
+        } catch ( org.json.simple.parser.ParseException | IOException e){
+            e.printStackTrace();
+            return null;
+        }
+        try {
+            parseMPCSettings(params, settings);
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+        return params;    }
+
     /**
      * FRESCO is a very context heavy framework. In the early versions of this project, a lot of settings were set as command
      * line arguments. This function provides us with the default arguments without the need of such command line heavy interactions.
@@ -133,9 +306,10 @@ public class PriceFinder {
         CmdLineParser.BuilderParams params = new CmdLineParser.BuilderParams(true, false);
         params.setMaxBitLength(64);
         params.setModBitLength(128);
-        params.setPreprocessingStrategy(PreprocessingStrategy.DUMMY);
-        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.DUMMY);
+        params.setPreprocessingStrategy(PreprocessingStrategy.MASCOT);
+        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.NAOR);
         params.setEvaluationStrategy(EvaluationStrategy.SEQUENTIAL_BATCHED);
+        params.setEvaluationProtocol(EvaluationProtocol.LINEAR);
         params.setDebug(false);
         params.setBenchmark(false);
         JSONParser jsonParser = new JSONParser();
@@ -171,11 +345,11 @@ public class PriceFinder {
             if(myParty == null){
                 throw new ParseException("No Party is selected: add myID = true");
             }
-            params.setHost(myParty.getPartyId() == 1);
         } catch (UnknownHostException | ParseException e){
             e.printStackTrace();
             return null;
         }
+        params.setHost(myParty.getPartyId() == 1);
         List<Map<Integer, Party>> list = new ArrayList<>();
         list.add(parties);
         params.setParties(list, myParty);
@@ -203,14 +377,23 @@ public class PriceFinder {
         return getDefaultParams("NetworkConfig.json", "ATPUnits.json");
     }
 
+    public static CmdLineParser.BuilderParams getParamsFromSettings(){
+        return getParamsFromSettings("NetworkConfig.json", "ATPUnits.json", "MPCSettings.json");
+    }
 
-    public static void volumePriceAggregator(CmdLineParser.BuilderParams params1) throws ParseException{
+    public static void volumePriceAggregator() throws ParseException{
     /**
      * Entry point of the generalized protocol. Being host or client is defined in the Network Configuration file
      * @param args command line arguments -> none necessary
      * @throws ParseException The CustomerBuilder and HostBuilder classes both parse our input. They throw an exception
      * if they receive unexpected parameters.
      */
+        logger.info("---------- Reading params ----------");
+        CmdLineParser.BuilderParams params = getDefaultParams();
+        logging = params.logging;
+        if(params.logging){
+            logger.info(params.toString());
+        }
         BenchmarkHandler handler = BenchmarkHandler.getInstance();
         handler.startTimer(1);
         SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> sce;
@@ -218,18 +401,18 @@ public class PriceFinder {
         Network net;
         NetworkManager manager;
         Application<Integer, ProtocolBuilderNumeric> demo;
-        log.info("---------- starting setup ----------");
-        handler.startNetwork(params1.id, 0);
-        if(params1.host){
-            MPCHost hdemo = new MPCHostBuilder(params1.logging)
-                    .withVolume(params1.volume, params1.amount)
-                    .withNetwork(getPartyMap(params1.partyList,params1.myParty), params1.myParty)
-                    .withResourcePool(params1.preprocessingStrategy, params1.modBitLength, singleDateFinder, params1.otProtocol)
-                    .withDate(params1.date)
-                    .withPrice(params1.price)
-                    .withUnits(params1.units)
-                    .withBatchEvalStrat(params1.evaluationStrategy)
-                    .withSpdzLength(params1.maxBitLength)
+        logger.info("---------- starting setup ----------");
+        handler.startNetwork(params.id, 0);
+        if(params.host){
+            MPCHost hdemo = new MPCHostBuilder(params.logging)
+                    .withVolume(params.volume, params.amount)
+                    .withNetwork(getPartyMap(params.partyList,params.myParty), params.myParty)
+                    .withResourcePool(params.preprocessingStrategy, params.modBitLength, singleDateFinder, params.otProtocol)
+                    .withDate(params.date)
+                    .withPrice(params.price)
+                    .withUnits(params.units)
+                    .withBatchEvalStrat(params.evaluationStrategy)
+                    .withSpdzLength(params.maxBitLength)
                     .build();
 
             sce = hdemo.mySce;
@@ -238,15 +421,15 @@ public class PriceFinder {
             manager = hdemo.myNetworkManager;
             demo = hdemo;
         } else{
-            MPCCustomer idemo = new MPCCustomerBuilder(params1.logging)
-                    .withDate(params1.date)
-                    .withPrice(params1.price)
-                    .withVolume(params1.volume, params1.amount)
-                    .withNetwork(getPartyMap(params1.partyList,params1.myParty), params1.myParty)
-                    .withResourcePool(params1.preprocessingStrategy, params1.modBitLength, params1.otProtocol)
-                    .withUnits(params1.units)
-                    .withSpdzLength(params1.maxBitLength)
-                    .withBatchEvalStrat(params1.evaluationStrategy)
+            MPCCustomer idemo = new MPCCustomerBuilder(params.logging)
+                    .withDate(params.date)
+                    .withPrice(params.price)
+                    .withVolume(params.volume, params.amount)
+                    .withNetwork(getPartyMap(params.partyList,params.myParty), params.myParty)
+                    .withResourcePool(params.preprocessingStrategy, params.modBitLength, params.otProtocol)
+                    .withUnits(params.units)
+                    .withSpdzLength(params.maxBitLength)
+                    .withBatchEvalStrat(params.evaluationStrategy)
                     .build();
             sce = idemo.getMySce();
             pool = idemo.getMyPool();
@@ -254,25 +437,31 @@ public class PriceFinder {
             manager = idemo.getMyNetworkManager();
             demo = idemo;
         }
-        log.info("---------- Starting the protocol ----------");
+        logger.info("---------- Starting the protocol ----------");
         Integer deal = sce.runApplication(demo, pool, net, Duration.ofMinutes(20));
         handler.endTimer(1);
-        handler.endNetwork(params1.id, manager.getReceivedBytes());
+        handler.endNetwork(params.id, manager.getReceivedBytes());
         if(deal > 0){
-            log.info("the resulting deal is: " + deal);
+            logger.info("the resulting deal is: " + deal);
         } else{
-            log.info("No deal can be made");
+            logger.info("No deal can be made");
         }
     }
 
 
-    public static void secureLeadTimeBasedPriceFinder(CmdLineParser.BuilderParams params) throws ParseException {
-        log.info("---------- starting setup ----------");
+    public static void secureLeadTimeBasedPriceFinder() throws ParseException {
+        logger.info("---------- Reading params ----------");
+        CmdLineParser.BuilderParams params = getParamsFromSettings();
+        logging = params.logging;
+        if(params.logging){
+            logger.info(params.toString());
+        }
+        logger.info("---------- starting setup ----------");
         BenchmarkHandler handler = BenchmarkHandler.getInstance();
         handler.startTimer(1);
         handler.startNetwork(1, 0);
         SecretDateHost secretDateHost = new DateHostBuilder(params.logging)
-                .withProtocol(SecretDateHost.EvaluationProtocol.LINEAR)
+                .withProtocol(params.evaluationProtocol)
                 .withNetwork(getPartyMap(params.partyList, params.myParty), params.myParty)
                 .withResourcePool(params.preprocessingStrategy, params.modBitLength, params.otProtocol)
                 .withUnits(params.units)
@@ -282,7 +471,7 @@ public class PriceFinder {
                 .withSpdzLength(params.maxBitLength)
                 .build();
 
-        log.info("---------- Starting the protocol ----------");
+        logger.info("---------- Starting the protocol ----------");
         secretDateHost.runProtocol();
         handler.endTimer(1);
         handler.endNetwork(1, secretDateHost.myNetworkManager.getReceivedBytes());
@@ -295,14 +484,9 @@ public class PriceFinder {
      * if they receive unexpected parameters.
      */
     public static void main(String[] args) throws ParseException {
-        log.info("---------- Reading params ----------");
-        CmdLineParser.BuilderParams params = getDefaultParams();
-        if(params.logging){
-            log.info(params.toString());
-        }
-        //volumePriceAggregator(params);
-        secureLeadTimeBasedPriceFinder(params);
 
+        //volumePriceAggregator();
+        secureLeadTimeBasedPriceFinder();
     }
 
 }
