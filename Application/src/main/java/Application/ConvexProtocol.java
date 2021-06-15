@@ -74,6 +74,9 @@ public class ConvexProtocol extends PriceProtocol{
             }
             resultEvaluation = Comparison.using(seq).compareLEQ(resultPrice, priceClient);
             protocolFinished = true;
+            if(pricePremium == null){
+                throw new RuntimeException("price premium null");
+            }
             return null;
         }).seq((seq, nil) -> seq.numeric().open(resultEvaluation));
     }

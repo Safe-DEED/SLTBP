@@ -97,26 +97,31 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
                 throw new IllegalArgumentException("Input to price protocol has to be pre-shared and cannot be null");
             }
             int standardHigherOrder = comparator.compare(standardDate, orderDate);
+            boolean result;
             if (standardHigherOrder <= 0) {
                 SecretDateHost.log("order date is bigger or equal than standard -> standard is considered");
-                MultApplication multApplication = new MultApplication(priceHost, clientVolume);
+                // TODO: Multiplication fix
+                MultApplication multApplication = new MultApplication(priceHost, volumeClient);
                 ATPManager.instance.clearNetwork(network);
                 DRes<SInt> totalPrice = Sce.runApplication(multApplication, pool, network, duration);
+                pricePremium = priceHost;
                 int res = comparator.compare(priceClient, totalPrice);
-                results.put(salesPosition, res > -1);
+                result = res > -1;
             } else {
                 initProtocol(standardDate, orderDate, priceHost, priceClient, volumeClient, debug);
                 SecretDateHost.log("Start protocol for SP: " + salesPosition);
                 ATPManager.instance.clearNetwork(network);
                 BigInteger res = Sce.runApplication(this, pool, network, duration);
-                boolean result = res.equals(BigInteger.ONE);
-                results.put(salesPosition, result);
-                if(result){
-                    pricePerUnitMap.put(salesPosition, pricePremium);
-                }
-                if(debug){
-                    SecretDateHost.log("Final result check yields: " + checkResult());
-                }
+                result = res.equals(BigInteger.ONE);
+            }
+            results.put(salesPosition, result);
+            SecretDateHost.log("result for " + salesPosition + " is " + result);
+            if(result){
+                SecretDateHost.log("putting pricePremium for " + salesPosition);
+                pricePerUnitMap.put(salesPosition, pricePremium);
+            }
+            if(debug){
+                SecretDateHost.log("Final result check yields: " + checkResult());
             }
         }
 
