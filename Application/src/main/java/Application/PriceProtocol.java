@@ -100,7 +100,6 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
             boolean result;
             if (standardHigherOrder <= 0) {
                 SecretDateHost.log("order date is bigger or equal than standard -> standard is considered");
-                // TODO: Multiplication fix
                 MultApplication multApplication = new MultApplication(priceHost, volumeClient);
                 ATPManager.instance.clearNetwork(network);
                 DRes<SInt> totalPrice = Sce.runApplication(multApplication, pool, network, duration);

@@ -12,7 +12,7 @@ import java.math.BigInteger;
 
 public class ConvexProtocol extends PriceProtocol{
 
-    DRes<SInt> pricePremium, premiumLimit, powerOLT, powerSDT;
+    DRes<SInt>  premiumLimit, powerOLT, powerSDT;
     DRes<BigInteger> isOverflow, pricePremiumOpen, powerOLTOpen, powerSDTOpen;
 
 
@@ -46,7 +46,6 @@ public class ConvexProtocol extends PriceProtocol{
             premiumLimit = Comparison.using(seq).compareLEQ(pricePremium, seq.numeric().known(20));
             if(debug)
             {
-                pricePremiumOpen = seq.numeric().open(pricePremium);
                 powerOLTOpen = seq.numeric().open(powerOLT);
                 powerSDTOpen = seq.numeric().open(powerSDT);
             }
@@ -56,7 +55,7 @@ public class ConvexProtocol extends PriceProtocol{
             return null;
         }).seq((seq, nil) -> {
             if(debug){
-                SecretDateHost.log("pricePremium: " + pricePremiumOpen.out() + "\npowerOLT: " + powerOLTOpen.out() + "\npowerSDT: "+ powerSDTOpen.out());
+                SecretDateHost.log("powerOLT: " + powerOLTOpen.out() + "\npowerSDT: "+ powerSDTOpen.out());
             }
             if(isOverflow.out().equals(BigInteger.ZERO)){
                 pricePremium = seq.numeric().known(40);
@@ -71,6 +70,7 @@ public class ConvexProtocol extends PriceProtocol{
         }).seq((seq, nil) -> {
             if(debug){
                 price = seq.numeric().open(resultPrice);
+                pricePremiumOpen = seq.numeric().open(pricePremium);
             }
             resultEvaluation = Comparison.using(seq).compareLEQ(resultPrice, priceClient);
             protocolFinished = true;
