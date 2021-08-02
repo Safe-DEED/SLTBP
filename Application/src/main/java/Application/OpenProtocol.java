@@ -24,6 +24,7 @@ public class OpenProtocol implements Application<BigInteger, ProtocolBuilderNume
         acceptedOrders = new ArrayList<>();
         for(Map.Entry<Integer, Boolean> entry : resultMap.entrySet()){
             int salesPos = entry.getKey();
+            SecretDateHost.log("Entry " + entry.getKey() + " is " + entry.getValue());
             if(entry.getValue()){
                 DRes<SInt> pricePerUnit = pricePerUnitMap.get(salesPos);
                 List<ATPManager.ATPUnit> atpList = unitListMap.get(salesPos);
@@ -43,7 +44,7 @@ public class OpenProtocol implements Application<BigInteger, ProtocolBuilderNume
     @Override
     public DRes<BigInteger> buildComputation(ProtocolBuilderNumeric builder) {
         if(acceptedOrders.size() == 0){
-            return null;
+            return builder.seq(seq -> () -> null);
         }
         return builder.seq(seq -> {
             SecretDateHost.log("Starting the open Protocol");
