@@ -17,6 +17,9 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Main class of the MPC computation
+ */
 public class SecretDateHost {
 
     static Logger logger = LoggerFactory.getLogger(SecretDateHost.class);
@@ -38,12 +41,20 @@ public class SecretDateHost {
     public EvaluationProtocol protocol;
     public PriceProtocol priceProtocol;
 
+    /**
+     * logging function that only logs in log or debug mode
+     * @param info String passed to logger
+     */
     public static void log(String info){
         if(debug || logging){
             logger.info(info);
         }
     }
 
+    /**
+     * Runs the price and volume aggregation. Then date and volume comparison. Finally, price comparison according to the
+     * delivery speedup. The inputs to successful deals are disclosed to the host.
+     */
     public void runProtocol(){
 
         BenchmarkHandler handler = BenchmarkHandler.getInstance();

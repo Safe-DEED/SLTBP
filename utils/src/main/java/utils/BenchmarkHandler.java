@@ -8,6 +8,9 @@ import java.util.Map;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+/**
+ * Utility class managing benchmark timers and transmission byte counters
+ */
 public class BenchmarkHandler {
 
     public static BenchmarkHandler instance;
@@ -17,6 +20,10 @@ public class BenchmarkHandler {
     Map<Integer, Long> timerMap;
     Map<Integer, Long> networkMap;
 
+    /**
+     * Implementation of getInstance according to singleton pattern
+     * @return instance of singleton
+     */
     public static BenchmarkHandler getInstance(){
         if(BenchmarkHandler.instance == null){
             BenchmarkHandler.instance = new BenchmarkHandler();
@@ -24,11 +31,19 @@ public class BenchmarkHandler {
         return BenchmarkHandler.instance;
     }
 
+    /**
+     * create new singleton instance
+     */
     BenchmarkHandler(){
         timerMap = new HashMap<>();
         networkMap = new HashMap<>();
     }
 
+    /**
+     * Helper for printing the time of a benchmarkID. According to B4m benchmarking framework.
+     * @param time elapsed time in ms.
+     * @param id unique identifier of a measurement. (E.g. one protocol)
+     */
     @SuppressWarnings("unchecked")
     void printTime(long time, int id){
         long seconds = time / 1000;
@@ -46,6 +61,11 @@ public class BenchmarkHandler {
         log.info("\n\n<b3m4>" + timeObject.toJSONString() + "</b3m4>\n");
     }
 
+    /**
+     * Helper to print the received bytes of a benchmarkID. According to B4m benchmarking framework.
+     * @param receivedBytes in Byte
+     * @param id unique identifier of a measurement. (E.g. one protocol)
+     */
     @SuppressWarnings("unchecked")
     void printNetwork(long receivedBytes, int id){
         long kb = receivedBytes / 1024;
@@ -68,6 +88,10 @@ public class BenchmarkHandler {
         log.info("\n\n<b3m4>" + print.toJSONString() + "</b3m4>\n");
     }
 
+    /**
+     * Start a timer by saving the start time to the timer map
+     * @param id unique identifier of a measurement. (E.g. one protocol)
+     */
     public void startTimer(Integer id){
         if(timerMap.containsKey(id)){
             throw new RuntimeException("Timer for id " + id + " is already running");
@@ -76,6 +100,11 @@ public class BenchmarkHandler {
         timerMap.put(id, timer);
     }
 
+    /**
+     * Start network tracker by saving already received data to network map
+     * @param id unique identifier of a measurement. (E.g. one protocol)
+     * @param start already received bytes of data
+     */
     public void startNetwork(Integer id, long start){
         if(networkMap.containsKey(id)){
             throw new RuntimeException("network tracking for id " + id + " is already running");
@@ -83,6 +112,11 @@ public class BenchmarkHandler {
         networkMap.put(id, start);
     }
 
+    /**
+     * End network tracker by comparing received bytes with starting point
+     * @param id unique identifier of a measurement. (E.g. one protocol)
+     * @param traffic total number of received bytes
+     */
     public void endNetwork(Integer id, long traffic){
         if(!networkMap.containsKey(id)){
             throw new RuntimeException("No network traffic measured under id " + id);
@@ -92,6 +126,10 @@ public class BenchmarkHandler {
         printNetwork(received, id);
     }
 
+    /**
+     * End timer by comparing current time with start time. In milliseconds
+     * @param id unique identifier of a measurement. (E.g. one protocol)
+     */
     public void endTimer(Integer id){
         if(!timerMap.containsKey(id)){
             throw new RuntimeException("No timer running for id " + id);

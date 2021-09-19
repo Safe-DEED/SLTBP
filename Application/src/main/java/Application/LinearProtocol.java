@@ -10,12 +10,23 @@ import dk.alexandra.fresco.lib.common.math.AdvancedNumeric;
 import java.math.BigInteger;
 import java.util.Collections;
 
+/**
+ * Implementation of the Linear pricing evaluation protocol
+ */
 public class LinearProtocol extends PriceProtocol{
 
+    /**
+     * Constructor
+     */
     public LinearProtocol(){
         benchmarkId = 3;
     }
 
+    /**
+     * MPC implementation of the linear pricing evaluation. A linear speedup of delivery time results in a linear price increase.
+     * @param builder Protocol builder used to create MPC computation building blocks.
+     * @return (0, 1) depending on whether the deal has succeeded
+     */
     @Override
     public DRes<BigInteger> buildComputation(ProtocolBuilderNumeric builder) {
 
@@ -47,6 +58,10 @@ public class LinearProtocol extends PriceProtocol{
         });
     }
 
+    /**
+     * Computes the protocol in plain and compares to the MPC run.
+     * @return boolean result of check
+     */
     @Override
     public boolean checkResult() {
         if(!protocolFinished){

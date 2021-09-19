@@ -16,12 +16,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Benchmarking class used to evaluate speed and network use of the protocols.
+ */
 public class PriceProtocolBenchmark {
 
     private final List<PriceProtocol> protocolList;
     private final NetworkManager manager;
 
 
+    /**
+     * The constructor initializes each protocol individually
+     * @param manager The network manager providing new network instances
+     */
     public PriceProtocolBenchmark(NetworkManager manager){
         protocolList = new ArrayList<>();
         protocolList.add(new LinearProtocol());
@@ -31,6 +38,13 @@ public class PriceProtocolBenchmark {
         this.manager = manager;
     }
 
+    /**
+     * Initializes the MPC parameters for all protocols
+     * @param Sce The secure computation engine running the computation
+     * @param pool The Memory pool required for SPDZ preprocessing
+     * @param network The network information for communication
+     * @param duration The maximum network timeout
+     */
     public void initMPCParameters(SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> Sce,
                                   SpdzResourcePool pool, Network network, Duration duration){
         for(PriceProtocol protocol : protocolList){
@@ -38,6 +52,15 @@ public class PriceProtocolBenchmark {
         }
     }
 
+    /**
+     * take the same inputs as the price protocol but executes all implemented price protocols after one another
+     * @param clientPrices connects SPs with combined client prices
+     * @param orderedDates connects SPs with a date
+     * @param hostUnits connects each SP with the associated ATPUnit of the host
+     * @param clientVolumes connects SPs with the combined client volumes
+     * @param debug whether benchmarks should be run in debug mode
+     * @return map connecting SPs to the results of all protocols -> list of booleans
+     */
     public Map<Integer, List<Boolean>> executeForAllPositions(Map<Integer, DRes<SInt>> clientPrices,
                                                               Map<Integer, DRes<SInt>> orderedDates,
                                                               Map<Integer, ATPManager.ATPUnit> hostUnits,

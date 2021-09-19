@@ -9,17 +9,27 @@ import dk.alexandra.fresco.lib.common.math.AdvancedNumeric;
 
 import java.math.BigInteger;
 
+/**
+ * Implementation of the Concave Protocol as a pricing evaluation
+ */
 public class ConcaveProtocol extends PriceProtocol{
 
     DRes<SInt> premiumLimit, powerOLT, powerSDT;
     DRes<BigInteger> isOverflow, pricePremiumOpen, powerOLTOpen, powerSDTOpen;
 
 
-
+    /**
+     * Constructor.
+     */
     public ConcaveProtocol(){
         benchmarkId = 4;
     }
 
+    /**
+     * Implementation of the MPC computation. The price premium is calculated as a concave function of the delivery speedup.
+     * @param builder instance used to create the MPC computation blocks.
+     * @return Boolean Bigint (either 0 or 1) depending on success of the deal.
+     */
     @Override
     public DRes<BigInteger> buildComputation(ProtocolBuilderNumeric builder) {
         if(!protocolInit){
@@ -80,6 +90,10 @@ public class ConcaveProtocol extends PriceProtocol{
         }).seq((seq, nil) -> seq.numeric().open(resultEvaluation));
     }
 
+    /**
+     * Checking whether the MPC computation works. The result is compared with a margin of error, to account for rounding issues.
+     * @return boolean result
+     */
     @Override
     public boolean checkResult() {
 

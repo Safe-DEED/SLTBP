@@ -11,6 +11,9 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Implementation of the Bucket Protocol as a pricing evaluation
+ */
 public class BucketProtocol extends PriceProtocol{
 
     DRes<SInt> percent, comparison1, comparison2, comparison3, scalesClientPrice;
@@ -19,12 +22,18 @@ public class BucketProtocol extends PriceProtocol{
     Integer premium;
 
 
-
-
+    /**
+     * Checks whether an integer value is either 1 or zero
+     * @param value Integer to check
+     * @return true if value is 0 or 1, false otherwise
+     */
     private boolean isNotBool(long value){
         return value != 1 && value != 0;
     }
 
+    /**
+     * Constructor. Initializes the price premium map. The values are taken directly from IFX.
+     */
     public BucketProtocol(){
         super();
         benchmarkId = 6;
@@ -38,10 +47,14 @@ public class BucketProtocol extends PriceProtocol{
         bucketToPremiumMap.put(0, 190);
     }
 
+    /**
+     * MPC computation implementation. Here the relative delivery speedup is calculated and the according price Premium
+     * is taken from the bucket
+     * @param builder the protocol builder used to construct the MPC blocks
+     * @return A bigInteger of either 1 or 0 (true or false), whether the deal has succeeded
+     */
     @Override
     public DRes<BigInteger> buildComputation(ProtocolBuilderNumeric builder) {
-
-
 
         if(!protocolInit){
             throw new IllegalStateException("Running Price evaluation before protocol init");
@@ -120,6 +133,10 @@ public class BucketProtocol extends PriceProtocol{
     }
 
 
+    /**
+     * Debug function computing the MPC computations in plain
+     * @return bool signaling whether the plain computation has the same result as the MPC computation
+     */
     @Override
     public boolean checkResult(){
         if(debug){

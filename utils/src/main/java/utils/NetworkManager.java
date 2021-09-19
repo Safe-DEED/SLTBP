@@ -42,6 +42,10 @@ public class NetworkManager implements Closeable {
         log("Created NetworkManager");
     }
 
+    /**
+     * Log call depending on logging setting
+     * @param string info to be logged
+     */
     private void log(String string){
         if(logging){
             log.info(string);
@@ -152,6 +156,10 @@ public class NetworkManager implements Closeable {
         return values;
     }
 
+    /**
+     * Get total number of received bytes of all networks
+     * @return bytes received
+     */
     public long getReceivedBytes(){
         Map<String, Long> values = getLoggedValues();
         return values.get(NetworkLoggingDecorator.NETWORK_TOTAL_BYTES);

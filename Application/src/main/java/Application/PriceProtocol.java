@@ -17,6 +17,9 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Abstract parent class of pricing protocols.
+ */
 public abstract class PriceProtocol implements Application<BigInteger, ProtocolBuilderNumeric> {
 
     DRes<SInt> standardLeadTime, orderedLeadTime, priceHost, priceClient, resultPrice, clientVolume, resultEvaluation, pricePremium;
@@ -38,6 +41,10 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
     Network network;
     Duration duration;
 
+    /**
+     * Debug function used to perform the protocol in the clear. Opens all secret shared values necessary for the protocol.
+     * @param seq protocol builder used to open the shared MPC values.
+     */
     protected void openValues(ProtocolBuilderNumeric seq){
         if(debug){
             standardLeadTimeOpen = seq.numeric().open(standardLeadTime);
@@ -48,6 +55,15 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
         }
     }
 
+    /**
+     * Initializes the protocol with the inputs of a single Sales Position
+     * @param standardLeadTime The delivery date offered by the vendor
+     * @param orderedLeadTime The delivery date of the clients (selected in AggregateInputs.sortByDate())
+     * @param priceHost The price offered by the host
+     * @param priceClient The combined price offered by the clients
+     * @param clientVolume The combined volume requested by the clients
+     * @param debug Whether computation should also be performed in the clear
+     */
     public void initProtocol(DRes<SInt> standardLeadTime, DRes<SInt> orderedLeadTime,
                              DRes<SInt> priceHost, DRes<SInt> priceClient, DRes<SInt> clientVolume, boolean debug){
         this.standardLeadTime = standardLeadTime;
@@ -61,6 +77,13 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
         protocolFinished = false;
     }
 
+    /**
+     * Initializes the FRESCO instances that are needed for MPC
+     * @param Sce The secure computation engine running the computation
+     * @param pool The Memory pool required for SPDZ preprocessing
+     * @param network The network information for communication
+     * @param duration The maximum network timeout
+     */
     public void initMPCParameters(SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> Sce,
                                   SpdzResourcePool pool, Network network, Duration duration){
         this.Sce = Sce;
@@ -70,6 +93,16 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
         this.mpcInit = true;
     }
 
+    /**
+     * Executed the given pricing evaluation protocol for all sales positions (SP).
+     * @param clientPrices connects SPs with combined client prices
+     * @param orderedDates connects SPs with a date
+     * @param hostUnits connects each SP with the associated ATPUnit of the host
+     * @param clientVolumes connects SPs with the combined client volumes
+     * @param debug states whether computation should also be performed in the clear. UNSAFE
+     * @return map connecting SPs with boolean result of evaluation
+     * @apiNote Stores price premium of each evaluation in the pricePerUnitMap
+     */
     public Map<Integer, Boolean> executeForAllPositions(Map<Integer, DRes<SInt>> clientPrices,
                                                         Map<Integer, DRes<SInt>> orderedDates,
                                                         Map<Integer, ATPManager.ATPUnit> hostUnits,
@@ -127,11 +160,18 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
         return results;
     }
 
+    /**
+     * Required by interface
+     */
     @Override
     public void close(){
 
     }
 
+    /**
+     * Helper function returning a string containing all opened values necessary for the computation. works only in debug mode.
+     * @return either a pretty string of contents in debug mode or the class name in production mode
+     */
     public String stringify(){
         if(debug){
             return "\nThis price protocol(" + this.getClass().toString() + ") has the following input:\nstandard Lead: " + standardLeadTimeOpen.out() + "\nordered Lead: " + orderedLeadTimeOpen.out() + "\n priceHost: " + priceHostOpen.out() + "\npriceClient: " + priceClientOpen.out() + "\nclientVolume:" +  clientVolumeOpen.out() + "\nprice expected:" + price.out();
@@ -139,6 +179,10 @@ public abstract class PriceProtocol implements Application<BigInteger, ProtocolB
         return this.getClass().toString();
     }
 
+    /**
+     * Debug function to compare MPC computation to clear implementation
+     * @return boolean result
+     */
     public abstract boolean checkResult();
 
 }

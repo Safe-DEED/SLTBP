@@ -18,6 +18,9 @@ import java.math.BigInteger;
 import java.time.Duration;
 import java.util.*;
 
+/**
+ * The aggregate input class combines the inputs of all customers. It is an implementation of the FRESCO Application interface
+ */
 public class AggregateInputs implements Application<BigInteger, ProtocolBuilderNumeric> {
 
     private final List<ATPManager.ATPUnit> myUnits;
@@ -33,12 +36,20 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
 
     private boolean error;
 
+    /**
+     * Comparator class used to order ATPUnits with respect to their salesPosition
+     */
     public static class SortByPosition implements Comparator<ATPManager.ATPUnit>{
         public int compare(ATPManager.ATPUnit a, ATPManager.ATPUnit b){
             return a.salesPosition - b.salesPosition;
         }
     }
 
+    /**
+     * Constructor of Aggregate Inputs. Checks uniqueness of sales Positions and whether all participants share the same SPs.
+     * @param secretDateHost The secretDateHost instance containing all the inputs
+     * @throws IllegalArgumentException if there is some error with the SPs
+     */
     public AggregateInputs(SecretDateHost secretDateHost) throws IllegalArgumentException{
         error = false;
         partyList = new ArrayList<>();
@@ -57,12 +68,11 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
         for(Map.Entry<Integer, Party> entry : secretDateHost.myNetworkManager.getParties().entrySet()){
             int id = entry.getKey();
             partyList.add(id);
-            if(id == secretDateHost.myID){
+            if(id == SecretDateHost.myID){
 
                 int amount = salesPositions.size();
                 if (error) {
                     ATPManager.instance.broadcastInt(0, secretDateHost.myNetwork);
-                    continue;
                 } else {
                     ATPManager.instance.broadcastInt(amount, secretDateHost.myNetwork);
                 }
@@ -75,7 +85,6 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
 
                 if(amount == 0){
                     error = true;
-                    continue;
                 }
                 if(amount != salesPositions.size()){
                     error = true;
@@ -92,11 +101,16 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
                 throw new IllegalArgumentException("Mismatch in SalesPosition List:\n" + salesPositions);
             }
         }
-        SecretDateHost.log("List before sort: " + myUnits);
         myUnits.sort(new SortByPosition());
         SecretDateHost.log("List after sort: " + myUnits);
     }
 
+    /**
+     * The MPC protocol aggregating the inputs from all clients. The aggregated inputs are stored in the current
+     * instance of AggregateInputs for later use
+     * @param builder the protocol builder is passed by the secure computation engine in the run call
+     * @return null
+     */
     @Override
     public DRes<BigInteger> buildComputation(ProtocolBuilderNumeric builder) {
         if(error) {
@@ -157,6 +171,14 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
         });
     }
 
+    /**
+     * Creates a map from all SalesPositions to the lowest corresponding date. It uses MPC comparison between the customers dates
+     * @param Sce the secure computation engine used for the MPC comparison
+     * @param pool the resource pool required by the MPC comparison
+     * @param network the network with which the MPC protocol works
+     * @param duration the maximum time to wait for the networking
+     * @return the map from SalesPositions to secret shared dates
+     */
     public Map<Integer, DRes<SInt>> sortByDate(SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> Sce,
                                                      SpdzResourcePool pool, Network network, Duration duration){
         Map<Integer, DRes<SInt>> result = new HashMap<>();
@@ -171,6 +193,14 @@ public class AggregateInputs implements Application<BigInteger, ProtocolBuilderN
         return result;
     }
 
+    /**
+     * Checks for all SalesPositions whether the vendor amount is higher than the sum of the clients amounts. Uses
+     * MPC powered comparison. Sales Positions, where the clients amounts are higher, are discarded.
+     * @param Sce Secure Computation engine required by MPC
+     * @param pool Resource pool required for SPDZ preprocessing
+     * @param network stores networking information for communication
+     * @param duration the maximum time to wait for the networking
+     */
     public void checkVolumes(SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> Sce,
                              SpdzResourcePool pool, Network network, Duration duration){
         SIntComparator comparator = new SIntComparator(Sce, pool, network, duration);

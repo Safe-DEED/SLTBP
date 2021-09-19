@@ -41,21 +41,37 @@ public class NetworkLoggingDecorator implements Network, PerformanceLogger, Clos
         return res;
     }
 
+    /**
+     * Getter for the amount of players
+     * @return number of participating parties
+     */
     @Override
     public int getNoOfParties() {
         return delegate.getNoOfParties();
     }
 
+    /**
+     * decorator of the send call
+     * @param partyId id to send to
+     * @param data byte array of data to be sent
+     */
     @Override
     public void send(int partyId, byte[] data) {
         this.delegate.send(partyId, data);
     }
 
+    /**
+     * decorator of reset call
+     */
     @Override
     public void reset() {
         partyStatsMap.clear();
     }
 
+    /**
+     * decorator of close clal
+     * @throws IOException thrown by delegate
+     */
     @Override
     public void close() throws IOException {
         if (delegate instanceof Closeable) {
@@ -63,6 +79,9 @@ public class NetworkLoggingDecorator implements Network, PerformanceLogger, Clos
         }
     }
 
+    /**
+     * Helper for clear call used to reset network
+     */
     public void clearSelfQueue(){
         if(delegate instanceof SocketNetwork){
             ((SocketNetwork) delegate).clearSelfQueue();

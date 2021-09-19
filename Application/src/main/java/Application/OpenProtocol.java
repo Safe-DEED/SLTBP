@@ -15,9 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * MPC protocol used to open the final evaluation results
+ */
 public class OpenProtocol implements Application<BigInteger, ProtocolBuilderNumeric> {
     List<ATPManager.ATPUnit> acceptedOrders;
 
+    /**
+     * Constructor. Fetches ATPUnits for which the pricing protocol returned true as an evaluation result
+     * @param resultMap connecting sales positions to boolean evaluation results
+     * @param unitListMap connecting Sales Positions with List of all ATPUnits with that SP (of all parties)
+     * @param pricePerUnitMap connecting Sales Positions to the price premium from the evaluator
+     */
     public OpenProtocol(Map<Integer, Boolean> resultMap, Map<Integer, List<ATPManager.ATPUnit>> unitListMap, Map<Integer,
             DRes<SInt>> pricePerUnitMap){
 
@@ -41,6 +50,11 @@ public class OpenProtocol implements Application<BigInteger, ProtocolBuilderNume
         }
     }
 
+    /**
+     * MPC computation opening the units for which the deal succeeded to id 1
+     * @param builder used to created MPC function blocks from java lambda functions
+     * @return null
+     */
     @Override
     public DRes<BigInteger> buildComputation(ProtocolBuilderNumeric builder) {
         if(acceptedOrders.size() == 0){
@@ -65,6 +79,9 @@ public class OpenProtocol implements Application<BigInteger, ProtocolBuilderNume
         });
     }
 
+    /**
+     * Close implementation calling super.close()
+     */
     @Override
     public void close() {
         Application.super.close();

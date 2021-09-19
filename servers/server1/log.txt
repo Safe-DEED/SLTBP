@@ -1,14 +1,14 @@
-16:15:22.806 [main] INFO Application.PriceFinder - ---------- Reading params ----------
-16:15:22.817 [main] INFO Application.PriceFinder - schema check successful
-16:15:22.817 [main] INFO Application.PriceFinder - entering evalProtocol: LINEAR
-16:15:22.817 [main] INFO Application.PriceFinder - entering preprocessing: DUMMY
-16:15:22.818 [main] INFO Application.PriceFinder - entering otProtocol: DUMMY
-16:15:22.819 [main] INFO Application.PriceFinder - entering evaluationStrategy: SEQUENTIAL_BATCHED
-16:15:22.819 [main] INFO Application.PriceFinder - entering maxBitLength: 64
-16:15:22.819 [main] INFO Application.PriceFinder - entering modBitLength: 128
-16:15:22.819 [main] INFO Application.PriceFinder - entering benchmarking: false
-16:15:22.819 [main] INFO Application.PriceFinder - entering debug: false
-16:15:22.819 [main] INFO Application.PriceFinder - logging: true
+16:55:06.553 [main] INFO Application.PriceFinder - ---------- Reading params ----------
+16:55:06.569 [main] INFO Application.PriceFinder - schema check successful
+16:55:06.569 [main] INFO Application.PriceFinder - entering evalProtocol: LINEAR
+16:55:06.570 [main] INFO Application.PriceFinder - entering preprocessing: DUMMY
+16:55:06.570 [main] INFO Application.PriceFinder - entering otProtocol: DUMMY
+16:55:06.571 [main] INFO Application.PriceFinder - entering evaluationStrategy: SEQUENTIAL_BATCHED
+16:55:06.571 [main] INFO Application.PriceFinder - entering maxBitLength: 64
+16:55:06.571 [main] INFO Application.PriceFinder - entering modBitLength: 128
+16:55:06.571 [main] INFO Application.PriceFinder - entering benchmarking: false
+16:55:06.571 [main] INFO Application.PriceFinder - entering debug: false
+16:55:06.571 [main] INFO Application.PriceFinder - logging: true
 debug false
 host true
 id 1
@@ -27,90 +27,92 @@ otProtocol DUMMY
 evaluation SEQUENTIAL_BATCHED
 pricingFunction null
 multithreading false
-16:15:22.819 [main] INFO Application.PriceFinder - ---------- starting setup ----------
-16:15:22.827 [main] INFO utils.MPCBuilder - These are my parties. [Party(1, localhost:8081), Party(2, localhost:8082), Party(3, localhost:8083)]
-16:15:22.828 [main] INFO utils.NetworkManager - Created NetworkManager
-16:15:22.828 [main] INFO utils.NetworkManager - config: 3
-16:15:23.696 [main] INFO utils.NetworkManager - created extra network
-16:15:23.697 [main] INFO utils.MPCBuilder - creating ResourcePool
-16:15:23.701 [main] INFO utils.MPCBuilder - SpdzResourcePoolImpl
-16:15:23.705 [main] INFO utils.MPCBuilder - returning from ResourcePool creation
-16:15:23.706 [main] INFO utils.NetworkManager - config: 3
-16:15:24.034 [main] INFO utils.NetworkManager - created extra network
-16:15:24.034 [main] INFO utils.NetworkManager - config: 3
-16:15:24.307 [main] INFO utils.NetworkManager - created extra network
-16:15:24.362 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
-16:15:24.362 [main] INFO Application.SecretDateHost - Setup aggregator
-16:15:24.365 [main] INFO Application.SecretDateHost - List before sort: [
-This unit of: 1 contains: 10000, with date: 4, and price: 100
+16:55:06.571 [main] INFO Application.PriceFinder - ---------- starting setup ----------
+16:55:06.579 [main] INFO utils.MPCBuilder - These are my parties. [Party(1, localhost:8081), Party(2, localhost:8082), Party(3, localhost:8083)]
+16:55:06.580 [main] INFO utils.NetworkManager - Created NetworkManager
+16:55:06.580 [main] INFO utils.NetworkManager - config: 3
+16:55:07.425 [main] INFO utils.NetworkManager - created extra network
+16:55:07.426 [main] INFO utils.MPCBuilder - creating ResourcePool
+16:55:07.430 [main] INFO utils.MPCBuilder - SpdzResourcePoolImpl
+16:55:07.432 [main] INFO utils.MPCBuilder - returning from ResourcePool creation
+16:55:07.433 [main] INFO utils.NetworkManager - config: 3
+16:55:07.728 [main] INFO utils.NetworkManager - created extra network
+16:55:07.728 [main] INFO utils.NetworkManager - config: 3
+16:55:08.112 [main] INFO utils.NetworkManager - created extra network
+16:55:08.118 [main] INFO Application.PriceFinder - ---------- Starting the protocol ----------
+16:55:08.119 [main] INFO Application.SecretDateHost - Setup aggregator
+16:55:08.124 [main] INFO Application.SecretDateHost - List after sort: [
+This unit of: 1 contains: 1000, with date: 4, and price: 33
 ]
-16:15:24.366 [main] INFO Application.SecretDateHost - List after sort: [
-This unit of: 1 contains: 10000, with date: 4, and price: 100
-]
-16:15:24.366 [main] INFO Application.SecretDateHost - Starting aggregator
-16:15:24.368 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Application.AggregateInputs@36d7288 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@daa9c95
-16:15:24.379 [SCE-1] INFO Application.SecretDateHost - Input values to aggregator
-16:15:24.379 [SCE-1] INFO Application.SecretDateHost - gathering input of SP 2
-16:15:24.379 [SCE-1] INFO Application.SecretDateHost - gathering input of Party 1
-16:15:24.381 [SCE-1] INFO Application.SecretDateHost - gathering input of Party 2
-16:15:24.381 [SCE-1] INFO Application.SecretDateHost - gathering input of Party 3
-16:15:24.381 [SCE-1] INFO Application.SecretDateHost - Map: {2=[
-This unit of: 1 contains: 10000, with date: 4, and price: 100
+16:55:08.124 [main] INFO Application.SecretDateHost - Starting aggregator
+16:55:08.126 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Application.AggregateInputs@3a06b7ef using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@34c15edf
+16:55:08.134 [SCE-1] INFO Application.SecretDateHost - Input values to aggregator
+16:55:08.134 [SCE-1] INFO Application.SecretDateHost - gathering input of SP 1
+16:55:08.134 [SCE-1] INFO Application.SecretDateHost - gathering input of Party 1
+16:55:08.135 [SCE-1] INFO Application.SecretDateHost - gathering input of Party 2
+16:55:08.135 [SCE-1] INFO Application.SecretDateHost - gathering input of Party 3
+16:55:08.136 [SCE-1] INFO Application.SecretDateHost - Map: {1=[
+This unit of: 1 contains: 1000, with date: 4, and price: 33
 , 
 This unit of: 2 contains: null, with date: null, and price: null
 , 
 This unit of: 3 contains: null, with date: null, and price: null
 ]}
-16:15:24.403 [SCE-1] INFO Application.SecretDateHost - Summing up values
-16:15:24.410 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 11 native protocols in 11 batches.
-16:15:24.410 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Application.AggregateInputs@36d7288 finished evaluation in 34 ms.
-16:15:24.411 [main] INFO Application.SecretDateHost - Starting Volume Checks
-16:15:24.412 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: utils.SIntComparator@1dd70d1 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@daa9c95
-16:15:25.095 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 6793 native protocols in 2468 batches.
-16:15:25.095 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application utils.SIntComparator@1dd70d1 finished evaluation in 682 ms.
-16:15:25.095 [main] INFO Application.SecretDateHost - Sorting Dates
-16:15:25.096 [main] INFO Application.SecretDateHost - Sorting salesPosition by date
-16:15:25.096 [SCE-2] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: utils.SIntComparator@70ab3198 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@daa9c95
-16:15:25.464 [SCE-2] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 6788 native protocols in 2468 batches.
-16:15:25.464 [SCE-2] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application utils.SIntComparator@70ab3198 finished evaluation in 368 ms.
-16:15:25.466 [main] INFO utils.BenchmarkHandler - 
+16:55:08.156 [SCE-1] INFO Application.SecretDateHost - Summing up values
+16:55:08.164 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 11 native protocols in 11 batches.
+16:55:08.164 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Application.AggregateInputs@3a06b7ef finished evaluation in 32 ms.
+16:55:08.166 [main] INFO Application.SecretDateHost - Starting Volume Checks
+16:55:08.167 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: utils.SIntComparator@4a463023 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@34c15edf
+16:55:08.806 [SCE-1] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 6791 native protocols in 2468 batches.
+16:55:08.806 [SCE-1] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application utils.SIntComparator@4a463023 finished evaluation in 638 ms.
+16:55:08.807 [main] INFO Application.SecretDateHost - Sorting Dates
+16:55:08.807 [main] INFO Application.SecretDateHost - Sorting salesPosition by date
+16:55:08.807 [SCE-2] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: utils.SIntComparator@61ae9a9a using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@34c15edf
+16:55:09.157 [SCE-2] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 6793 native protocols in 2469 batches.
+16:55:09.157 [SCE-2] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application utils.SIntComparator@61ae9a9a finished evaluation in 350 ms.
+16:55:09.160 [main] INFO utils.BenchmarkHandler - 
 
-<b3m4>{"timer":"2","time":{"sec":"1.102","min":"0","ms":1102,"h":"0"}}</b3m4>
+<b3m4>{"timer":"2","time":{"sec":"1.039","min":"0","ms":1039,"h":"0"}}</b3m4>
 
-16:15:25.467 [main] INFO utils.BenchmarkHandler - 
+16:55:09.160 [main] INFO utils.BenchmarkHandler - 
 
 <b3m4>{"player":"2","netdata":{"received":{"bytes":"101752","KB":"99"}}}</b3m4>
 
-16:15:25.467 [main] INFO Application.SecretDateHost - Setup price Protocol LINEAR
-16:15:25.467 [main] INFO Application.SecretDateHost - Evaluate Price for all SalesPositions
-16:15:25.467 [main] INFO Application.SecretDateHost - Setup protocol for SP: 2
-16:15:25.467 [SCE-3] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: utils.SIntComparator@11e7745b using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@daa9c95
-16:15:25.765 [SCE-3] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 6791 native protocols in 2469 batches.
-16:15:25.765 [SCE-3] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application utils.SIntComparator@11e7745b finished evaluation in 298 ms.
-16:15:25.765 [main] INFO Application.SecretDateHost - Start protocol for SP: 2
-16:15:25.767 [SCE-4] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Application.LinearProtocol@35da479d using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@daa9c95
-16:15:25.769 [SCE-4] INFO Application.SecretDateHost - Starting linear price Computation
-16:15:26.385 [SCE-4] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 16605 native protocols in 4738 batches.
-16:15:26.386 [SCE-4] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Application.LinearProtocol@35da479d finished evaluation in 617 ms.
-16:15:26.387 [SCE-4] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Application.OpenProtocol@43107df1 using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@daa9c95
-16:15:26.388 [SCE-4] INFO Application.SecretDateHost - Starting the open Protocol
-16:15:26.392 [SCE-4] INFO Application.SecretDateHost - Open Values
-16:15:26.407 [SCE-4] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 10 native protocols in 10 batches.
-16:15:26.407 [SCE-4] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Application.OpenProtocol@43107df1 finished evaluation in 19 ms.
-16:15:26.408 [main] INFO utils.ATPManager - 
-This unit of: 2 contains: 0, with date: null, and price: 0
+16:55:09.160 [main] INFO Application.SecretDateHost - Setup price Protocol LINEAR
+16:55:09.160 [main] INFO Application.SecretDateHost - Evaluate Price for all SalesPositions
+16:55:09.160 [main] INFO Application.SecretDateHost - Setup protocol for SP: 1
+16:55:09.160 [SCE-3] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: utils.SIntComparator@3173874b using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@34c15edf
+16:55:09.403 [SCE-3] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 6792 native protocols in 2470 batches.
+16:55:09.403 [SCE-3] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application utils.SIntComparator@3173874b finished evaluation in 243 ms.
+16:55:09.404 [main] INFO Application.SecretDateHost - order date is bigger or equal than standard -> standard is considered
+16:55:09.410 [SCE-4] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: utils.MultApplication@61cead0e using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@34c15edf
+16:55:09.414 [SCE-4] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 1 native protocols in 1 batches.
+16:55:09.414 [SCE-4] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application utils.MultApplication@61cead0e finished evaluation in 4 ms.
+16:55:09.415 [SCE-4] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: utils.SIntComparator@3173874b using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@34c15edf
+16:55:09.686 [SCE-4] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 6792 native protocols in 2469 batches.
+16:55:09.686 [SCE-4] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application utils.SIntComparator@3173874b finished evaluation in 271 ms.
+16:55:09.686 [main] INFO Application.SecretDateHost - result for 1 is true
+16:55:09.686 [main] INFO Application.SecretDateHost - putting pricePremium for 1
+16:55:09.687 [main] INFO Application.SecretDateHost - Entry 1 is true
+16:55:09.688 [SCE-5] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Running application: Application.OpenProtocol@6c3bc59c using protocol suite: dk.alexandra.fresco.suite.spdz.SpdzProtocolSuite@34c15edf
+16:55:09.692 [SCE-5] INFO Application.SecretDateHost - Starting the open Protocol
+16:55:09.692 [SCE-5] INFO Application.SecretDateHost - Open Values
+16:55:09.735 [SCE-5] DEBUG dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - Evaluator done. Evaluated a total of 10 native protocols in 10 batches.
+16:55:09.735 [SCE-5] INFO dk.alexandra.fresco.framework.sce.SecureComputationEngineImpl - The application Application.OpenProtocol@6c3bc59c finished evaluation in 44 ms.
+16:55:09.736 [main] INFO utils.ATPManager - 
+This unit of: 2 contains: 10, with date: null, and price: 330
 
-16:15:26.408 [main] INFO utils.ATPManager - 
-This unit of: 3 contains: 20, with date: null, and price: 2480
+16:55:09.736 [main] INFO utils.ATPManager - 
+This unit of: 3 contains: 0, with date: null, and price: 0
 
-16:15:26.409 [main] INFO Application.SecretDateHost - Results of the pricing
-16:15:26.409 [main] INFO Application.SecretDateHost - Sales Position: 2
+16:55:09.737 [main] INFO Application.SecretDateHost - Results of the pricing
+16:55:09.737 [main] INFO Application.SecretDateHost - Sales Position: 1
 Resulted in: true
-16:15:26.409 [main] INFO utils.BenchmarkHandler - 
+16:55:09.737 [main] INFO utils.BenchmarkHandler - 
 
-<b3m4>{"timer":"1","time":{"sec":"3.589","min":"0","ms":3589,"h":"0"}}</b3m4>
+<b3m4>{"timer":"1","time":{"sec":"3.165","min":"0","ms":3165,"h":"0"}}</b3m4>
 
-16:15:26.409 [main] INFO utils.BenchmarkHandler - 
+16:55:09.737 [main] INFO utils.BenchmarkHandler - 
 
-<b3m4>{"player":"1","netdata":{"received":{"bytes":"258660","KB":"252"}}}</b3m4>
+<b3m4>{"player":"1","netdata":{"received":{"bytes":"210546","KB":"205"}}}</b3m4>
 

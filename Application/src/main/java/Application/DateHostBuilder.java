@@ -8,6 +8,9 @@ import dk.alexandra.fresco.suite.spdz.SpdzResourcePool;
 import utils.EvaluationProtocol;
 import utils.MPCBuilder;
 
+/**
+ * Builder class for the SecretDateHost.
+ */
 public class DateHostBuilder extends MPCBuilder<SecretDateHost> {
 
     private EvaluationProtocol protocol = EvaluationProtocol.LINEAR;
@@ -22,6 +25,11 @@ public class DateHostBuilder extends MPCBuilder<SecretDateHost> {
         super(logging);
     }
 
+    /**
+     * Set the selected protocol for pricing evaluation.
+     * @param protocol Enum stating the selected protocol
+     * @return this. According to builder pattern.
+     */
     public DateHostBuilder withProtocol(EvaluationProtocol protocol){
         this.protocol = protocol;
         switch (protocol){
@@ -41,7 +49,10 @@ public class DateHostBuilder extends MPCBuilder<SecretDateHost> {
         return this;
     }
 
-
+    /**
+     * Build function of Builder. Creates the SecretDateHost instance with all set parameters.
+     * @return The fully initialized SDH instance.
+     */
     @Override
     public SecretDateHost build() {
         BatchedProtocolEvaluator<SpdzResourcePool> evaluator = new BatchedProtocolEvaluator<>(batchEvalStrat, mySuite, 4096);

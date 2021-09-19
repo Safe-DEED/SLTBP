@@ -14,6 +14,9 @@ import java.math.BigInteger;
 import java.time.Duration;
 import java.util.Comparator;
 
+/**
+ * Comparator class for SInt values. With this class, Collections.sort() and other functions can be used.
+ */
 public class SIntComparator implements Comparator<DRes<SInt>>, Application<BigInteger, ProtocolBuilderNumeric> {
 
     private DRes<SInt> o1, o2, aC, bC;
@@ -23,6 +26,13 @@ public class SIntComparator implements Comparator<DRes<SInt>>, Application<BigIn
     Network network;
     Duration duration;
 
+    /**
+     * Sets up comparator with all MPC related instances
+     * @param Sce The secure computation engine running the computation
+     * @param pool The Memory pool required for SPDZ preprocessing
+     * @param network The network information for communication
+     * @param duration The maximum network timeout
+     */
     public SIntComparator(SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> Sce, SpdzResourcePool pool, Network network, Duration duration){
         this.Sce = Sce;
         this.pool = pool;
@@ -30,6 +40,11 @@ public class SIntComparator implements Comparator<DRes<SInt>>, Application<BigIn
         this.duration = duration;
     }
 
+    /**
+     * MPC protocol computing o1 <= o2 and o2 <= o1 storing it in a and b
+     * @param builder used to create native MPC protocols
+     * @return null
+     */
     @Override
     public DRes<BigInteger> buildComputation(ProtocolBuilderNumeric builder) {
 
@@ -44,6 +59,12 @@ public class SIntComparator implements Comparator<DRes<SInt>>, Application<BigIn
         });
     }
 
+    /**
+     * Implementation of the compare function according to the comparator interface.
+     * @param o1 left-hand operator
+     * @param o2 right-hand operator
+     * @return for [(o1 > o2), (o2 > o1), (o1 = o2)] -> [1, -1, 0]
+     */
     @Override
     public int compare(DRes<SInt> o1, DRes<SInt> o2) {
         this.o1 = o1;

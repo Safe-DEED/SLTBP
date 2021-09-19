@@ -115,10 +115,19 @@ public class ATPManager {
         network.sendToAll(ByteBuffer.allocate(Integer.BYTES).putInt(Int).array());
     }
 
+    /**
+     * Receive an Integer from all parties in the network
+     * @param network The network to receive integers from
+     * @return List of integers received
+     */
     public List<Integer> receiveFromAll(Network network){
         return network.receiveFromAll().stream().map(b -> ByteBuffer.wrap(b).getInt()).collect(Collectors.toList());
     }
 
+    /**
+     * Clears the queues of the network. Helps avoid reuse of previously sent data.
+     * @param network the network to clear
+     */
     public void clearNetwork(Network network){
         if(network instanceof SocketNetwork){
             ((SocketNetwork) network).clearSelfQueue();
@@ -333,6 +342,12 @@ public class ATPManager {
         return object1;
     }
 
+    /**
+     * Exporting result of the deal checks to the accepted order file.
+     * @param pricingResults The boolean results of the pricing evaluations
+     * @param unitListMap We retrieve the list of units for each sales Position from this map.
+     *                    The units are already open, if the evaluation is true
+     */
     @SuppressWarnings("unchecked")
     public void exportResult(Map<Integer, Boolean> pricingResults, Map<Integer, List<ATPManager.ATPUnit>> unitListMap){
         JSONArray resultList = new JSONArray();
@@ -598,6 +613,14 @@ public class ATPManager {
         }
 
 
+        /**
+         * Constructor with additional option for the sales Position
+         * @param id The owner of this unit - does not have to be the same as the owner of the manager
+         * @param date the date of this unit, either the requested or suggested (depends on being vendor or vendee)
+         * @param amount the amount requested/provided
+         * @param price either the minimum price per unit or the the total price of this batch
+         * @param salesPosition The unique sales identifier of this product
+         */
         public ATPUnit(int id, Integer date, BigInteger amount, BigInteger price, int salesPosition){
             this(id, date, amount, price);
             this.salesPosition = salesPosition;

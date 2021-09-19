@@ -1,16 +1,7 @@
 package Application;
 
-import Client.MPCCustomer;
-import Client.MPCCustomerBuilder;
-import Host.MPCHost;
-import Host.MPCHostBuilder;
-import dk.alexandra.fresco.framework.Application;
 import dk.alexandra.fresco.framework.Party;
-import dk.alexandra.fresco.framework.builder.numeric.ProtocolBuilderNumeric;
-import dk.alexandra.fresco.framework.network.Network;
-import dk.alexandra.fresco.framework.sce.SecureComputationEngine;
 import dk.alexandra.fresco.framework.sce.evaluator.EvaluationStrategy;
-import dk.alexandra.fresco.suite.spdz.SpdzResourcePool;
 import dk.alexandra.fresco.suite.spdz.configuration.PreprocessingStrategy;
 import org.apache.commons.cli.ParseException;
 import org.json.simple.JSONArray;
@@ -22,10 +13,8 @@ import utils.*;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.time.Duration;
 import java.util.*;
 
 import static utils.NetworkManager.getPartyMap;
@@ -39,19 +28,6 @@ public class PriceFinder {
 
     private static final Logger logger = LoggerFactory.getLogger(PriceFinder.class);
     private static boolean logging = true;
-    private static ATPManager instance;
-
-    /**
-     * As the ATP Manager represents the stateful logic of the computation it is implemented as a singleton.
-     * Here we defined a wrapper storing the instance for convenience.
-     * @return the ATPManager instance of this application
-     */
-    private static ATPManager getATPInstance(){
-        if(instance == null){
-            instance = ATPManager.getInstance(1);
-        }
-        return instance;
-    }
 
     private static void log(String text){
         if(logging){
@@ -59,68 +35,15 @@ public class PriceFinder {
         }
     }
 
-    /**
-     * singleDateFinder is an implementation of the ATPManager Function interface. Functions that implement this interface
-     * must evaluate the pricing problem.
-     */
-    private static final ATPManager.Function singleDateFinder = protocolBuilderNumeric -> {
-        ATPManager man = ATPManager.getInstance(1);
-        BigInteger currentVol, currentPrice, minPrice, currentHostPrice;
-        Integer found = -1;
-        for (int i = 0; i < man.clientVolumeSum.size(); i++){
-            currentVol = man.VolSum.get(i).out();
-
-            if(currentVol.compareTo(man.hostVol.get(i)) > 0){
-                System.out.println("volume fail at: " + i);
-                continue;
-            }
-            currentPrice = man.PriSum.get(i).out();
-            currentHostPrice = man.hostPrice.get(i);
-            minPrice = currentVol.multiply(currentHostPrice);
-            if(minPrice.compareTo(currentPrice) > 0){
-                System.out.println("price fail at: " + i);
-                continue;
-            }
-            found = i;
-            break;
-        }
-        man.selectedDeal = man.dateList.get(found);
-        if(found.equals(-1)){
-            throw new RuntimeException("");
-        }
-    };
 
     /**
-     * The pricingFinder is an alternative pricing evaluation. As this protocol is not at its final stage, this
-     * implementation is kept in order to have a backup.
+     * Parses NetworkConfig.json and loads the parties map
+     * @param parties Map containing FRESCO party objects associated with the id as key.
+     * @param networkConfig The json parsed network config file
+     * @return party object associated to self
+     * @throws UnknownHostException if internet check fails
+     * @throws ParseException if contents of file, do not match definition
      */
-    private static final ATPManager.Function pricingFinder = protocolBuilderNumeric -> {
-        int lOS, cOS;
-        BigInteger costDiff;
-        for (int i = 0; i < getATPInstance().DEBUGMinCost.size(); i++) {
-            getATPInstance().printDebug();
-            lOS = (getATPInstance().DEBUGLeftOver.get(i).out().compareTo( BigInteger.ZERO));
-
-            if(lOS != 1){
-                System.out.println("comparison failed!");
-                throw new IllegalArgumentException("not enough volume supplied!");
-            }
-            lOS = (getATPInstance().DEBUGLeftOver.get(i).out().compareTo( new BigInteger("1000000000000000")));
-            if(lOS != -1){ // no sign conversion is done yet in the framework - this is a problem in the current version of Fresco but will be fixed in the next release
-                System.out.println("comparison failed!");
-                throw new IllegalArgumentException("not enough volume supplied!");
-            }
-            costDiff = getATPInstance().DEBUGCost.get(i).out().subtract(getATPInstance().DEBUGMinCost.get(i).out());
-            cOS = costDiff.compareTo( BigInteger.ZERO);
-            if(cOS == -1){
-                System.out.println("comparison failed!");
-                throw new IllegalArgumentException("The price suggested by the customers was too low!");
-            }
-
-        }
-
-    };
-
     private static Party parseNetObject(Map<Integer, Party> parties, JSONArray networkConfig) throws UnknownHostException, ParseException {
         Party party;
         Party myParty = null;
@@ -146,6 +69,11 @@ public class PriceFinder {
         return myParty;
     }
 
+    /**
+     * Checks schema of MPCSettings JSON
+     * @param settings The json parsed Settings file
+     * @throws ParseException if schema of MPCSettings json is wrong
+     */
     private static void checkSchema(JSONObject settings) throws ParseException{
         boolean check;
         check = settings.containsKey("evaluationProtocol");
@@ -161,8 +89,13 @@ public class PriceFinder {
         }
     }
 
-
-    private static void parseMPCSettings(CmdLineParser.BuilderParams params, JSONObject settings_) throws ParseException, IllegalArgumentException{
+    /**
+     * Parser for the MPCSettings json.
+     * @param params Mutable BuilderParams object. Here the results are stored.
+     * @param settings_ JSONObject of json parsed MPCSettings file.
+     * @throws ParseException if there are wrong keywords or if the data types are wrong.
+     */
+    private static void parseMPCSettings(CmdLineParser.BuilderParams params, JSONObject settings_) throws ParseException{
 
         JSONObject settings = (JSONObject) settings_.get("settings");
         String evaluationProtocol, preprocessing, otProtocol, evaluationStrategy;
@@ -243,6 +176,13 @@ public class PriceFinder {
         }
     }
 
+    /**
+     * Parses input from the networking options, atpunits and mpcSettings files
+     * @param netPath path to the networking options file
+     * @param unitsPath path to the atpUnits file
+     * @param settingsPath path to the mpc settings configuration file
+     * @return BuilderParams object used to instantiate the MPC instance
+     */
     public static CmdLineParser.BuilderParams getParamsFromSettings(String netPath, String unitsPath, String settingsPath){
         CmdLineParser.BuilderParams params = new CmdLineParser.BuilderParams(true, false);
         JSONParser jsonParser = new JSONParser();
@@ -295,160 +235,20 @@ public class PriceFinder {
 
         return params;    }
 
+
     /**
-     * FRESCO is a very context heavy framework. In the early versions of this project, a lot of settings were set as command
-     * line arguments. This function provides us with the default arguments without the need of such command line heavy interactions.
-     * @param netPath The path to the network configuration json file
-     * @param unitsPath The path to the ATPUnits json file. The data for the protocol.
-     * @return Builderparams object, containing the necessary fields to setup the framework and the protocol.
+     * Convenience call to get Params from Settings. Calls with predefined names: "NetworkConfig.json", "ATPUnits.json", "MPCSettings.json"
+     * @return Returns result from getParamsFromSettings("NetworkConfig.json", "ATPUnits.json", "MPCSettings.json") call
      */
-    public static CmdLineParser.BuilderParams getDefaultParams(String netPath, String unitsPath){
-        CmdLineParser.BuilderParams params = new CmdLineParser.BuilderParams(true, false);
-        params.setMaxBitLength(64);
-        params.setModBitLength(128);
-        params.setPreprocessingStrategy(PreprocessingStrategy.MASCOT);
-        params.setOtProtocol(CmdLineParser.obliviousTransferProtocol.NAOR);
-        params.setEvaluationStrategy(EvaluationStrategy.SEQUENTIAL_BATCHED);
-        params.setEvaluationProtocol(EvaluationProtocol.LINEAR);
-        params.setDebug(false);
-        params.setBenchmark(false);
-        JSONParser jsonParser = new JSONParser();
-        JSONArray networkConfig, unitList;
-        Party party;
-        Party myParty = null;
-        Map<Integer, Party> parties = new HashMap<>();
-        //List<ATPManager.ATPUnit> atpUnits = new ArrayList<>();
-
-        try(FileReader reader = new FileReader(netPath)){
-            networkConfig = (JSONArray) jsonParser.parse(reader);
-        } catch (org.json.simple.parser.ParseException | IOException e){
-            e.printStackTrace();
-            return null;
-        }
-        try {
-            for(Object obj : networkConfig){
-                int id = Integer.parseInt((String) ((JSONObject)obj).get("id"));
-                int port = Integer.parseInt((String) ((JSONObject)obj).get("port"));
-                String ip = (String) ((JSONObject)obj).get("ip");
-                InetAddress.getByName(ip);
-                party = new Party(id, ip, port);
-                if(parties.containsKey(id)){
-                    throw new ParseException("Party ids must be unique");
-                } if (((JSONObject)obj).get("myID") instanceof Boolean && (Boolean) ((JSONObject)obj).get("myID")){
-                    if(myParty != null){
-                        throw new ParseException("Two parties are selected!");
-                    }
-                    myParty = party;
-                }
-                parties.put(id, party);
-            }
-            if(myParty == null){
-                throw new ParseException("No Party is selected: add myID = true");
-            }
-        } catch (UnknownHostException | ParseException e){
-            e.printStackTrace();
-            return null;
-        }
-        params.setHost(myParty.getPartyId() == 1);
-        List<Map<Integer, Party>> list = new ArrayList<>();
-        list.add(parties);
-        params.setParties(list, myParty);
-        params.setId(myParty.getPartyId());
-        params.setDate(0);      //
-        params.setPrice(0);     //
-        params.setVolume(0);    // These functions should be removed once file based input is here
-        params.setHostUnits(0); //
-
-
-        try (FileReader reader = new FileReader(unitsPath)) {
-            jsonParser.reset();
-            unitList =  (JSONArray) jsonParser.parse(reader);
-        } catch ( org.json.simple.parser.ParseException | IOException e){
-            e.printStackTrace();
-            return null;
-        }
-
-
-        params.setUnits(unitList);
-        return params;
-    }
-
-    public static CmdLineParser.BuilderParams getDefaultParams(){
-        return getDefaultParams("NetworkConfig.json", "ATPUnits.json");
-    }
-
     public static CmdLineParser.BuilderParams getParamsFromSettings(){
         return getParamsFromSettings("NetworkConfig.json", "ATPUnits.json", "MPCSettings.json");
     }
 
-    public static void volumePriceAggregator() throws ParseException{
+
     /**
-     * Entry point of the generalized protocol. Being host or client is defined in the Network Configuration file
-     * @param args command line arguments -> none necessary
-     * @throws ParseException The CustomerBuilder and HostBuilder classes both parse our input. They throw an exception
-     * if they receive unexpected parameters.
+     * Entry point for the pricing protocol. Fresco params are loaded, essential instances are created and the protocol is started.
+     * @throws ParseException is thrown if one of the three input files does not match schema or contains illegal entries.
      */
-        logger.info("---------- Reading params ----------");
-        CmdLineParser.BuilderParams params = getDefaultParams();
-        logging = params.logging;
-        if(params.logging){
-            logger.info(params.toString());
-        }
-        BenchmarkHandler handler = BenchmarkHandler.getInstance();
-        handler.startTimer(1);
-        SecureComputationEngine<SpdzResourcePool, ProtocolBuilderNumeric> sce;
-        SpdzResourcePool pool;
-        Network net;
-        NetworkManager manager;
-        Application<Integer, ProtocolBuilderNumeric> demo;
-        logger.info("---------- starting setup ----------");
-        handler.startNetwork(params.id, 0);
-        if(params.host){
-            MPCHost hdemo = new MPCHostBuilder(params.logging)
-                    .withVolume(params.volume, params.amount)
-                    .withNetwork(getPartyMap(params.partyList,params.myParty), params.myParty)
-                    .withResourcePool(params.preprocessingStrategy, params.modBitLength, singleDateFinder, params.otProtocol)
-                    .withDate(params.date)
-                    .withPrice(params.price)
-                    .withUnits(params.units)
-                    .withBatchEvalStrat(params.evaluationStrategy)
-                    .withSpdzLength(params.maxBitLength)
-                    .build();
-
-            sce = hdemo.mySce;
-            pool = hdemo.myPool;
-            net = hdemo.myNetwork;
-            manager = hdemo.myNetworkManager;
-            demo = hdemo;
-        } else{
-            MPCCustomer idemo = new MPCCustomerBuilder(params.logging)
-                    .withDate(params.date)
-                    .withPrice(params.price)
-                    .withVolume(params.volume, params.amount)
-                    .withNetwork(getPartyMap(params.partyList,params.myParty), params.myParty)
-                    .withResourcePool(params.preprocessingStrategy, params.modBitLength, params.otProtocol)
-                    .withUnits(params.units)
-                    .withSpdzLength(params.maxBitLength)
-                    .withBatchEvalStrat(params.evaluationStrategy)
-                    .build();
-            sce = idemo.getMySce();
-            pool = idemo.getMyPool();
-            net = idemo.getMyNetwork();
-            manager = idemo.getMyNetworkManager();
-            demo = idemo;
-        }
-        logger.info("---------- Starting the protocol ----------");
-        Integer deal = sce.runApplication(demo, pool, net, Duration.ofMinutes(20));
-        handler.endTimer(1);
-        handler.endNetwork(params.id, manager.getReceivedBytes());
-        if(deal > 0){
-            logger.info("the resulting deal is: " + deal);
-        } else{
-            logger.info("No deal can be made");
-        }
-    }
-
-
     public static void secureLeadTimeBasedPriceFinder() throws ParseException {
         logger.info("---------- Reading params ----------");
         CmdLineParser.BuilderParams params = getParamsFromSettings();
@@ -485,7 +285,6 @@ public class PriceFinder {
      */
     public static void main(String[] args) throws ParseException {
 
-        //volumePriceAggregator();
         secureLeadTimeBasedPriceFinder();
     }
 
