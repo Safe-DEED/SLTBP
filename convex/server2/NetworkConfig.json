@@ -1,0 +1,20 @@
+[
+  {
+    "id": "1",
+    "ip": "localhost",
+    "port": "8081",
+    "myID": false
+  },
+  {
+    "id": "2",
+    "ip": "localhost",
+    "port": "8082",
+    "myID": true
+  },
+  {
+    "id": "3",
+    "ip": "localhost",
+    "port": "8083",
+    "myID": false
+  }
+]

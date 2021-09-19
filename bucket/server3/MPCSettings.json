@@ -1,0 +1,12 @@
+{
+  "settings": {
+    "evaluationProtocol": "BUCKET",
+    "preprocessing": "MASCOT",
+    "otProtocol": "NAOR",
+    "evaluationStrategy": "SEQUENTIAL_BATCHED",
+    "maxBitLength": "64",
+    "modBitLength": "128",
+    "benchmarking": false,
+    "debug": false
+  }
+}
