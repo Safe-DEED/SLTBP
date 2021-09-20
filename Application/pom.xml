@@ -14,16 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>iaik</groupId>
-            <artifactId>Client</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>iaik</groupId>
-            <artifactId>Host</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>iaik</groupId>
             <artifactId>mpc-utils</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

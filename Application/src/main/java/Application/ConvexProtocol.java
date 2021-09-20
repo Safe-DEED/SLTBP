@@ -49,8 +49,8 @@ public class ConvexProtocol extends PriceProtocol{
             powerOLT = advancedNumeric.log(powerOLT, bitLen);
             powerSDT = advancedNumeric.log(powerSDT, bitLen);
             pricePremium = seq.numeric().sub(powerSDT, powerOLT);
-
-            //pricePremium = advancedNumeric.log(div, seq.getBasicNumericContext().getMaxBitLength());
+            // Divide by 2  to approximate log10
+            pricePremium = AdvancedNumeric.using(seq).div(pricePremium, 2);
             return null;
         }).seq((seq, nil) -> {
             premiumLimit = Comparison.using(seq).compareLEQ(pricePremium, seq.numeric().known(20));
@@ -74,6 +74,8 @@ public class ConvexProtocol extends PriceProtocol{
                 pricePremium = seq.numeric().add(20, pricePremium);
             }
             pricePremium = seq.numeric().mult(pricePremium, priceHost);
+            // Divide by 10 to compensate previous exponentiation
+            // Divide by 2  to apply formula from deliverable 7.5
             pricePremium = AdvancedNumeric.using(seq).div(pricePremium, 20);
             resultPrice = seq.numeric().mult(pricePremium, clientVolume);
             return null;
@@ -104,7 +106,7 @@ public class ConvexProtocol extends PriceProtocol{
             long ordered = orderedLeadTimeOpen.out().longValue();
             long clientVol = clientVolumeOpen.out().longValue();
             double div = (double)standard / ordered;
-            double log = Math.log(div);
+            double log = Math.log(div) / Math.log(10);
             log /= 2;
             log = (log > 1) ? 2 : log + 1;
             log *= priceHostOpen.out().longValue();

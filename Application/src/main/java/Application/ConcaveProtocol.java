@@ -52,7 +52,8 @@ public class ConcaveProtocol extends PriceProtocol{
             powerSDT = advancedNumeric.exp(standardLeadTime, 10);
             powerSDT = advancedNumeric.log(powerSDT, bitLen);
             pricePremium = numeric.sub(powerOLT, powerSDT);
-
+            // Divide by 2  to approximate log10
+            pricePremium = AdvancedNumeric.using(seq).div(pricePremium, 2);
             return () -> null;
         }).seq((seq, nil) -> {
             premiumLimit = Comparison.using(seq).compareLEQ(pricePremium, seq.numeric().known(20));
@@ -77,6 +78,8 @@ public class ConcaveProtocol extends PriceProtocol{
                 pricePremium = seq.numeric().add(20, pricePremium);
             }
             pricePremium = seq.numeric().mult(pricePremium, priceHost);
+            // Divide by 10 to compensate previous exponentiation
+            // Divide by 2  to apply formula from deliverable 7.5
             pricePremium = AdvancedNumeric.using(seq).div(pricePremium, 20);
             resultPrice = seq.numeric().mult(pricePremium, clientVolume);
             return null;
@@ -106,7 +109,7 @@ public class ConcaveProtocol extends PriceProtocol{
             long sub = standard - ordered;
             sub *= 100;
             double div = (double) sub / standard;
-            double log = Math.log(div);
+            double log = Math.log(div) / Math.log(10);
             log /= 2;
             log = (log > 1) ? 2 : log + 1;
             log *= priceHost;

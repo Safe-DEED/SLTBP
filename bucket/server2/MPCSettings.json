@@ -1,8 +1,8 @@
 {
   "settings": {
     "evaluationProtocol": "BUCKET",
-    "preprocessing": "MASCOT",
-    "otProtocol": "NAOR",
+    "preprocessing": "DUMMY",
+    "otProtocol": "DUMMY",
     "evaluationStrategy": "SEQUENTIAL_BATCHED",
     "maxBitLength": "64",
     "modBitLength": "128",
