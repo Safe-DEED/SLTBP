@@ -21,11 +21,6 @@ run:
 	cd servers/server1 && java -jar demo.jar  2>&1 |tee log.txt
 
 linear:
-	mkdir -p linear;
-	cd linear;
-	mkdir -p linear/server1;
-	mkdir -p linear/server2;
-	mkdir -p linear/server3;
 	cp Application/target/demo.jar linear/server1;
 	cp Application/target/demo.jar linear/server2;
 	cp Application/target/demo.jar linear/server3;
@@ -34,11 +29,6 @@ linear:
 	cd linear/server1 && java -jar demo.jar  2>&1 |tee log.txt
 
 convex:
-	mkdir -p convex;
-	cd convex;
-	mkdir -p convex/server1;
-	mkdir -p convex/server2;
-	mkdir -p convex/server3;
 	cp Application/target/demo.jar convex/server1;
 	cp Application/target/demo.jar convex/server2;
 	cp Application/target/demo.jar convex/server3;
@@ -47,11 +37,6 @@ convex:
 	cd convex/server1 && java -jar demo.jar  2>&1 |tee log.txt
 
 concave:
-	mkdir -p concave;
-	cd concave;
-	mkdir -p concave/server1;
-	mkdir -p concave/server2;
-	mkdir -p concave/server3;
 	cp Application/target/demo.jar concave/server1;
 	cp Application/target/demo.jar concave/server2;
 	cp Application/target/demo.jar concave/server3;
@@ -60,11 +45,6 @@ concave:
 	cd concave/server1 && java -jar demo.jar  2>&1 |tee log.txt
 
 bucket:
-	mkdir -p bucket;
-	cd bucket;
-	mkdir -p bucket/server1;
-	mkdir -p bucket/server2;
-	mkdir -p bucket/server3;
 	cp Application/target/demo.jar bucket/server1;
 	cp Application/target/demo.jar bucket/server2;
 	cp Application/target/demo.jar bucket/server3;
