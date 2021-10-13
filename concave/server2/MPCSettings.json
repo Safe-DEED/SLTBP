@@ -1,8 +1,8 @@
 {
   "settings": {
     "evaluationProtocol": "CONCAVE",
-    "preprocessing": "DUMMY",
-    "otProtocol": "DUMMY",
+    "preprocessing": "MASCOT",
+    "otProtocol": "NAOR",
     "evaluationStrategy": "SEQUENTIAL_BATCHED",
     "maxBitLength": "64",
     "modBitLength": "128",
