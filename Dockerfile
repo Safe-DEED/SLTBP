@@ -5,5 +5,5 @@ RUN apt-get update && apt-get install -y \
     make
 WORKDIR /home/SLTBP
 COPY . /home/SLTBP
-RUN mvn clean install
+RUN make install && make move
 CMD /bin/bash
