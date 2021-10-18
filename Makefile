@@ -6,48 +6,43 @@ install:
 	mvn clean install
 
 move:
-	mkdir -p servers;
-	cd servers;
-	mkdir -p servers/server1;
-	mkdir -p servers/server2;
-	mkdir -p servers/server3;
-	cp Application/target/demo.jar servers/server1;
-	cp Application/target/demo.jar servers/server2;
-	cp Application/target/demo.jar servers/server3;
-	cp Application/target/demo.jar linear/server1;
-	cp Application/target/demo.jar linear/server2;
-	cp Application/target/demo.jar linear/server3;
-	cp Application/target/demo.jar convex/server1;
-	cp Application/target/demo.jar convex/server2;
-	cp Application/target/demo.jar convex/server3;
-	cp Application/target/demo.jar concave/server1;
-	cp Application/target/demo.jar concave/server2;
-	cp Application/target/demo.jar concave/server3;
-	cp Application/target/demo.jar bucket/server1;
-	cp Application/target/demo.jar bucket/server2;
-	cp Application/target/demo.jar bucket/server3;
+	cp Application/target/demo.jar demo/servers/server1;
+	cp Application/target/demo.jar demo/servers/server2;
+	cp Application/target/demo.jar demo/servers/server3;
+	cp Application/target/demo.jar demo/linear/server1;
+	cp Application/target/demo.jar demo/linear/server2;
+	cp Application/target/demo.jar demo/linear/server3;
+	cp Application/target/demo.jar demo/convex/server1;
+	cp Application/target/demo.jar demo/convex/server2;
+	cp Application/target/demo.jar demo/convex/server3;
+	cp Application/target/demo.jar demo/concave/server1;
+	cp Application/target/demo.jar demo/concave/server2;
+	cp Application/target/demo.jar demo/concave/server3;
+	cp Application/target/demo.jar demo/bucket/server1;
+	cp Application/target/demo.jar demo/bucket/server2;
+	cp Application/target/demo.jar demo/bucket/server3;
 
 run:
-	cd servers/server3 && java -jar demo.jar  > log.txt 2>&1 &
-	cd servers/server2 && java -jar demo.jar  > log.txt 2>&1 &
-	cd servers/server1 && java -jar demo.jar  2>&1 |tee log.txt
+	cd demo/servers/server3 && java -jar demo.jar  > log.txt 2>&1 &
+	cd demo/servers/server2 && java -jar demo.jar  > log.txt 2>&1 &
+	cd demo/servers/server1 && java -jar demo.jar  2>&1 |tee log.txt
 
 linear:
-	cd linear/server3 && java -jar demo.jar  > log.txt 2>&1 &
-	cd linear/server2 && java -jar demo.jar  > log.txt 2>&1 &
-	cd linear/server1 && java -jar demo.jar  2>&1 |tee log.txt
+	cd demo/linear/server3 && java -jar demo.jar  > log.txt 2>&1 &
+	cd demo/linear/server2 && java -jar demo.jar  > log.txt 2>&1 &
+	cd demo/linear/server1 && java -jar demo.jar  2>&1 |tee log.txt
 
 convex:
-	cd convex/server3 && java -jar demo.jar  > log.txt 2>&1 &
-	cd convex/server2 && java -jar demo.jar  > log.txt 2>&1 &
-	cd convex/server1 && java -jar demo.jar  2>&1 |tee log.txt
+	cd demo/convex/server3 && java -jar demo.jar  > log.txt 2>&1 &
+	cd demo/convex/server2 && java -jar demo.jar  > log.txt 2>&1 &
+	cd demo/convex/server1 && java -jar demo.jar  2>&1 |tee log.txt
 
 concave:
-	cd concave/server3 && java -jar demo.jar  > log.txt 2>&1 &
-	cd concave/server2 && java -jar demo.jar  > log.txt 2>&1 &
-	cd concave/server1 && java -jar demo.jar  2>&1 |tee log.txt
+	cd demo/concave/server3 && java -jar demo.jar  > log.txt 2>&1 &
+	cd demo/concave/server2 && java -jar demo.jar  > log.txt 2>&1 &
+	cd demo/concave/server1 && java -jar demo.jar  2>&1 |tee log.txt
 
 bucket:
-	cd bucket/server3 && java -jar demo.jar  > log.txt 2>&1 &
-	cd bucket/server2 && java -jar demo.jar  > log.txt 2>&1 &
-	cd bucket/server1 && java -jar demo.jar  2>&1 |tee log.txt
+	cd demo/bucket/server3 && java -jar demo.jar  > log.txt 2>&1 &
+	cd demo/bucket/server2 && java -jar demo.jar  > log.txt 2>&1 &
+	cd demo/bucket/server1 && java -jar demo.jar  2>&1 |tee log.txt
